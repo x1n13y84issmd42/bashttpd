@@ -1,12 +1,12 @@
 #!/bin/bash
 
+source bwf.sh
 source router.sh
-
-echo "Bashttpd 0.1"
-echo "Project: $1"
 
 rxHeader='^([a-zA-Z-]+)\s*:\s*(.*)'
 rxMethod='^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP' #doesnt work
+
+PROJECT=$1
 
 while read INPUT;
 do
@@ -17,7 +17,7 @@ do
 		# Trimming the whitespace
 		headerValue="$(echo -e "${headerValue}" | sed -r 's/\s+//g')"
 
-		echo "Header $headerName is '$headerValue'"
+		# log "Header $headerName is '$headerValue'"
 
 		# Replacing - with _ in header names and uppercasing them
 		headerName="$(echo -e "${headerName}" | sed -r 's/-/_/g' | sed -e 's/\(.*\)/\U\1/g')"
@@ -26,22 +26,22 @@ do
 		printf -v $headerName "$headerValue"
 
 	elif [[ $INPUT =~ ^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP ]]; then
-		method=${BASH_REMATCH[1]}
-		path=${BASH_REMATCH[2]}
-		echo "Request method is $method"
-		echo "Request path is $path"
+		reqMethod=${BASH_REMATCH[1]}
+		reqPath=${BASH_REMATCH[2]}
+		log "Serving $reqMethod @ $reqPath"
 
 	# elif [[ $INPUT =~ ^\s+ ]]; then
 	# elif [ -z $INPUT ]; then
 	else
-		echo "--------------------------"
-		# echo $INPUT		
+		log "--------------------------"
 		break
 	fi
 done;
 
-echo "-- Host is $HOST"
-echo "-- Connection is $CONNECTION"
-echo "-- User Agent is $USER_AGENT"
+# log "-- Host is $HOST"
+# log "-- Connection is $CONNECTION"
+# log "-- User Agent is $USER_AGENT"
 
-router "$1$path"
+export BWF="$(realpath ./bwf.sh)"
+
+router
