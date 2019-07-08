@@ -2,7 +2,11 @@
 
 # Output to the host's stdout
 function log {
-	echo $1 >&2
+	echo $@ >&2
+}
+
+function flog {
+	echo $@ >> $2
 }
 
 # Sends an HTTP response status code
