@@ -37,7 +37,7 @@ Writes an HTTP header. Example: `respHeader "Content-Type" "text/html"`
 Writes the response body. Example: `respBody "<h1>YOLO</h1>"`
 
 #### log
-A logging function. Outputs to the host's `stdout`.
+A logging function. Outputs to the host's `stderr`.
 
 ## TODO
 #### Static pages
