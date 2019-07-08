@@ -8,5 +8,8 @@ function router() {
 		$ctrler
 	else
 		log "404 Not Found"
+		respStatus 404
+		respHeader "Content-Type" "text/html"
+		respBody "<i>$reqPath</i> Was Not Found"
 	fi
 }
