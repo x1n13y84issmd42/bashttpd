@@ -10,6 +10,10 @@ function router() {
 		log "Serving the static file $staticFile"
 		serveStatic $staticFile
 
+	elif [ -d "$staticFile" ] && [ -f "$staticFile/index.html" ]; then
+		log "Serving the index.html of $staticFile"
+		serveStatic "$staticFile/index.html"
+
 	else
 		log "404 Not Found"
 		respStatus 404
@@ -26,7 +30,9 @@ function serveStatic() {
 	fileSize=$(stat --printf="%s" "$filePath")
 
 	respStatus "200"
-	respHeader "Content-Length" $fileSize
+
+	# TODO: resolve ERR_CONTENT_LENGTH_MISMATCH before enabling this back
+	# respHeader "Content-Length" $fileSize
 
 	case $fileExt in
 		"js")

@@ -1,34 +1,30 @@
 # Bashttpd Web Framework
 
-# Output to the host's stdout
+source bodyParsers.sh
+
+# Outputs to the host's stdout.
 function log {
 	echo $@ >&2
 }
 
-function flog {
-	echo $@ >> $2
-}
-
-# Sends an HTTP response status code
+# Sends an HTTP response status code.
 function respStatus {
 	echo "HTTP/1.1 $1"
 }
 
-# Sends an HTTP response header
+# Sends an HTTP response header.
 function respHeader {
 	echo "$1: $2"
 }
 
-# Sends an HTTP response body
+# Sends an HTTP response body.
 function respBody {
 	echo ""
-	echo $1
+	echo -E $1
 }
 
-# Responds with file contents
+# Responds with file contents. Doesn't care about neither content length nor it's type.
 function respFile {
-	echo ""
-	echo "$(cat "$1")"
+	# log "$(cat "$1")"
+	respBody "$(cat "$1")"
 }
-
-source bodyParsers.sh

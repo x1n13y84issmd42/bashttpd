@@ -16,6 +16,8 @@ When **bashttpd** receives a request, it tries to match the path from that to th
 
 For example, a `GET` request to the `/foo/bar` path is served by the `example.com/foo/bar/GET.sh` script.
 
+But if the request path mathces a file path in the project directory, it will respond with it's contents. At the moment it supports `js`, `css` & `html` with proper content types.
+
 ## Framework
 There is one!
 
@@ -44,11 +46,15 @@ Writes an HTTP header. Example: `respHeader "Content-Type" "text/html"`
 #### respBody
 Writes the response body. Example: `respBody "<h1>YOLO</h1>"`
 
+#### respFile
+Responds with a file contents. Note that you have to specify Content-Type yourself. Example: `respFile "/etc/passwd"`
+
 #### log
 A logging function. Outputs to the host's `stderr`.
 
 ## TODO
-* Static pages
+* Static resources
+* Binary resources (fonts, images, etc)
 * Cookies
 * MySQL
 * JSON
