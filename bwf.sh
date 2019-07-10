@@ -23,8 +23,9 @@ function respBody {
 	echo -E $1
 }
 
-# Responds with file contents. Doesn't care about neither content length nor it's type.
+# Responds with file contents.
+# Doesn't care about neither content length nor it's type. Expects you to do it.
 function respFile {
-	# log "$(cat "$1")"
-	respBody "$(cat "$1")"
+	echo ""
+	cat "$1"
 }
