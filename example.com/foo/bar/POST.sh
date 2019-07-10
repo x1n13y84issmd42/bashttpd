@@ -1,5 +1,3 @@
-source $BWF
-
 age=$(reqData "age")
 name=$(reqData "name")
 

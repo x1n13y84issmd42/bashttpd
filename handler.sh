@@ -4,14 +4,12 @@ source bwf.sh
 source router.sh
 
 rxHeader='^([a-zA-Z-]+)\s*:\s*(.*)'
-rxMethod='^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP' #doesnt work
+rxMethod='^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP' #doesn't work
 
 PROJECT=$1
 
 parserMode="headers"
 reqBodyLen=0
-
-LANG=C LC_ALL=C
 
 let reqBodyLen=0
 
@@ -22,7 +20,7 @@ while read INPUT; do
 			headerName=${BASH_REMATCH[1]}
 			headerValue=${BASH_REMATCH[2]}
 
-			# Trimming the whitespace
+			# Trimming off whitespace
 			headerValue="$(echo -e "${headerValue}" | sed -r 's/\s+//g')"
 
 			log "Header $headerName is '$headerValue'"
@@ -33,11 +31,13 @@ while read INPUT; do
 			# This creates variables named after header names with header values
 			printf -v $headerName "$headerValue"
 
+		# Figuring out the request method used
 		elif [[ $INPUT =~ ^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP ]] && [ $parserMode = "headers" ]; then
 			reqMethod=${BASH_REMATCH[1]}
 			reqPath=${BASH_REMATCH[2]}
 			log "Serving $reqMethod @ $reqPath"
 
+		# Done with headers
 		else
 			break
 		fi
@@ -59,6 +59,7 @@ if [[ $CONTENT_TYPE =~ ^multipart\/form\-data ]]; then
 	CONTENT_BOUNDARY="$(echo $CONTENT_TYPE | sed -n 's/.*data\;boundary=\(.*\)/\1/p')"
 fi
 
+# Cleaning Content-Type if it has stuff after ;
 if [[ $CONTENT_TYPE =~ \; ]]; then
 	CONTENT_TYPE="$(echo $CONTENT_TYPE | sed -n 's/\(.*\);.*/\1/p')"
 fi

@@ -1,5 +1,3 @@
-source $BWF
-
 respStatus 200
 respHeader "Content-Type" "text/html"
 
