@@ -23,7 +23,7 @@ while read INPUT; do
 			# Trimming off whitespace
 			headerValue="$(echo -e "${headerValue}" | sed -r 's/\s+//g')"
 
-			log "Header $headerName is '$headerValue'"
+			# log "Header $headerName is '$headerValue'"
 
 			# Replacing - with _ in header names and uppercasing them
 			headerName="$(echo -e "${headerName}" | sed -r 's/-/_/g' | sed -e 's/\(.*\)/\U\1/g')"
@@ -48,11 +48,15 @@ BODY=""
 
 # Reading body, 1 char at a time
 # Regular read can't get the last line because of missing newline there
-while [ $reqBodyLen -lt $CONTENT_LENGTH ]; do
-	read -n1 CHAR
-	BODY="$BODY$CHAR"
-	let reqBodyLen=reqBodyLen+1
-done;
+if [ -z ${CONTENT_LENGTH+x} ]; then
+	:
+else
+	while [ $reqBodyLen -lt $CONTENT_LENGTH ]; do
+		read -n1 CHAR
+		BODY="$BODY$CHAR"
+		let reqBodyLen=reqBodyLen+1
+	done;
+fi
 
 # Figuring out the content boundary in case we have a multipart/form-data Content-Type
 if [[ $CONTENT_TYPE =~ ^multipart\/form\-data ]]; then
@@ -64,12 +68,11 @@ if [[ $CONTENT_TYPE =~ \; ]]; then
 	CONTENT_TYPE="$(echo $CONTENT_TYPE | sed -n 's/\(.*\);.*/\1/p')"
 fi
 
-log "-- User Agent is $USER_AGENT"
-log "-- Content Type is $CONTENT_TYPE"
-log "-- Content Boundary is $CONTENT_BOUNDARY"
-log "-- Content Length is $CONTENT_LENGTH"
-log "-- Request body length $reqBodyLen"
-log "--------------------------------------------"
+# log "-- Content Type is $CONTENT_TYPE"
+# log "-- Content Boundary is $CONTENT_BOUNDARY"
+# log "-- Content Length is $CONTENT_LENGTH"
+# log "-- Request body length $reqBodyLen"
+# log "--------------------------------------------"
 
 # echo "$BODY" > reqbody
 

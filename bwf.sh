@@ -25,4 +25,10 @@ function respBody {
 	echo $1
 }
 
+# Responds with file contents
+function respFile {
+	echo ""
+	echo "$(cat "$1")"
+}
+
 source bodyParsers.sh
