@@ -9,10 +9,33 @@ function reqData {
 			reqDataJSON $1
 		;;
 
+		"application/x-www-form-urlencoded")
+			reqDataWWWFormURLEncoded $1
+		;;
+
 		*)
 			echo "$CONTENT_TYPE is not supported yet."
 		;;
 	esac
+}
+
+function reqDataWWWFormURLEncoded {
+	fieldName=$1
+	
+	IFS_backup="$IFS"
+	IFS='&'
+
+	read -r -a FIELDS <<< "$BODY"
+	for FIELD in "${FIELDS[@]}"; do
+		if [[ $FIELD =~ ^$fieldName= ]]; then
+			# In order to expand $fieldName inside single quotes, you first end the single-quoted-string,
+			# immediately start the double quoted one, then start another single-quoted one
+			fieldValue="$(echo "$FIELD" | sed -r 's/.*'"$fieldName"'=(.*).*/\1/')"
+		fi
+	done	
+
+	IFS="$IFS_backup"
+	echo "$fieldValue"
 }
 
 function reqDataForm {
