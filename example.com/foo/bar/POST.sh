@@ -1,7 +1,7 @@
 source $BWF
 
-age=$(reqDataForm "age")
-name=$(reqDataForm "name")
+age=$(reqData "age")
+name=$(reqData "name")
 
 respStatus 200
 respHeader "Content-Type" "text/html"

@@ -59,6 +59,10 @@ if [[ $CONTENT_TYPE =~ ^multipart\/form\-data ]]; then
 	CONTENT_BOUNDARY="$(echo $CONTENT_TYPE | sed -n 's/.*data\;boundary=\(.*\)/\1/p')"
 fi
 
+if [[ $CONTENT_TYPE =~ \; ]]; then
+	CONTENT_TYPE="$(echo $CONTENT_TYPE | sed -n 's/\(.*\);.*/\1/p')"
+fi
+
 log "-- User Agent is $USER_AGENT"
 log "-- Content Type is $CONTENT_TYPE"
 log "-- Content Boundary is $CONTENT_BOUNDARY"

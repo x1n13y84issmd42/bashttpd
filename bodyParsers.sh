@@ -1,14 +1,25 @@
 # Outputs a single value from the request body.
-# function reqData {
+function reqData {
+	case $CONTENT_TYPE in
+		"multipart/form-data")
+			reqDataForm $1
+		;;
 
-# }
+		"application/json")
+			reqDataJSON $1
+		;;
+
+		*)
+			echo "$CONTENT_TYPE is not supported yet."
+		;;
+	esac
+}
 
 function reqDataForm {
-
 	fieldName=$1
 	mode="searching"
-	fieldValue=""
 
+	# TODO: figure out the right way to parse the body
 	BODYNL="$(echo $BODY | tr '\r' '@')"
 	IFS_backup="$IFS"
 	IFS='@'
@@ -29,11 +40,12 @@ function reqDataForm {
 			fi
 		fi
 	done
+
 	IFS="$IFS_backup"
 
 	echo "$fieldValue"
 }
 
 function reqDataJSON {
-	log "Support for JSON is not implemented yet. Check back soon."
+	echo "Support for JSON is not implemented yet. Check back soon."
 }

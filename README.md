@@ -19,8 +19,16 @@ For example, a `GET` request to the `/foo/bar` path is served by the `example.co
 ## Framework
 There is one!
 
-### Request headers
+### Request data
+
+#### Headers
 Request headers are available to the controller script under their names capitalized and dashes replaced by underscores. So a `Content-Type` header is accessible as `$CONTENT_TYPE` variable.
+
+#### Request bodies
+At the moment only partial support for multipart/form-data is implelmented (only fields, no files).
+
+#### reqData
+Outputs a single field value from the request body. Note that you need to capture it's output. Example: `userName=$(reqData "userName")`
 
 ### Responding
 Basically you can just `echo` anything, and it'll get to a client, but you'll need to follow the HTTP protocol yourself.
@@ -40,8 +48,7 @@ Writes the response body. Example: `respBody "<h1>YOLO</h1>"`
 A logging function. Outputs to the host's `stderr`.
 
 ## TODO
-#### Static pages
-#### A framework
-Need something to arrange static resource controllers, MySQL controllers, some HTTP-related utilities, probably authentication & logging.
-
-#### MySQL
+* Static pages
+* Cookies
+* MySQL
+* JSON
