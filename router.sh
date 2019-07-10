@@ -47,6 +47,10 @@ function serveStatic() {
 			respHeader "Content-Type" "text/html"
 		;;
 
+		"jpg"|"jpeg")
+			respHeader "Content-Type" "image/jpeg"
+		;;
+
 		*)
 			respHeader "Content-Type" "text/plain"
 		;;

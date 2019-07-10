@@ -29,12 +29,13 @@ function reqDataWWWFormURLEncoded {
 	for FIELD in "${FIELDS[@]}"; do
 		if [[ $FIELD =~ ^$fieldName= ]]; then
 			# In order to expand $fieldName inside single quotes, you first end the single-quoted-string,
-			# immediately start the double quoted one, then start another single-quoted one
+			# immediately start the double quoted one, end it, then start another single-quoted one.
 			fieldValue="$(echo "$FIELD" | sed -r 's/.*'"$fieldName"'=(.*).*/\1/')"
 		fi
 	done	
 
 	IFS="$IFS_backup"
+	# TODO: memoize the result
 	echo "$fieldValue"
 }
 
@@ -65,7 +66,7 @@ function reqDataForm {
 	done
 
 	IFS="$IFS_backup"
-
+	# TODO: memoize the result
 	echo "$fieldValue"
 }
 
