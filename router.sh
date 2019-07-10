@@ -5,7 +5,7 @@ function router() {
 
 	if [ -f "$ctrler" ]; then
 		log "Found a controller"
-		$ctrler
+		source $ctrler
 	else
 		log "404 Not Found"
 		respStatus 404

@@ -13,18 +13,9 @@ reqBodyLen=0
 
 LANG=C LC_ALL=C
 
-function bytelen {
-	echo $(printf "%s" "$@" | wc --bytes)
-}
-
-function charlen {
-	echo $(printf "%s" "$@" | wc --chars)
-}
-
 let reqBodyLen=0
 
-# readarray LINES
-# for INPUT in "${LINES[@]}"; do
+# Reading headers
 while read INPUT; do
 	if [ $parserMode = "headers" ]; then
 		if [[ $INPUT =~ $rxHeader ]] && [ $parserMode = "headers" ]; then
@@ -55,15 +46,25 @@ done
 
 BODY=""
 
+# Reading body, 1 char at a time
+# Regular read can't get the last line because of missing newline there
 while [ $reqBodyLen -lt $CONTENT_LENGTH ]; do
 	read -n1 CHAR
 	BODY="$BODY$CHAR"
 	let reqBodyLen=reqBodyLen+1
 done;
 
+# Figuring out the content boundary in case we have a multipart/form-data Content-Type
+if [[ $CONTENT_TYPE =~ ^multipart\/form\-data ]]; then
+	CONTENT_BOUNDARY="$(echo $CONTENT_TYPE | sed -n 's/.*data\;boundary=\(.*\)/\1/p')"
+fi
+
 log "-- User Agent is $USER_AGENT"
+log "-- Content Type is $CONTENT_TYPE"
+log "-- Content Boundary is $CONTENT_BOUNDARY"
 log "-- Content Length is $CONTENT_LENGTH"
 log "-- Request body length $reqBodyLen"
+log "--------------------------------------------"
 
 # echo "$BODY" > reqbody
 

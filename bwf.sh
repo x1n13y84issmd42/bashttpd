@@ -24,3 +24,5 @@ function respBody {
 	echo ""
 	echo $1
 }
+
+source bodyParsers.sh
