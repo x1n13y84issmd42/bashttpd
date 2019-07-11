@@ -9,6 +9,7 @@
 	width: 800px;
 	left: 50%;
 	margin-left: -600px;
+	zoom: 0.75;
 }
 
 .bt1 {
@@ -27,7 +28,7 @@
 .bwft1 {
     color: #222;
     font-size: 179pt;
-    line-height: 122pt;
+    line-height: 133pt;
     margin-left: -17px;
     position: relative;
 }
@@ -45,16 +46,39 @@
 .tc21 {
     color: #222;
     font-size: 104pt;
-    margin-top: 180pt;
     position: relative;
 	margin-left: -13px;
-	line-height: 91px;
+	line-height: 108px;
 }
 
 input {
-	font-size: 24pt;
-	display: block;
-	margin-bottom: 20pt;
+	font-size: 20pt;
+    display: block;
+    margin-bottom: 20pt;
+}
+
+/* All that ridiculous input styling below is to remedy the Crome's ugly autofill styling */
+input[type=text]:focus {
+	border: 1px #00bbff solid !important;
+	outline: none !important;
+	background-color: #00BBFF !important;
+	box-shadow: 0 0 0px 1000px #00BBFF inset !important;
+	color: white !important;
+	-webkit-text-fill-color: white !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+input[type=text] {
+	border: 1px #555 solid;
+	width: 100%;
+
+	box-shadow: 0 0 0px 1000px #fff inset;
+	background-color: white;
+	-webkit-text-fill-color: #222;
+	color: #222;
 }
 
 input[type=submit] {
@@ -63,10 +87,17 @@ input[type=submit] {
 	background-color: #222;
 	color: white;
 	border: none;
+	cursor: pointer;
+}
+
+input[type=submit]:focus,
+input[type=submit]:active,
+input[type=submit]:hover {
+	background-color: #00BBFF;
 }
 
 label {
-	font-size: 24pt;
+	font-size: 20pt;
 	display: block;
 }
 
@@ -79,6 +110,7 @@ label {
 	width: 350px;
 	float: left;
 	margin-left: 50pt;
+	padding-top: 145pt;
 }
 
 .typographyColumn > p.wrapped {
