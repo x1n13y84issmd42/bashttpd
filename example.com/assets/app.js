@@ -1,6 +1,5 @@
-var blinkShown=true;
-
 function blinkTheBlinks() {
+	var blinkShown = true;
 	setInterval(() => {
 		blinkShown=!blinkShown;
 		var blinks = document.getElementsByTagName("blink");
