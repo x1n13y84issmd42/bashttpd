@@ -1,5 +1,5 @@
 # Bashttpd
-A web framework written in Bash script. It really do be like that sometimes.
+An HTTP server and a web framework, both written in pure Bash script. It really do be like that sometimes.
 
 ## Requirements
 `netcat` with enabled suport for scripting (the `-c` option).
@@ -16,7 +16,7 @@ When **bashttpd** receives a request, it tries to match the path from that to th
 
 For example, a `GET` request to the `/foo/bar` path is served by the `example.com/foo/bar/GET.sh` script.
 
-But if the request path mathces a file path in the project directory, it will respond with it's contents. At the moment it supports `js`, `css` & `html` with proper content types.
+But if the request path matches a file path in the project directory, it will respond with it's contents. At the moment it supports `js`, `css` & `html`, as well as `jpeg` images with proper content types.
 
 ## Framework
 There is one!
@@ -53,8 +53,14 @@ Responds with a file contents. Note that you have to specify Content-Type yourse
 A logging function. Outputs to the host's `stderr`.
 
 ## TODO
-* Static resources
-* Binary resources (fonts, images, etc)
+* ~~Static resources~~
+* ~~Binary resources (fonts, images, etc)~~
+* ~~www-form-urlencoded requests~~
+* multipart/form-data requests partially supported (no files yet)
+* application/json requests
+* application/json responses
+* Page templating
+* Query String parsing
 * Cookies
 * MySQL
 * JSON
