@@ -29,3 +29,23 @@ function respFile {
 	echo ""
 	cat "$1"
 }
+
+function respCookie {
+	respHeader "Set-Cookie" "$1=$2; Path=/"
+}
+
+function reqCookie {
+	IFS_backup="$IFS"
+	IFS=';'
+
+	read -r -a COOKIES <<< "$COOKIE"
+	for C in "${COOKIES[@]}"; do
+		if [[ $C =~ ^$1= ]]; then
+			echo "$(echo "$C" | sed -r 's/.*'"$1"'=(.*).*/\1/')"
+			break
+		fi
+	done	
+
+	IFS="$IFS_backup"
+	# $(echo -e $COOKIE | sed -n 's/'"$1"'=\(.*\)/\2/p')
+}
