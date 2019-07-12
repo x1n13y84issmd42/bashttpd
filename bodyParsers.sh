@@ -1,5 +1,10 @@
 # Outputs a single value from the request body.
 function reqData {
+	if [ -z $CONTENT_TYPE ]; then
+		echo ""
+		return 0
+	fi
+
 	case $CONTENT_TYPE in
 		"multipart/form-data")
 			reqDataForm $1

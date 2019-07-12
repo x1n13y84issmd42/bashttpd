@@ -30,6 +30,24 @@ function respFile {
 	cat "$1"
 }
 
+# Reads a file, expands variables in it, the responds.
+function respTemplateFile {
+	echo ""
+
+	tplFilePath="$PROJECT/$1"
+	tmp=$(mktemp --suffix=.sh)
+
+	echo 'cat <<END_OF_TEXT' >  $tmp
+	cat "$tplFilePath"       >> $tmp
+	echo ""                  >> $tmp
+	echo 'END_OF_TEXT'       >> $tmp
+
+	source $tmp
+
+	# echo ""
+	# cat "$tmp" >&2
+}
+
 function respCookie {
 	respHeader "Set-Cookie" "$1=$2; Path=/"
 }

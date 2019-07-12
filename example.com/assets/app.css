@@ -10,6 +10,7 @@
 	left: 50%;
 	margin-left: -600px;
 	zoom: 0.75;
+	padding-top: 50pt;
 }
 
 .bt1 {
@@ -131,6 +132,14 @@ label {
     margin-left: -7pt;
 }
 
+.col3 .h2 {
+    color: #222;
+    font-size: 55pt;
+    line-height: 53pt;
+    position: relative;
+    margin-left: -3pt;
+}
+
 #visits-big {
     color: #222;
     font-size: 73pt;
@@ -176,4 +185,16 @@ label {
 
 img {
 	margin-bottom: 10pt;
+}
+
+.theAgePage {
+	padding-top: 100pt;
+}
+
+.theAgePage p {
+	font-size: 32pt;
+}
+
+a {
+	color: #00BBFF;
 }
