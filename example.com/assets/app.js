@@ -2,10 +2,7 @@ function blinkTheBlinks() {
 	var blinkShown = true;
 	setInterval(() => {
 		blinkShown=!blinkShown;
-		var blinks = document.getElementsByTagName("blink");
-		for (let bl of blinks) {
-			bl.style.display=blinkShown ? "inline" : "none";
-		}
+		document.body.parentElement.className = blinkShown ? "" : "noblink";
 	}, 300)
 }
 
@@ -33,6 +30,6 @@ function requestVisits() {
 		let bv = document.getElementById('visits-big');
 		let val = "[" + resp.visits + "]";
 		bv.innerHTML = val;
-		bv.className = bv.className + " w" + val.length;
+		bv.className = "w" + val.length;
 	});
 }

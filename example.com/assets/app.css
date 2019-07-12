@@ -6,14 +6,14 @@
 
 .container {
 	position: relative;
-	width: 1400px;
+	width: 1300px;
 	left: 50%;
-	margin-left: -600px;
+	margin-left: -650px;
 	zoom: 0.75;
 	padding-top: 50pt;
 }
 
-.bt1 {
+.hBashttpd {
     color: #222;
     font-size: 62pt !important;
     line-height: 61pt;
@@ -21,12 +21,7 @@
     margin-left: -4pt;
 }
 
-.bt2 {
-    color: #555;
-    font-size: 16pt;
-}
-
-.bwft1 {
+.hBWF {
     color: #222;
     font-size: 179pt !important;
     line-height: 133pt;
@@ -34,17 +29,7 @@
     position: relative;
 }
 
-.bwft2, .tc22 {
-    color: #555;
-	font-size: 16pt;
-}
-
-.bwft3 {
-    color: #555;
-    font-size: 16pt;
-}
-
-.tc21 {
+.hForms {
     color: #222;
     font-size: 104pt !important;
     position: relative;
@@ -107,24 +92,25 @@ label {
 	float: left;
 }
 
-.column p {
+p {
+	color: #555;
 	font-size: 16pt;
 }
 
-.leftcol {
+.col1 {
 }
 
-.rightcol {
-	margin-left: 50pt;
+.col2 {
+	margin-left: 75pt;
 	padding-top: 145pt;
 }
 
 .col3 {
-	margin-left: 50pt;
+	margin-left: 75pt;
 	padding-top: 85pt;
 }
 
-.col3 .h1 {
+.hCookies {
     color: #222;
     font-size: 73pt;
     line-height: 61pt;
@@ -132,7 +118,7 @@ label {
     margin-left: -7pt;
 }
 
-.col3 .h2 {
+.hTemplates {
     color: #222;
     font-size: 55pt;
     line-height: 53pt;
@@ -197,4 +183,12 @@ img {
 
 a {
 	color: #00BBFF;
+}
+
+blink {
+	color: #777;
+}
+
+.noblink blink {
+	color: white;
 }
