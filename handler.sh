@@ -35,6 +35,7 @@ while read INPUT; do
 		elif [[ $INPUT =~ ^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP ]] && [ $parserMode = "headers" ]; then
 			reqMethod=${BASH_REMATCH[1]}
 			reqPath=${BASH_REMATCH[2]}
+			log ""
 			log "Request is $reqMethod @ $reqPath"
 
 		# Done with headers

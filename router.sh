@@ -3,19 +3,19 @@ function router() {
 	staticFile="$PROJECT$reqPath"
 
 	if [ -f "$ctrler" ]; then
-		log "Executing the controller $ctrler"
+		log "  Executing the controller $ctrler"
 		source $ctrler
 
 	elif [ -f "$staticFile" ]; then
-		log "Serving the static file $staticFile"
+		log "  Serving the static file $staticFile"
 		serveStatic $staticFile
 
 	elif [ -d "$staticFile" ] && [ -f "$staticFile/index.html" ]; then
-		log "Serving the index.html of $staticFile"
+		log "  Serving the index.html of $staticFile"
 		serveStatic "$staticFile/index.html"
 
 	else
-		log "404 Not Found"
+		log "  404 Not Found"
 		respStatus 404
 		respHeader "Content-Type" "text/html"
 		respBody "<i>$reqPath</i> Was Not Found"

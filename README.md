@@ -29,6 +29,9 @@ Request headers are available to the controller script under their names capital
 #### Request bodies
 At the moment only partial support for multipart/form-data is implelmented (only fields, no files).
 
+#### reqCookie
+Outputs a value of a cookie from the request. Note that you need to capture it's output. Example: `SID=$(reqCookie "session_id")`
+
 #### reqData
 Outputs a single field value from the request body. Note that you need to capture it's output. Example: `userName=$(reqData "userName")`
 
@@ -48,6 +51,9 @@ Writes the response body. Example: `respBody "<h1>YOLO</h1>"`
 
 #### respFile
 Responds with a file contents. Note that you have to specify Content-Type yourself. Example: `respFile "/etc/passwd"`
+
+#### respCookie
+Sends a cookie to a client. Example: `respCookie "visit_counter" $counter`
 
 #### log
 A logging function. Outputs to the host's `stderr`.
