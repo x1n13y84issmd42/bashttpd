@@ -46,14 +46,19 @@ Initiates a response by sending an `HTTP/1.1` header with the status you provide
 #### respHeader
 Writes an HTTP header. Example: `respHeader "Content-Type" "text/html"`
 
+#### respCookie
+Sends a cookie to a client. Example: `respCookie "visit_counter" $counter`
+
 #### respBody
 Writes the response body. Example: `respBody "<h1>YOLO</h1>"`
 
 #### respFile
 Responds with a file contents. Note that you have to specify Content-Type yourself. Example: `respFile "/etc/passwd"`
 
-#### respCookie
-Sends a cookie to a client. Example: `respCookie "visit_counter" $counter`
+#### respTemplateFile
+Reads a file, expands variables into it, responds with the result. Example: `respTemplateFile "/assets/tpl/age.html"`
+
+### Utility
 
 #### log
 A logging function. Outputs to the host's `stderr`.
@@ -65,8 +70,8 @@ A logging function. Outputs to the host's `stderr`.
 * multipart/form-data requests partially supported (no files yet)
 * application/json requests
 * application/json responses
-* Page templating
+* ~~Page templating~~
 * Query String parsing
-* Cookies
+* ~~Cookies~~
 * MySQL
 * JSON
