@@ -2,11 +2,6 @@
 
 source bodyParsers.sh
 
-# Outputs to the host's stdout.
-function log {
-	echo $@ >&2
-}
-
 # Sends an HTTP response status code.
 function respStatus {
 	echo "HTTP/1.1 $1"
@@ -48,10 +43,12 @@ function respTemplateFile {
 	# cat "$tmp" >&2
 }
 
+# Sets a response cookie.
 function respCookie {
 	respHeader "Set-Cookie" "$1=$2; Path=/"
 }
 
+# Outputs a value of a single cookie from the $COOKIE header.
 function reqCookie {
 	IFS_backup="$IFS"
 	IFS=';'
@@ -66,4 +63,16 @@ function reqCookie {
 
 	IFS="$IFS_backup"
 	# $(echo -e $COOKIE | sed -n 's/'"$1"'=\(.*\)/\2/p')
+}
+
+# Outputs a single value from the request body, regardless of it's Content-Type.
+# See actual parsers in libbashttpd/content
+function reqData {
+	if [ -z $CONTENT_TYPE ]; then
+		echo ""
+		return 0
+	fi
+
+	# This must be declared by a content parser in it's own file
+	reqDataImpl $1
 }

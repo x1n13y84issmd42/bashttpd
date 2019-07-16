@@ -75,3 +75,11 @@ A logging function. Outputs to the host's `stderr`.
 * ~~Cookies~~
 * MySQL
 * JSON
+
+## Links
+https://superuser.com/questions/1368666/receiving-multiple-files-at-once-in-netcat-without-overwriting-last-file
+https://habr.com/ru/company/otus/blog/437114/
+https://linux.die.net/man/1/socat
+https://stuff.mit.edu/afs/sipb/machine/penguin-lust/src/socat-1.7.1.2/EXAMPLES
+https://gist.github.com/ramn/cfe0021b48c3e5d1f3f3
+https://gist.github.com/CMCDragonkai/87bf53c3f93ef5dcb7e4
