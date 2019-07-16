@@ -1,7 +1,5 @@
 # Bashttpd Web Framework
 
-source bodyParsers.sh
-
 # Sends an HTTP response status code.
 function respStatus {
 	echo "HTTP/1.1 $1"
