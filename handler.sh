@@ -3,7 +3,7 @@
 source libbashttpd/utility.sh
 source libbashttpd/request.sh
 source libbashttpd/router.sh
-source bwf.sh
+source libbashttpd/bwf.sh
 
 PROJECT=$1
 

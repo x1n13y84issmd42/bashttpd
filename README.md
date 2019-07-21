@@ -67,19 +67,25 @@ A logging function. Outputs to the host's `stderr`.
 * ~~Static resources~~
 * ~~Binary resources (fonts, images, etc)~~
 * ~~www-form-urlencoded requests~~
-* multipart/form-data requests partially supported (no files yet)
+* multipart/form-data requests partially supported (no binary files yet)
 * application/json requests
 * application/json responses
 * ~~Page templating~~
 * Query String parsing
 * ~~Cookies~~
 * MySQL
-* JSON
+* Content url-de/encoding
+* socat port for parallelism?
+* figure out binary request bodies
 
 ## Links
-https://superuser.com/questions/1368666/receiving-multiple-files-at-once-in-netcat-without-overwriting-last-file
-https://habr.com/ru/company/otus/blog/437114/
-https://linux.die.net/man/1/socat
-https://stuff.mit.edu/afs/sipb/machine/penguin-lust/src/socat-1.7.1.2/EXAMPLES
-https://gist.github.com/ramn/cfe0021b48c3e5d1f3f3
-https://gist.github.com/CMCDragonkai/87bf53c3f93ef5dcb7e4
+https://superuser.com/questions/1368666/receiving-multiple-files-at-once-in-netcat-without-overwriting-last-file\
+https://habr.com/ru/company/otus/blog/437114/\
+https://linux.die.net/man/1/socat\
+https://stuff.mit.edu/afs/sipb/machine/penguin-lust/src/socat-1.7.1.2/EXAMPLES\
+https://gist.github.com/ramn/cfe0021b48c3e5d1f3f3\
+https://gist.github.com/CMCDragonkai/87bf53c3f93ef5dcb7e4\
+
+## XML
+sudo apt-get install libxml-xpath-perl
+cat testdata/uploadme.xml | xpath -e "//connection/host"

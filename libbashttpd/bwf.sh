@@ -23,7 +23,7 @@ function respFile {
 	cat "$1"
 }
 
-# Reads a file, expands variables in it, the responds.
+# Reads a file, expands variables in it, then responds.
 function respTemplateFile {
 	echo ""
 
@@ -71,6 +71,6 @@ function reqData {
 		return 0
 	fi
 
-	# This must be declared by a content parser in it's own file
+	# This must be declared by a content parser in it's own file.
 	reqDataImpl $1
 }

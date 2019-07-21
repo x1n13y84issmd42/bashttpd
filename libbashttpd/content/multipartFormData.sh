@@ -3,23 +3,22 @@ IFS=$'\n'
 
 CL=0
 
+echo "" > reqhexline
+echo "" > reqhexcont
+
 function readBodyLine {
 	read -r LINE
 	let CL=$CL+${#LINE}+${#IFS}
-	
-	if [ -z "$BODY" ]; then
-		BODY="$LINE"
-	else
-		BODY="$BODY$IFS$LINE"
-	fi
+	let BODY_LINE_N=$BODY_LINE_N+1
 }
 
 function parseContentBoundary {
 	if [[ "$LINE" =~ $CONTENT_BOUNDARY ]]; then
-		log ""
-		log ""
-		log ""
+		# log ""
+		# log ""
+		# log ""
 		
+		CONTENT_LINE_N=0
 		NEXT_PARSER=parseContentDisposition
 	else
 		$NEXT_PARSER
@@ -37,7 +36,7 @@ function parseContentDisposition {
 
 function parseEmptyLine {
 	if [ ${#LINE} == 1 ]; then
-		log "Found an empty line, proceeding to the content body"
+		# log "Found an empty line, proceeding to the content body"
 		CURRENT_CONTENT=""
 		NEXT_PARSER=parseContent
 		return 0
@@ -49,11 +48,11 @@ function parseEmptyLine {
 function parseContentType {
 	if [[ $LINE =~ Content-Type: ]]; then
 		CT=$(echo -nE "$LINE" | sed -r 's/\s+//g' | sed -\n 's/.*:\s*\(.*\)/\1/p')
-		log "Found a Content-Type of '$CT', proceeding to an empty line"
+		# log "Found a Content-Type of '$CT', proceeding to an empty line"
 		NEXT_PARSER=parseEmptyLine
 		return 0
 	fi
-	
+
 	return 255
 }
 
@@ -67,25 +66,25 @@ function parseEmptyLine_or_ContentType {
 function parseContent {
 	# If another content boundary is encountered during body parsing - we're done here, starting all over
 	if [[ $LINE =~ $CONTENT_BOUNDARY ]]; then
-		log "Another CD, starting all over"
+		# log "Another CD, starting all over"
 		storeContent
 		parseContentBoundary
 		return
 	fi
 
 	XLINE=$LINE
-	if [[ $BODYLINECOUNT -gt 0 ]]; then
-		XLINE="$IFS$LINE"
+	if [[ $CONTENT_LINE_N -gt 0 ]]; then
+		XLINE="$LINE"
 	fi
-	
+
 	CURRENT_CONTENT="$CURRENT_CONTENT$XLINE"
-	
-	let BODYLINECOUNT=$BODYLINECOUNT+1
+
+	let CONTENT_LINE_N=$CONTENT_LINE_N+1
 }
 
 function storeContent {
-	#TODO: trim the trailing \r from parameter values
-	log "Current content is: $CURRENT_CONTENT"
+	# Trim the trailing \r from parameter values	
+	CURRENT_CONTENT=${CURRENT_CONTENT::-1}
 	var "DATA_$CURRENT_PARAMETER" "$CURRENT_CONTENT"
 }
 
