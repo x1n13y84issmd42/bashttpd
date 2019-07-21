@@ -10,7 +10,7 @@ function readHeaders {
 			# Trimming off whitespace
 			headerValue="$(echo -e "${headerValue}" | sed -r 's/\s+//g')"
 
-			# log "Header $headerName is '$headerValue'"
+			loggg "Header $headerName is '$headerValue'"
 
 			# Replacing - with _ in header names and uppercasing them
 			headerName="$(echo -e "${headerName}" | sed -r 's/-/_/g' | sed -e 's/\(.*\)/\U\1/g')"
@@ -26,7 +26,7 @@ function readHeaders {
 
 		# Done with headers
 		else
-			log "Done with headers"
+			loggg "Done with headers"
 			break
 		fi
 	done
@@ -45,18 +45,20 @@ function normalizeHeaders {
 }
 
 function readBody {
-	# Choosing a parser for the rest of request data based on Content-Type
-	case $CONTENT_TYPE in
-		"multipart/form-data")
-			source libbashttpd/content/multipartFormData.sh
-		;;
+	if ! [[ -z $CONTENT_TYPE ]] && [[ $CONTENT_LENGTH -gt 0 ]]; then
+		# Choosing a parser for the rest of request data based on Content-Type
+		case $CONTENT_TYPE in
+			"multipart/form-data")
+				source libbashttpd/content/multipartFormData.sh
+			;;
 
-		"application/x-www-form-urlencoded")
-			source libbashttpd/content/XWWWFormURLEncoded.sh
-		;;
+			"application/x-www-form-urlencoded")
+				source libbashttpd/content/XWWWFormURLEncoded.sh
+			;;
 
-		*)
-			log "The Content-Type \"$CONTENT_TYPE\" is not supported yet. Please implement and submit a pull request @ github.com/x1n13y84issmd42/bashttpd"
-		;;
-	esac
+			*)
+				log "The Content-Type \"$CONTENT_TYPE\" is not supported yet. Please implement and submit a pull request @ github.com/x1n13y84issmd42/bashttpd"
+			;;
+		esac
+	fi
 }

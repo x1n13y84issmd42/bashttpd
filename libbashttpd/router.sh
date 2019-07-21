@@ -4,6 +4,9 @@ function router() {
 
 	if [ -f "$ctrler" ]; then
 		log "  Executing the controller $ctrler"
+		# This must be here in order for POST variables with spaces
+		# to expand in templates correctly 
+		IFS=$''
 		source $ctrler
 
 	elif [ -f "$staticFile" ]; then

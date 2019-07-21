@@ -36,9 +36,6 @@ function respTemplateFile {
 	echo 'END_OF_TEXT'       >> $tmp
 
 	source $tmp
-
-	# echo ""
-	# cat "$tmp" >&2
 }
 
 # Sets a response cookie.
