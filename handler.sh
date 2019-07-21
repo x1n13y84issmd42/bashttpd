@@ -5,14 +5,16 @@ source libbashttpd/request.sh
 source libbashttpd/router.sh
 source libbashttpd/bwf.sh
 
+[[ -f .env ]] && source .env
+
 PROJECT=$1
 
 readHeaders
 normalizeHeaders
 
-log "-- Content Type is $CONTENT_TYPE"
-log "-- Content Boundary is $CONTENT_BOUNDARY"
-log "-- Content Length is $CONTENT_LENGTH"
+logg "-- Content Type is $CONTENT_TYPE"
+logg "-- Content Boundary is $CONTENT_BOUNDARY"
+logg "-- Content Length is $CONTENT_LENGTH"
 
 readBody
 
