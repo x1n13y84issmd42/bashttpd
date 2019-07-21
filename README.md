@@ -16,52 +16,51 @@ When **bashttpd** receives a request, it tries to match the path from that to th
 
 For example, a `GET` request to the `/foo/bar` path is served by the `example.com/foo/bar/GET.sh` script.
 
-But if the request path matches a file path in the project directory, it will respond with it's contents. At the moment it supports `js`, `css` & `html`, as well as `jpeg` images with proper content types.
+But if the request path matches a file path in the project directory, it will respond with it's contents. At the moment it supports `js`, `css` & `html`, as well as `jpeg` & `png` images with proper content types.
+
+If none of the criterias above have matched, it'll try to interpret the requested path as a directory path and will try to find and serve `index.html` file from there.
 
 ## Framework
-There is one!
+There is one! Bash Web Framework, or BWF, implements some standard operations expected from any modern web framework, making development of simple web apps in Bash script a breeze.
 
-### Request data
+### Request Data
 
 #### Headers
-Request headers are available to the controller script under their names capitalized and dashes replaced by underscores. So a `Content-Type` header is accessible as `$CONTENT_TYPE` variable.
+Request headers are available to controller scripts under their names capitalized and dashes replaced by underscores. So a `Content-Type` header is accessible as a `$CONTENT_TYPE` variable.
 
-#### Request bodies
-At the moment only partial support for multipart/form-data is implelmented (only fields, no files).
+#### Supported Request Content Types
+At the moment BWF understands `application/x-www-form-urlencoded` and `multipart/form-data`, although binary data at the moment isn't processed correctly.
 
-#### reqCookie
-Outputs a value of a cookie from the request. Note that you need to capture it's output. Example: `SID=$(reqCookie "session_id")`
+Support for `application/xml` & `application/json` is expected soon.
 
-#### reqData
-Outputs a single field value from the request body. Note that you need to capture it's output. Example: `userName=$(reqData "userName")`
+| Function | Description | Example |
+| --- | --- | --- |
+| **reqCookie** | Outputs a value of a cookie from the request. |`SID=$(reqCookie "session_id")`|
+|**reqData**|Outputs a single field value from the request body.|`userName=$(reqData "userName")`|
 
 ### Responding
 Basically you can just `echo` anything, and it'll get to a client, but you'll need to follow the HTTP protocol yourself.
 
 If you're not a fan (who is?), there are functions for that.
 
-#### respStatus
-Initiates a response by sending an `HTTP/1.1` header with the status you provide. Example: `respStatus 200`
-
-#### respHeader
-Writes an HTTP header. Example: `respHeader "Content-Type" "text/html"`
-
-#### respCookie
-Sends a cookie to a client. Example: `respCookie "visit_counter" $counter`
-
-#### respBody
-Writes the response body. Example: `respBody "<h1>YOLO</h1>"`
-
-#### respFile
-Responds with a file contents. Note that you have to specify Content-Type yourself. Example: `respFile "/etc/passwd"`
-
-#### respTemplateFile
-Reads a file, expands variables into it, responds with the result. Example: `respTemplateFile "/assets/tpl/age.html"`
+| Function | Description | Example |
+| --- | --- | --- |
+|**respStatus**|Initiates a response by sending an `HTTP/1.1` header with the status you provide.|`respStatus 200`|
+|**respHeader**|Writes an HTTP header.|`respHeader "Content-Type" "text/html"`|
+|**respCookie**|Sends a cookie to a client.|`respCookie "visit_counter" $counter`|
+|**respBody**|Writes the response body.|`respBody "<h1>YOLO</h1>"`|
+|**respFile**|Responds with a file contents. Note that you have to specify Content-Type yourself.|`respFile "/etc/passwd"`|
+|**respTemplateFile**|Reads a file, expands variables into it, responds with the result.|`respTemplateFile "/assets/tpl/age.html"`|
 
 ### Utility
+| Function | Description | Example |
+| --- | --- | --- |
+|**log**<br>**logg**<br>**loggg**|A logging function. Outputs to the host's `stderr`.<br>The more **g**'s in the name, the higher **LOG_VERBOSITY** config value is required for the message to be displayed.|`log "User name is $name"`<br>`loggg "Not your everyday message"`|
+|**var**|A syntactic sugar function which defines and initializes a dynamically named variable.|`var "DATA_$dataName" $dataValue`|
+|**yield**|A syntactic sugar to output dynamic variables. A relative to the conventional `return` keyword.|`yield "DATA_$dataName"`|
+|**urldecode**|A standard URL decoding function.|`decodedInput=$(urldecode $encodedInput)`|
+|**urlencode**|A standard URL encoding function.|`encodedInput=$(urldecode $decodedInput)`|
 
-#### log
-A logging function. Outputs to the host's `stderr`.
 
 ## TODO
 * ~~Static resources~~
@@ -74,7 +73,7 @@ A logging function. Outputs to the host's `stderr`.
 * Query String parsing
 * ~~Cookies~~
 * MySQL
-* Content url-de/encoding
+* Content url-en/~~decoding~~
 * socat port for parallelism?
 * figure out binary request bodies
 
