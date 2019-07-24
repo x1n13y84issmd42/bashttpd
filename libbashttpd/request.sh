@@ -2,7 +2,13 @@ rxHeader='^([a-zA-Z-]+)\s*:\s*(.*)'
 rxMethod='^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP' #doesn't work
 
 function readHeaders {
+	# Debug dump
+	[[ ! -z $DEBUG_DUMP_HEADERS ]] && echo -nE "" > $DEBUG_DUMP_HEADERS
+
 	while read INPUT; do
+		# Debug dump
+		[[ ! -z $DEBUG_DUMP_HEADERS ]] && echo -nE $INPUT >> $DEBUG_DUMP_HEADERS
+
 		if [[ $INPUT =~ $rxHeader ]]; then
 			headerName=${BASH_REMATCH[1]}
 			headerValue=${BASH_REMATCH[2]}

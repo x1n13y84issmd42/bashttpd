@@ -10,6 +10,9 @@ else
 		BODY="$BODY$CHAR"
 		let CL=CL+1
 	done;
+
+	# Debug dump
+	[[ ! -z $DEBUG_DUMP_BODY ]] && echo -nE $BODY > $DEBUG_DUMP_BODY
 fi
 
 IFS_backup="$IFS"

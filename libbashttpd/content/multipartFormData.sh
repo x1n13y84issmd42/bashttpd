@@ -3,13 +3,13 @@ IFS=$'\n'
 
 CL=0
 
-echo "" > reqhexline
-echo "" > reqhexcont
-
 function readBodyLine {
 	read -r LINE
 	let CL=$CL+${#LINE}+${#IFS}
 	let BODY_LINE_N=$BODY_LINE_N+1
+
+	# Debug dump
+	[[ ! -z $DEBUG_DUMP_BODY ]] && echo -nE "$LINE$IFS" > $DEBUG_DUMP_BODY
 }
 
 function parseContentBoundary {
