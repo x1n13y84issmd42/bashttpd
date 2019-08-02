@@ -71,3 +71,13 @@ function reqData {
 	# This must be declared by a content parser in it's own file.
 	reqDataImpl $1
 }
+
+function reqFile {
+	vn="FILE_$1"
+	yield ${!vn}
+}
+
+function reqFileName {
+	vn="FILENAME_$1"
+	yield ${!vn}
+}

@@ -29,15 +29,22 @@ function parseContentDisposition {
 	if [[ $LINE =~ Content-Disposition: ]]; then
 		# Found a content disposition, extracting a parameter name from it
 		CURRENT_PARAMETER=$(echo -e $LINE | sed -rn 's/.* name\=\"([^"]*)\";{0,1}.*/\1/p')
+		# log "Found a parameter $CURRENT_PARAMETER"
+
+		if [[ $LINE =~ ' 'filename= ]]; then
+			# log "Found a filename"
+			# Found a 'filename=' substring, extracting a file name from it
+			CURRENT_FILENAME=$(echo -e $LINE | sed -rn 's/.* filename\=\"([^"]*)\";{0,1}.*/\1/p')
+		fi
 
 		NEXT_PARSER=parseEmptyLine_or_ContentType
 	fi
+
 }
 
 function parseEmptyLine {
 	if [ ${#LINE} == 1 ]; then
 		# log "Found an empty line, proceeding to the content body"
-		CURRENT_CONTENT=""
 		NEXT_PARSER=parseContent
 		return 0
 	fi
@@ -74,7 +81,7 @@ function parseContent {
 
 	XLINE=$LINE
 	if [[ $CONTENT_LINE_N -gt 0 ]]; then
-		XLINE="$LINE"
+		XLINE="$IFS$LINE"
 	fi
 
 	CURRENT_CONTENT="$CURRENT_CONTENT$XLINE"
@@ -85,7 +92,21 @@ function parseContent {
 function storeContent {
 	# Trim the trailing \r from parameter values	
 	CURRENT_CONTENT=${CURRENT_CONTENT::-1}
-	var "DATA_$CURRENT_PARAMETER" "$CURRENT_CONTENT"
+
+	if [[ -z $CURRENT_FILENAME ]]; then
+		var "DATA_$CURRENT_PARAMETER" "$CURRENT_CONTENT"
+	else
+		tmp=$(mktemp)
+		echo -n "$CURRENT_CONTENT" > $tmp
+		var "FILE_$CURRENT_PARAMETER" $tmp
+		var "FILENAME_$CURRENT_PARAMETER" $CURRENT_FILENAME
+
+		# log "Saved $CURRENT_FILENAME as $tmp"
+	fi
+
+	CURRENT_CONTENT=""
+	CURRENT_FILENAME=""
+	CURRENT_PARAMETER=""
 }
 
 NEXT_PARSER=parseContentDisposition

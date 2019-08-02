@@ -36,7 +36,9 @@ Support for `application/xml` & `application/json` is expected soon.
 | Function | Description | Example |
 | --- | --- | --- |
 | **reqCookie** | Outputs a value of a cookie from the request. |`SID=$(reqCookie "session_id")`|
-|**reqData**|Outputs a single field value from the request body.|`userName=$(reqData "userName")`|
+|**reqData**|Outputs a single field value from the request body. Content-Type-agnostic.|`userName=$(reqData "userName")`|
+|**reqFile**|Outputs a temporary file name where contents of the uploaded file is stored. Takes the name of the file as in form data.|`filePath=$(reqFile "theFile")`|
+|**reqFileName**|Outputs original name of the uploaded file is stored. Takes the name of the file as in form data.|`sourceFileName=$(reqFileName "theFile")`|
 
 ### Responding
 Basically you can just `echo` anything, and it'll get to a client, but you'll need to follow the HTTP protocol yourself.
@@ -67,7 +69,7 @@ If you're not a fan (who is?), there are functions for that.
 * [x] Serve binary resources (fonts, images, etc)
 * [x] www-form-urlencoded requests
 * [x] multipart/form-data (no binary files yet)
-* [ ] Handle uploaded files (no binary files yet)
+* [x] Handle uploaded files (no binary files yet)
 * [ ] Access data from application/json requests
 * [ ] Access data from application/xml requests
 * [ ] application/json responses
@@ -80,6 +82,7 @@ If you're not a fan (who is?), there are functions for that.
 * [x] Content url-en/decoding
 * [ ] Socat port for parallelism?
 * [ ] Figure out binary request bodies
+* [ ] A neat method of rendering CLI output as HTML is definitely needed
 
 ## Links
 https://superuser.com/questions/1368666/receiving-multiple-files-at-once-in-netcat-without-overwriting-last-file\
