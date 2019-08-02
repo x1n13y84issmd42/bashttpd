@@ -63,19 +63,23 @@ If you're not a fan (who is?), there are functions for that.
 
 
 ## TODO
-* ~~Static resources~~
-* ~~Binary resources (fonts, images, etc)~~
-* ~~www-form-urlencoded requests~~
-* multipart/form-data requests partially supported (no binary files yet)
-* application/json requests
-* application/json responses
-* ~~Page templating~~
-* Query String parsing
-* ~~Cookies~~
-* MySQL
-* Content url-en/~~decoding~~
-* socat port for parallelism?
-* figure out binary request bodies
+* [x] Serve static resources
+* [x] Serve binary resources (fonts, images, etc)
+* [x] www-form-urlencoded requests
+* [x] multipart/form-data (no binary files yet)
+* [ ] Handle uploaded files (no binary files yet)
+* [ ] Access data from application/json requests
+* [ ] Access data from application/xml requests
+* [ ] application/json responses
+* [x] Page templating
+* [ ] Branches in templates
+* [ ] Loops in templates
+* [ ] Query String parsing
+* [x] Cookies
+* [ ] MySQL
+* [x] Content url-en/decoding
+* [ ] Socat port for parallelism?
+* [ ] Figure out binary request bodies
 
 ## Links
 https://superuser.com/questions/1368666/receiving-multiple-files-at-once-in-netcat-without-overwriting-last-file\
