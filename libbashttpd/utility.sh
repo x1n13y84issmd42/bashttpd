@@ -8,17 +8,17 @@ function var {
 
 # Outputs to the host's stderr
 function log {
-	[[ $LOG_VERBOSITY -ge 1 ]] && echo $@ >&2
+	[[ $LOG_VERBOSITY -ge 1 ]] && printf "$@\n" | tr -d '\r' >&2
 }
 
 # Verbose logging
 function logg {
-	[[ $LOG_VERBOSITY -ge 2 ]] && echo $@ >&2
+	[[ $LOG_VERBOSITY -ge 2 ]] && printf "$@\n" | tr -d '\r' >&2
 }
 
 # Even more verbose logging
 function loggg {
-	[[ $LOG_VERBOSITY -ge 3 ]] && echo $@ >&2
+	[[ $LOG_VERBOSITY -ge 3 ]] && printf "$@\n" | tr -d '\r' >&2
 }
 
 # Like `return` in other languages, capture it with $()

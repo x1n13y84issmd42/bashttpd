@@ -53,18 +53,12 @@ function normalizeHeaders {
 function readBody {
 	if ! [[ -z $CONTENT_TYPE ]] && [[ $CONTENT_LENGTH -gt 0 ]]; then
 		# Choosing a parser for the rest of request data based on Content-Type
-		case $CONTENT_TYPE in
-			"multipart/form-data")
-				source libbashttpd/content/multipartFormData.sh
-			;;
-
-			"application/x-www-form-urlencoded")
-				source libbashttpd/content/XWWWFormURLEncoded.sh
-			;;
-
-			*)
-				log "The Content-Type \"$CONTENT_TYPE\" is not supported yet. Please implement and submit a pull request @ github.com/x1n13y84issmd42/bashttpd"
-			;;
-		esac
+		parserFile="libbashttpd/content/$CONTENT_TYPE.sh"
+		
+		if [[ -f $parserFile ]]; then
+			source $parserFile
+		else
+			log "The Content-Type \"$CONTENT_TYPE\" is not supported yet. Please implement and submit a pull request @ github.com/x1n13y84issmd42/bashttpd"
+		fi
 	fi
 }
