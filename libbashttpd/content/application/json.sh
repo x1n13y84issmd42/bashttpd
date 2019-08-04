@@ -1,5 +1,5 @@
 _IFS=$IFS
-IFS=
+IFS=$'\r'
 CL=0
 
 # Reading body, 1 char at a time
@@ -9,12 +9,18 @@ if [ -z ${CONTENT_LENGTH+x} ]; then
 else
 	while [ $CL -lt $CONTENT_LENGTH ]; do
 		read -n1 CHAR
+		# read CHAR
 		BODY="$BODY$CHAR"
+		# printf "%s" $CHAR | tr -d "\r" >&2
 		let CL=CL+1
+		# log "$CL - '$CHAR'"
+		# printf "%q" "${CHAR}\n" >&2
 	done;
 
+	log "DONE------"
+
 	# Debug dump
-	[[ ! -z $DEBUG_DUMP_BODY ]] && echo -nE "$BODY" > $DEBUG_DUMP_BODY
+	[[ ! -z $DEBUG_DUMP_BODY ]] && echo -n "$BODY" > $DEBUG_DUMP_BODY
 fi
 
 # An implementation of reqData.
