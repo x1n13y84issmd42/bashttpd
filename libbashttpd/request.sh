@@ -1,6 +1,9 @@
 rxHeader='^([a-zA-Z-]+)\s*:\s*(.*)'
 rxMethod='^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP' #doesn't work
 
+# LANG=C
+# LC_ALL=C
+
 function readHeaders {
 	# Debug dump
 	[[ ! -z $DEBUG_DUMP_HEADERS ]] && echo -nE "" > $DEBUG_DUMP_HEADERS

@@ -25,7 +25,7 @@ for FIELD in "${FIELDS[@]}"; do
 
 	fieldValue=$(urldecode $fieldValue)
 	var "DATA_$fieldName" "$fieldValue"
-done	
+done
 
 IFS="$IFS_backup"
 
