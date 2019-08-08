@@ -38,6 +38,8 @@ function readUntil {
 	return 255
 }
 
+# A predicate function for readUntil.
+# Stops when a content boundary is encountered.
 function BoundaryFound {
 	if [[ $LINE =~ "$CONTENT_BOUNDARY"$ ]]; then
 		return 0
@@ -46,6 +48,8 @@ function BoundaryFound {
 	return 255
 }
 
+# A predicate function for readUntil.
+# Stops when a CRLF is encountered.
 function CRLFFound {
 	if [[ ${LINE:${#LINE}-2:2} == $'\r\n' ]]; then
 		LINE=${LINE::-2}
@@ -56,6 +60,8 @@ function CRLFFound {
 	return 255
 }
 
+# A predicate function for readUntil.
+# Stops when a CRLF followed by a content boundary is encountered.
 function CRLFBoundaryFound {
 	# The '--' are required by RFC https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
 	CB="--$CONTENT_BOUNDARY"
@@ -71,6 +77,7 @@ function CRLFBoundaryFound {
 	return 255
 }
 
+# Looks for a Content-Disposition line and extract parameter and file names from it.
 function parseContentDisposition {
 	if [[ $LINE =~ Content-Disposition: ]]; then
 		loggggg "	Found a Content-Disposition"
@@ -103,19 +110,22 @@ function parseCRLF {
 	return 255 # evaluates as false in parseCRLF_or_ContentType
 }
 
+# Reads a part of the request body until encounters a content boundary value.
 function parseContent {
 	loggggg "	Reading the request body"
 	readUntil CRLFBoundaryFound
 
 	if [[ -z $CURRENT_FILENAME ]]; then
+		# Regular values are stored as variables.
 		var "DATA_$CURRENT_PARAMETER" "$LINE"
 		loggggg "	Set DATA_$CURRENT_PARAMETER to \"$LINE\""
 	else
+		# Uploaded files are stored in /tmp
 		tmp=$(mktemp)
 		echo -en $HEXLINE > $tmp
 		var "FILE_$CURRENT_PARAMETER" $tmp
 		var "FILENAME_$CURRENT_PARAMETER" $CURRENT_FILENAME
-
+		var "FILECT_$CURRENT_PARAMETER" $CURRENT_CONTENT_TYPE
 		loggggg "	Saved \"$CURRENT_FILENAME\" as $tmp"
 	fi
 
@@ -123,12 +133,14 @@ function parseContent {
 
 	CURRENT_FILENAME=""
 	CURRENT_PARAMETER=""
+	CURRENT_CONTENT_TYPE=""
 }
 
+# Multipart data sometimes has it's own Content-Type
 function parseContentType {
 	if [[ $LINE =~ Content-Type: ]]; then
-		CT=$(echo -nE "$LINE" | sed -r 's/\s+//g' | sed -\n 's/.*:\s*\(.*\)/\1/p')
-		loggggg "	Found a Content-Type of '$CT', proceeding to a CRLF"
+		CURRENT_CONTENT_TYPE=$(echo -nE "$LINE" | sed -r 's/\s+//g' | sed -\n 's/.*:\s*\(.*\)/\1/p')
+		loggggg "	Found a Content-Type of '$CURRENT_CONTENT_TYPE', proceeding to a CRLF"
 		NEXT_PARSER=parseCRLF
 		return 0
 	fi
@@ -140,7 +152,6 @@ function parseNothing {
 	return 0
 }
 
-# Sometimes there is another Content-Type, specifically for multipart content
 function parseCRLF_or_ContentType {
 	if ! parseCRLF; then
 		parseContentType

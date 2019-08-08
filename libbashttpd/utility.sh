@@ -43,7 +43,7 @@ function urldecode {
     printf '%b' "${plussless//%/\\x}"
 }
 
-# Taken for granted from https://gist.github.com/cdown/1163649#gistcomment-1256298
+# Taken from https://gist.github.com/cdown/1163649#gistcomment-1256298
 function urlencode() {
   local length="${#1}"
   for (( i = 0; i < length; i++ )); do

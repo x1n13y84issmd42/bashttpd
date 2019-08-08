@@ -4,8 +4,9 @@ rxMethod='^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP' #doesn't work
 # LANG=C
 # LC_ALL=C
 
+# Reads HTTP request headers.
 function readHeaders {
-	# Debug dump
+	# Debug dump (clear)
 	[[ ! -z $DEBUG_DUMP_HEADERS ]] && echo -nE "" > $DEBUG_DUMP_HEADERS
 
 	while read INPUT; do
@@ -41,6 +42,7 @@ function readHeaders {
 	done
 }
 
+# Pulls extra info from some headers' values, like content boundaries, strips unused stuff.
 function normalizeHeaders {
 	# Figuring out the content boundary in case we have a multipart/form-data Content-Type
 	if [[ $CONTENT_TYPE =~ ^multipart\/form\-data ]]; then
@@ -53,6 +55,8 @@ function normalizeHeaders {
 	fi
 }
 
+# Reads an HTTP request body contents. Different Content-Types must be read & parsed differently,
+# so it relies on specific implementations of body parsers.
 function readBody {
 	if ! [[ -z $CONTENT_TYPE ]] && [[ $CONTENT_LENGTH -gt 0 ]]; then
 		# Choosing a parser for the rest of request data based on Content-Type

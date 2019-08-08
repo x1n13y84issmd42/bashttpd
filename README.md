@@ -29,7 +29,7 @@ There is one! Bash Web Framework, or BWF, implements some standard operations ex
 Request headers are available to controller scripts under their names capitalized and dashes replaced by underscores. So a `Content-Type` header is accessible as a `$CONTENT_TYPE` variable.
 
 #### Supported Request Content Types
-At the moment BWF understands `application/x-www-form-urlencoded` and `multipart/form-data`, although binary data at the moment isn't processed correctly.
+At the moment BWF understands `application/x-www-form-urlencoded` and `multipart/form-data`.
 
 Support for `application/xml` & `application/json` is expected soon.
 
@@ -38,7 +38,7 @@ Support for `application/xml` & `application/json` is expected soon.
 | **reqCookie** | Outputs a value of a cookie from the request. |`SID=$(reqCookie "session_id")`|
 |**reqData**|Outputs a single field value from the request body. Content-Type-agnostic.|`userName=$(reqData "userName")`|
 |**reqFile**|Outputs a temporary file name where contents of the uploaded file is stored. Takes the name of the file as in form data.|`filePath=$(reqFile "theFile")`|
-|**reqFileName**|Outputs original name of the uploaded file is stored. Takes the name of the file as in form data.|`sourceFileName=$(reqFileName "theFile")`|
+|**reqFileName**|Outputs original name of the uploaded file. Takes the name of the file as in form data.|`sourceFileName=$(reqFileName "theFile")`|
 
 ### Responding
 Basically you can just `echo` anything, and it'll get to a client, but you'll need to follow the HTTP protocol yourself.
@@ -81,7 +81,7 @@ If you're not a fan (who is?), there are functions for that.
 * [ ] MySQL
 * [x] Content url-en/decoding
 * [ ] Socat port for parallelism?
-* [ ] Figure out binary request bodies
+* [x] Figure out binary request bodies
 * [ ] A neat method of rendering CLI output as HTML is definitely needed
 
 ## Links

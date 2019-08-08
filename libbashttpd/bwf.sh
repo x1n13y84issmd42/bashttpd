@@ -72,11 +72,13 @@ function reqData {
 	reqDataImpl $1
 }
 
+# Outputs a temporary file name where contents of the uploaded file is stored.
 function reqFile {
 	vn="FILE_$1"
 	yield ${!vn}
 }
 
+# Outputs original name of the uploaded file.
 function reqFileName {
 	vn="FILENAME_$1"
 	yield ${!vn}

@@ -1,3 +1,9 @@
+# Routing of requests happens here.
+# It works in 3 ways:
+#	If request path exactly matches a file within the $PROJECT directory - serve the file as it is;
+#	If request path exactly matches a directory within the $PROJECT directory - serve "index.html" from there;
+#	Otherwise it concatenates the request path and method, adds a trailing ".sh",
+#	then tries to execute the result as a controller script.
 function router() {
 	ctrler="$PROJECT$reqPath/$reqMethod.sh"
 	staticFile="$PROJECT$reqPath"
@@ -26,6 +32,8 @@ function router() {
 	fi
 }
 
+# Serves static files from file system.
+# Tries to guess Content-Type from their extensions.
 function serveStatic() {
 	filePath=$1
 	fileName=$(basename "$filePath")

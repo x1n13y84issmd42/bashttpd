@@ -1,3 +1,6 @@
+/*
+Generates binary files to use as test data for bashttpd development & testing.
+*/
 package main
 
 import (
