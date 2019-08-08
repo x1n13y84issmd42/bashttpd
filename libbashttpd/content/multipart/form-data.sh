@@ -17,13 +17,16 @@ function readUntil {
 		let CL=CL+1
 		LINE="$LINE$CHAR"
 
+		local hexchar=$(printf "%02x" "'$CHAR")
 		# Fixing zero-bytes
-		local hexchar=$(echo -n "$CHAR" | xxd -ps)
 		[[ -z $hexchar ]] && hexchar="00"
 		HEXLINE="$HEXLINE\x$hexchar"
 
-		# local lochar=$(echo -n "$CHAR" | tr '\n' '\\')
-		# loggggg "**           DONE READIN   $CL/$CONTENT_LENGTH		$hexchar ($lochar)      **"
+		let CLR=$CL%500
+		if [[ $CLR == 0 ]]; then
+			local lochar=$(echo -n "$CHAR" | tr '\n' '\\')
+			loggggg "**           DONE READIN   $CL/$CONTENT_LENGTH		$hexchar ($lochar)      **"
+		fi
 
 		# Testing & breaking
 		if $1; then
