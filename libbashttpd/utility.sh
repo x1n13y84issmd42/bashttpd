@@ -53,3 +53,18 @@ function urlencode() {
   esac
 done
 }
+
+# Joins it's arguments into a string.
+# Delimiter goes as a first argument.
+function join {
+	local d=$1;
+	shift
+
+	res=""
+	
+	for a in ${@}; do
+		res="$res$d$a"
+	done
+
+	echo ${res:${#d}}
+}
