@@ -19,3 +19,6 @@ logg "-- Content Length is $CONTENT_LENGTH"
 readBody
 
 router
+
+log "Fin."
+log ""
