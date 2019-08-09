@@ -53,15 +53,18 @@ If you're not a fan (who is?), there are functions for that.
 |**respBody**|Writes the response body.|`respBody "<h1>YOLO</h1>"`|
 |**respFile**|Responds with a file contents. Note that you have to specify Content-Type yourself.|`respFile "/etc/passwd"`|
 |**respTemplateFile**|Reads a file, expands variables into it, responds with the result.|`respTemplateFile "/assets/tpl/age.html"`|
+|**respJSON**|A shorthand function to respond with JSONs. Encodes the passed data, sends Content-Type. |`declare -a FILE_LIST`<br>`# Fill the $FILE_LIST...`<br>`respJSON FILE_LIST`|
 
 ### Utility
 | Function | Description | Example |
 | --- | --- | --- |
-|**log**<br>**logg**<br>**loggg**|A logging function. Outputs to the host's `stderr`.<br>The more **g**'s in the name, the higher **LOG_VERBOSITY** config value is required for the message to be displayed.|`log "User name is $name"`<br>`loggg "Not your everyday message"`|
+|**log**<br>**logg**<br>**loggg**<br>**logggg**<br>**loggggg**|A logging function. Outputs to the host's `stderr`.<br>The more **g**'s in the name, the higher **LOG_VERBOSITY** config value is required for the message to be displayed.|`log "User name is $name"`<br>`loggg "Not your everyday message"`|
 |**var**|A syntactic sugar function which defines and initializes a dynamically named variable.|`var "DATA_$dataName" $dataValue`|
 |**yield**|A syntactic sugar to output dynamic variables. A relative to the conventional `return` keyword.|`yield "DATA_$dataName"`|
 |**urldecode**|A standard URL decoding function.|`decodedInput=$(urldecode $encodedInput)`|
-|**urlencode**|A standard URL encoding function.|`encodedInput=$(urldecode $decodedInput)`|
+|**urlencode**|A standard URL encoding function.|`encodedInput=$(urlencode $decodedInput)`|
+|**sys.IFS**|Changes the IFS variable while backing it up and automatically restoring the previous value.|`sys.IFS ';'`|
+|**sys.TimeElapsed**|A profiling function, outputs delta time between two consecutive calls, in seconds.|`$(sys.TimeElapsed)`<br>`T=$(sys.TimeElapsed)`|
 
 
 ## TODO
