@@ -1,6 +1,6 @@
-thingID=$(reqData ".[0].id")
-thingAge=$(reqData ".[0].age")
-thingMessage=$(reqData ".[0].message")
+thingID=$(reqData "[0].id")
+thingAge=$(reqData "[0].age")
+thingMessage=$(reqData "[0].message")
 
 log "Thing ID is $thingID"
 log "Thing age is $thingAge"

@@ -70,9 +70,9 @@ If you're not a fan (who is?), there are functions for that.
 * [x] www-form-urlencoded requests
 * [x] multipart/form-data (no binary files yet)
 * [x] Handle uploaded files (no binary files yet)
-* [ ] Access data from application/json requests
+* [x] Access data from application/json requests
 * [ ] Access data from application/xml requests
-* [ ] application/json responses
+* [x] application/json responses
 * [x] Page templating
 * [ ] Branches in templates
 * [ ] Loops in templates

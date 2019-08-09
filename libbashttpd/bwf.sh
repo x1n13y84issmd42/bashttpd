@@ -83,3 +83,48 @@ function reqFileName {
 	vn="FILENAME_$1"
 	yield ${!vn}
 }
+
+function respJSON {
+	JSON=$(JSON.EncodeObject $1)
+
+	respHeader "Content-Type" "application/json"
+	respBody $JSON
+}
+
+# Encodes an associative array as a JSON object.
+# Takes name of the array as a argument.
+# It's name, not the array itself.
+function JSON.EncodeObject {
+	declare -a JSONFIELDS
+	decl=$(declare -p $1)
+	eval "declare -A IA=${decl#*=}"
+
+	for IK in "${!IA[@]}"; do
+		# TODO: correct data types for numbers and booleans
+		JSONFIELDS+=("\"$IK\":\"${IA[$IK]}\"")
+	done
+
+	JSON=$(join ", " ${JSONFIELDS[@]})
+	JSON="{$JSON}"
+
+	yield $JSON
+}
+
+# Encodes an associative array as a JSON array.
+# Takes name of the array as a argument.
+# It's name, not the array itself.
+function JSON.EncodeArray {
+	declare -a JSONFIELDS
+	decl=$(declare -p $1)
+	eval "declare -A IA=${decl#*=}"
+
+	for IK in "${!IA[@]}"; do
+		# TODO: correct data types for numbers and booleans
+		JSONFIELDS+=("\"${IA[$IK]}\"")
+	done
+
+	JSON=$(join ", " ${JSONFIELDS[@]})
+	JSON="[$JSON]"
+
+	yield $JSON
+}

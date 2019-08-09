@@ -19,7 +19,9 @@ fi
 
 # An implementation of reqData.
 function reqDataImpl {
-	yield $(echo -nE "$BODY" | jq -r $1)
+	Q=$1
+	[[ ! ${Q:0:1} == '.' ]] && Q=".$Q"
+	yield $(echo -nE "$BODY" | jq -r $Q)
 }
 
 IFS=$_IFS
