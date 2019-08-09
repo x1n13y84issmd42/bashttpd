@@ -57,7 +57,7 @@ done
 
 # Joins it's arguments into a string.
 # Delimiter goes as a first argument.
-function join {
+function array.join {
 	local d=$1;
 	shift
 
@@ -68,4 +68,44 @@ function join {
 	done
 
 	echo ${res:${#d}}
+}
+
+# Tries to figure out the type of given variable.
+# Takes a name of a variable, not the variable itself.
+# Usage:
+#	userName="John"
+#	listOfThings=(1 2 33 444)
+#	mapOfThings=([first]=1 [other]=2 [nextAfterOther]=33 [plenty]=444)
+#	boolFlagValue=true
+#	userAge=234
+#	reflection.Type userName # outputs "STRING"
+#	reflection.Type listOfThings # outputs "ARRAY"
+#	reflection.Type mapOfThings # outputs "MAP"
+#	reflection.Type boolFlagValue # outputs "BOOLEAN"
+#	reflection.Type userAge # outputs "NUMBER"
+function reflection.Type {
+	decl=$(declare -p $1)
+	decl=${decl#*=}
+	sdecl=${decl:1:${#decl}-2}
+
+	val=$(eval echo \$${1})
+
+	if [[ $val == $sdecl ]]; then
+		if [[ $val == "true" || $val == "false" ]]; then
+			echo "BOOLEAN"
+		elif [[ $val =~ ^[[:digit:]]+$ ]]; then
+			echo "NUMBER"
+		else
+			echo "STRING"
+		fi
+	else
+		eval "declare -A TEST=$decl"
+		keys=${!TEST[@]}
+
+		if [[ $keys =~ ([[:digit:]] )+ ]]; then
+			echo "ARRAY"
+		else
+			echo "MAP"
+		fi
+	fi
 }

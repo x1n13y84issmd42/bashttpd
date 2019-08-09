@@ -84,8 +84,28 @@ function reqFileName {
 	yield ${!vn}
 }
 
+# A shorthand function to responding with JSONs. Encodes passed data, sends Content-Type.
+# Takes a name of a variable containing response data. Not the var itself.
 function respJSON {
-	JSON=$(JSON.EncodeObject $1)
+	type=$(reflection.Type $1)
+
+	case $type in
+		"MAP")
+			JSON=$(JSON.EncodeObject $1)
+		;;
+
+		"ARRAY")
+			JSON=$(JSON.EncodeArray $1)
+		;;
+
+		"STRING")
+			JSON=$(JSON.EncodeString $1)
+		;;
+
+		*)
+			JSON=$(JSON.EncodePass $1)
+		;;
+	esac
 
 	respHeader "Content-Type" "application/json"
 	respBody $JSON
@@ -97,14 +117,26 @@ function respJSON {
 function JSON.EncodeObject {
 	declare -a JSONFIELDS
 	decl=$(declare -p $1)
-	eval "declare -A IA=${decl#*=}"
+	eval "declare -A INPUT=${decl#*=}"
 
-	for IK in "${!IA[@]}"; do
-		# TODO: correct data types for numbers and booleans
-		JSONFIELDS+=("\"$IK\":\"${IA[$IK]}\"")
+	for IK in "${!INPUT[@]}"; do
+		SRCVAL=${INPUT[$IK]}
+		type=$(reflection.Type SRCVAL)
+
+		case $type in
+			"STRING")
+				JSONVAL=$(JSON.EncodeString SRCVAL)
+			;;
+
+			*)
+				JSONVAL=$(JSON.EncodePass SRCVAL)
+			;;
+		esac
+
+		JSONFIELDS+=("\"$IK\":$JSONVAL")
 	done
 
-	JSON=$(join ", " ${JSONFIELDS[@]})
+	JSON=$(array.join ", " ${JSONFIELDS[@]})
 	JSON="{$JSON}"
 
 	yield $JSON
@@ -116,15 +148,43 @@ function JSON.EncodeObject {
 function JSON.EncodeArray {
 	declare -a JSONFIELDS
 	decl=$(declare -p $1)
-	eval "declare -A IA=${decl#*=}"
+	eval "declare -A INPUT=${decl#*=}"
 
-	for IK in "${!IA[@]}"; do
-		# TODO: correct data types for numbers and booleans
-		JSONFIELDS+=("\"${IA[$IK]}\"")
+	for IK in "${!INPUT[@]}"; do
+		SRCVAL=${INPUT[$IK]}
+		type=$(reflection.Type SRCVAL)
+
+		case $type in
+			"STRING")
+				JSONVAL=$(JSON.EncodeString SRCVAL)
+			;;
+
+			*)
+				JSONVAL=$(JSON.EncodePass SRCVAL)
+			;;
+		esac
+
+		JSONFIELDS+=("$JSONVAL")
 	done
 
-	JSON=$(join ", " ${JSONFIELDS[@]})
+	JSON=$(array.join ", " ${JSONFIELDS[@]})
 	JSON="[$JSON]"
 
 	yield $JSON
+}
+
+# Encodes a value as a JSON string.
+# Takes name of the variable as a argument.
+# It's name, not the variable itself.
+function JSON.EncodeString {
+	val=$(eval echo \$${1})
+	yield "\"$val\""
+}
+
+# Encodes a value as a JSON value, i.e. doesn't change it in any way.
+# Takes name of the variable as a argument.
+# It's name, not the variable itself.
+function JSON.EncodePass {
+	val=$(eval echo \$${1})
+	yield "$val"
 }

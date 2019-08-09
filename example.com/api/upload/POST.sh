@@ -5,6 +5,7 @@ declare -A RESP=(
 	[age]=$(reqData age)
 	[tpmFilename]=$(reqFile theFileILike)
 	[srcFilename]=$(reqFileName theFileILike)
+	[isItReallyHappeningInBash]=true
 )
 
 respJSON RESP

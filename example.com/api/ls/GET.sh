@@ -24,5 +24,5 @@ for FILE in "${FILES[@]}"; do
 	fi
 done
 
-body=$(join ", " ${RESP_FILES[@]})
+body=$(array.join ", " ${RESP_FILES[@]})
 respBody "[$body]"
