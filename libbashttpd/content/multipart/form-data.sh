@@ -113,7 +113,7 @@ function parseCRLF {
 # Reads a part of the request body until encounters a content boundary value.
 function parseContent {
 	loggggg "	Reading the request body"
-	$(sys.TimeElapsed)
+	T=$(sys.TimeElapsed)
 	readUntil CRLFBoundaryFound
 	T=$(sys.TimeElapsed)
 	loggggg "	Took $T seconds to read the request body."

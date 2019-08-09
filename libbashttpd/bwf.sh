@@ -84,6 +84,12 @@ function reqFileName {
 	yield ${!vn}
 }
 
+# Outputs Content-Type of the uploaded file.
+function reqFileContentType {
+	vn="FILECT_$1"
+	yield ${!vn}
+}
+
 # A shorthand function to responding with JSONs. Encodes passed data, sends Content-Type.
 # Arguments
 #	$1: a name of a variable containing response data. Not the var itself.
