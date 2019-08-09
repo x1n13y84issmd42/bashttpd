@@ -109,3 +109,24 @@ function reflection.Type {
 		fi
 	fi
 }
+
+declare -a IFS_backup_stack
+
+# Changes the IFS variable while backing it up and automatically restoring.
+# To set a new IFS: sys.IFS $'\r'
+# To reset IFS to it's original value: sys.IFS
+function sys.IFS {
+	if [[ -z ${1+x} ]]; then
+		# Resetting
+		IFS_backup=${IFS_backup_stack[${#IFS_backup_stack[@]}-1]}
+		if ! [[ -z $IFS_backup ]]; then
+			IFS=$IFS_backup
+			unset IFS_backup_stack[${#IFS_backup_stack[@]}-1]
+		fi
+	else
+		# Setting a new value
+		echo "IFS set to $1"
+		IFS_backup_stack+=("$IFS")
+		IFS=$1
+	fi
+}
