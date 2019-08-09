@@ -15,10 +15,10 @@ func main() {
 	bytesLS := []byte("\x00\xff\xff\xff\x00\x24\x80\xf4\x00\x24\x80\xf4\x00\x24\x80\xf4\x00\x24\x80\xf4\x2a\x24\x80\xf4\xc2")
 
 	var err error
-	err = ioutil.WriteFile("./testdata/15.bin", bytes15, 0777)
-	err = ioutil.WriteFile("./testdata/20.bin", bytes20, 0777)
-	err = ioutil.WriteFile("./testdata/ABCD.bin", bytesABCD, 0777)
-	err = ioutil.WriteFile("./testdata/ls.bin", bytesLS, 0777)
+	err = ioutil.WriteFile("./15.bin", bytes15, 0777)
+	err = ioutil.WriteFile("./20.bin", bytes20, 0777)
+	err = ioutil.WriteFile("./ABCD.bin", bytesABCD, 0777)
+	err = ioutil.WriteFile("./ls.bin", bytesLS, 0777)
 	if err != nil {
 		fmt.Println("Error", err)
 	}
