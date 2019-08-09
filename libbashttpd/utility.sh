@@ -102,7 +102,7 @@ function reflection.Type {
 		eval "declare -A TEST=$decl"
 		keys=${!TEST[@]}
 
-		if [[ $keys =~ ([[:digit:]] )+ ]]; then
+		if [[ $keys =~ ^[0-9\ ]+$ ]]; then
 			echo "ARRAY"
 		else
 			echo "MAP"

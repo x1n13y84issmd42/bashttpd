@@ -85,17 +85,19 @@ function reqFileName {
 }
 
 # A shorthand function to responding with JSONs. Encodes passed data, sends Content-Type.
-# Takes a name of a variable containing response data. Not the var itself.
+# Arguments
+#	$1: a name of a variable containing response data. Not the var itself.
+#	$2: an optional encoding mode for JSON.EncodeObject & EncodeArray functions.
 function respJSON {
 	type=$(reflection.Type $1)
 
 	case $type in
 		"MAP")
-			JSON=$(JSON.EncodeObject $1)
+			JSON=$(JSON.EncodeObject $1 $2)
 		;;
 
 		"ARRAY")
-			JSON=$(JSON.EncodeArray $1)
+			JSON=$(JSON.EncodeArray $1 $2)
 		;;
 
 		"STRING")
@@ -112,8 +114,10 @@ function respJSON {
 }
 
 # Encodes an associative array as a JSON object.
-# Takes name of the array as a argument.
-# It's name, not the array itself.
+# Arguments:
+#	$1: name of the array to encode. Note, it's name, not the array itself.
+#	$2: an optional "untyped" flag to enable proper JSON types for fields.
+#	When omitted, the values go to JSON as is, without any additional encoding.
 function JSON.EncodeObject {
 	declare -a JSONFIELDS
 	decl=$(declare -p $1)
@@ -121,17 +125,21 @@ function JSON.EncodeObject {
 
 	for IK in "${!INPUT[@]}"; do
 		SRCVAL=${INPUT[$IK]}
-		type=$(reflection.Type SRCVAL)
+		JSONVAL=$SRCVAL
 
-		case $type in
-			"STRING")
-				JSONVAL=$(JSON.EncodeString SRCVAL)
-			;;
+		if [[ $2 == 'untyped' ]]; then
+			type=$(reflection.Type SRCVAL)
 
-			*)
-				JSONVAL=$(JSON.EncodePass SRCVAL)
-			;;
-		esac
+			case $type in
+				"STRING")
+					JSONVAL=$(JSON.EncodeString SRCVAL)
+				;;
+
+				*)
+					JSONVAL=$(JSON.EncodePass SRCVAL)
+				;;
+			esac
+		fi
 
 		JSONFIELDS+=("\"$IK\":$JSONVAL")
 	done
@@ -143,8 +151,10 @@ function JSON.EncodeObject {
 }
 
 # Encodes an associative array as a JSON array.
-# Takes name of the array as a argument.
-# It's name, not the array itself.
+# Arguments:
+#	$1: name of the array to encode. Note, it's name, not the array itself.
+#	$2: an optional "untyped" flag to enable proper JSON types for values.
+#	When omitted, the values go to JSON as is, without any additional encoding.
 function JSON.EncodeArray {
 	declare -a JSONFIELDS
 	decl=$(declare -p $1)
@@ -152,17 +162,20 @@ function JSON.EncodeArray {
 
 	for IK in "${!INPUT[@]}"; do
 		SRCVAL=${INPUT[$IK]}
+		JSONVAL=$SRCVAL
 		type=$(reflection.Type SRCVAL)
 
-		case $type in
-			"STRING")
-				JSONVAL=$(JSON.EncodeString SRCVAL)
-			;;
+		if [[ $2 == 'untyped' ]]; then
+			case $type in
+				"STRING")
+					JSONVAL=$(JSON.EncodeString SRCVAL)
+				;;
 
-			*)
-				JSONVAL=$(JSON.EncodePass SRCVAL)
-			;;
-		esac
+				*)
+					JSONVAL=$(JSON.EncodePass SRCVAL)
+				;;
+			esac
+		fi
 
 		JSONFIELDS+=("$JSONVAL")
 	done
