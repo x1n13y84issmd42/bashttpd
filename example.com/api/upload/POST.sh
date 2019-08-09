@@ -8,4 +8,4 @@ declare -A RESP=(
 	[isItReallyHappeningInBash]=true
 )
 
-respJSON RESP
+respJSON RESP untyped

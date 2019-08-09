@@ -201,3 +201,12 @@ function JSON.EncodePass {
 	val=$(eval echo \$${1})
 	yield "$val"
 }
+
+TIMER_LAST=$(date +%s)
+
+function sys.TimeElapsed {
+	T=$(date +%s)
+	DT=$((T-TIMER_LAST))
+	TIMER_LAST=$T
+	yield "$DT"
+}
