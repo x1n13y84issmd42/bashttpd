@@ -210,6 +210,10 @@ function JSON.EncodePass {
 
 TIMER_LAST=$(date +%s)
 
+function sys.Time {
+	date +%s
+}
+
 function sys.TimeElapsed {
 	T=$(date +%s)
 	DT=$((T-TIMER_LAST))

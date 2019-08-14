@@ -8,7 +8,7 @@ function var {
 
 # Outputs to the host's stderr
 function log {
-	[[ $LOG_VERBOSITY -ge 1 ]] && printf "%s " $@ | tr -d '\r' >&2 && echo "" >&2
+	[[ $LOG_VERBOSITY -ge 1 ]] && printf "%s " $@ >&2 && echo "" >&2
 	return 0
 }
 

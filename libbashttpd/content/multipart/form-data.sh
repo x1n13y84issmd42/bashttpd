@@ -6,6 +6,60 @@ LC_ALL=C
 
 CL=0
 
+CHUNK_SIZE=2000
+CLT=$CHUNK_SIZE
+
+function renderProgress {
+	echo -en "\rDone $CL/$CONTENT_LENGTH bytes " >&2
+	n=$(($CLT/$CHUNK_SIZE))
+	for ((i=0; i<n; i++)); do
+		echo -En "~" >&2
+	done
+	
+	echo -n " " >&2
+}
+
+# Reads from input until the supplied predicate function returns 0,
+# and dumps the contents to a specified file.
+# Usage:
+#	dumpUntil CRLFFound $tmp - reads until found a \r\n sequence and dumps the data to the $tmp file
+function dumpUntil {
+	loggggg "Dumping fast to $2 until $1"
+	LINE=""
+	loggggg ""
+	while [ $CL -lt $CONTENT_LENGTH ]; do
+		read -r -d '' -n1 CHAR
+		let CL=CL+1
+		
+		# Slashes interfere with \x00
+		[[ $CHAR == "\\" ]] && CHAR="\x5c"
+		[[ -z $CHAR ]] && CHAR="\x00"
+
+		LINE="$LINE$CHAR"
+
+		# Making sure the chunking won't chunk the last content boundary line,
+		# and CB parsers are able to detect it, so leaving a padding.
+		CLREM=$(($CONTENT_LENGTH-$CL))
+		CB_PADDING=$((${#CONTENT_BOUNDARY}+10))
+		if [[ $CL -ge $CLT ]] && [[ $CLREM -gt $CB_PADDING ]]; then
+			echo -en $LINE >> $2
+			LINE=""
+
+			CLT=$((CLT+CHUNK_SIZE))
+			renderProgress;
+		fi
+
+		# Testing & breaking
+		if $1; then
+			[[ ${#LINE} > 0 ]] && echo -en $LINE >> $2 && log "Dumped the remainder ${#LINE} bytes" && LINE=""
+
+			return 0
+		fi
+	done;
+
+	return 255
+}
+
 # Reads from input until the supplied predicate function returns 0
 # Usage:
 #	readUntil CRLFFound - reads until found a \r\n sequence
@@ -17,16 +71,18 @@ function readUntil {
 		let CL=CL+1
 		LINE="$LINE$CHAR"
 
-		# The single quote turns $CHAR into a number
-		local hexchar=$(printf "%02x" "'$CHAR")
-		# Fixing zero-bytes
-		[[ -z $hexchar ]] && hexchar="00"
-		HEXLINE="$HEXLINE\x$hexchar"
+		if ! [[ -z $CURRENT_FILENAME ]]; then
+			# The single quote turns $CHAR into a number
+			local hexchar=$(printf "%02x" "'$CHAR")
+			# Fixing zero-bytes
+			[[ -z $hexchar ]] && hexchar="00"
+			HEXLINE="$HEXLINE\x$hexchar"
+		fi
 
 		let CLR=$CL%500
 		if [[ $CLR == 0 ]]; then
-			local lochar=$(echo -n "$CHAR" | tr '\n' '\\')
-			loggggg "* * * * DONE READIN   $CL/$CONTENT_LENGTH		$hexchar ($lochar)"
+			local safechar=$(echo -n "$CHAR" | tr '\n' '\\')
+			loggggg "* * * * DONE READIN   $CL/$CONTENT_LENGTH		$hexchar ($safechar)"
 		fi
 
 		# Testing & breaking
@@ -53,7 +109,6 @@ function BoundaryFound {
 function CRLFFound {
 	if [[ ${LINE:${#LINE}-2:2} == $'\r\n' ]]; then
 		LINE=${LINE::-2}
-		HEXLINE=${HEXLINE::-8}
 		return 0
 	fi
 
@@ -66,18 +121,17 @@ function CRLFBoundaryFound {
 	# The '--' are required by RFC https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
 	CB="--$CONTENT_BOUNDARY"
 	let LEN=${#CB}+2
-	let HEXLEN=$LEN*4
 	SEP=$'\r\n'"$CB"
 	if [[ ${LINE:${#LINE}-$LEN:$LEN} == $SEP ]]; then
+		loggggg "	Found a content boundary"
 		LINE=${LINE::-$LEN}
-		HEXLINE=${HEXLINE::-$HEXLEN}
 		return 0
 	fi
 
 	return 255
 }
 
-# Looks for a Content-Disposition line and extract parameter and file names from it.
+# Looks for a Content-Disposition line and extract param	eter and file names from it.
 function parseContentDisposition {
 	if [[ $LINE =~ Content-Disposition: ]]; then
 		loggggg "	Found a Content-Disposition"
@@ -102,7 +156,7 @@ function parseContentDisposition {
 function parseCRLF {
 	if [[ -z $LINE ]]; then
 		loggggg "	Found a CRLF, proceeding to the content body"
-		# NEXT_PARSER=parseContent
+		# Not setting NEXT_PARSER because parseContent will read the input itself.
 		parseContent
 		return 0
 	fi
@@ -112,20 +166,27 @@ function parseCRLF {
 
 # Reads a part of the request body until encounters a content boundary value.
 function parseContent {
+
 	loggggg "	Reading the request body"
 	T=$(sys.TimeElapsed)
-	readUntil CRLFBoundaryFound
-	T=$(sys.TimeElapsed)
-	loggggg "	Took $T seconds to read the request body."
 
 	if [[ -z $CURRENT_FILENAME ]]; then
+		readUntilFast CRLFBoundaryFound
+		T=$(sys.TimeElapsed)
+		loggggg "	Took $T seconds to read the request body."
+
 		# Regular values are stored as variables.
 		var "DATA_$CURRENT_PARAMETER" "$LINE"
 		loggggg "	Set DATA_$CURRENT_PARAMETER to \"$LINE\""
 	else
-		# Uploaded files are stored in /tmp
+		# Uploaded files are stored in /tmp...
 		tmp=$(mktemp)
-		echo -en $HEXLINE > $tmp
+		T=$(sys.TimeElapsed)
+		dumpUntil CRLFBoundaryFound $tmp
+		T=$(sys.TimeElapsed)
+		loggggg "	Took $T seconds to read the request body."
+
+		# ...and their filenames are stored as variables.
 		var "FILE_$CURRENT_PARAMETER" $tmp
 		var "FILENAME_$CURRENT_PARAMETER" $CURRENT_FILENAME
 		var "FILECT_$CURRENT_PARAMETER" $CURRENT_CONTENT_TYPE
@@ -178,14 +239,11 @@ function parseFin {
 
 NEXT_PARSER=parseContentDisposition
 
-# Reading body, 1 char at a time
-# Regular read can't get the last line because of missing newline on this Content-Type
-if [ -z ${CONTENT_LENGTH+x} ]; then
-	:
-else
+if ! [ -z ${CONTENT_LENGTH+x} ]; then
 	readUntil BoundaryFound
 	let LI=0
 
+	T1=$(sys.Time)
 	while readUntil CRLFFound; do
 		let LI=$LI+1
 		loggggg "Line #$LI is ($LINE) (${#LINE} chars)"
@@ -195,6 +253,10 @@ else
 
 		loggggg ""
 	done 
+	
+	T2=$(sys.Time)
+	T=$(($T2-$T1))
+	loggggg "Done in $T seconds."
 	
 	# Debug dump
 	[[ ! -z $DEBUG_DUMP_BODY ]] && echo -n "$BODY" > $DEBUG_DUMP_BODY
