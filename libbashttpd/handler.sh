@@ -20,5 +20,5 @@ readBody
 
 router
 
-log "Fin."
+logg "Fin."
 log ""

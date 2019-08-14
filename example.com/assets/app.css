@@ -37,6 +37,14 @@
 	line-height: 108px;
 }
 
+.hGallery {
+    color: #222;
+    font-size: 71pt !important;
+    line-height: 70pt;
+    position: relative;
+    margin-left: -4pt;
+}
+
 input {
 	font-size: 20pt;
     display: block;
@@ -67,6 +75,7 @@ input[type=text] {
 	color: #222;
 }
 
+input[type=button],
 input[type=submit] {
 	float: right;
 	padding: 10px 20px;
@@ -76,6 +85,9 @@ input[type=submit] {
 	cursor: pointer;
 }
 
+input[type=button]:focus,
+input[type=button]:active,
+input[type=button]:hover,
 input[type=submit]:focus,
 input[type=submit]:active,
 input[type=submit]:hover {
@@ -183,6 +195,17 @@ img {
 
 a {
 	color: #00BBFF;
+	text-decoration: none;
+}
+
+a:hover {
+	background-color: #00BBFF;
+	color: white;
+	text-decoration: none;
+}
+
+a::after {
+	content: " >>"
 }
 
 blink {
@@ -191,4 +214,48 @@ blink {
 
 .noblink blink {
 	color: white;
+}
+
+#the-gallery {
+	width: 1625px;
+	margin-left: -812px;
+}
+
+#gallery {
+	float: left;
+	width: 1275px;
+}
+
+#gallery img {
+	display: inline-block;
+	width: 350px;
+	margin-left: 75px;
+}
+
+#the-gallery input[type=file] {
+	width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.fileinput {
+	
+}
+
+.fileinput label {
+	font-size: 20pt;
+	display: block;
+	margin-bottom: 20pt;
+	padding: 10px 20px;
+	background-color: #222;
+	color: white;
+	border: none;
+	cursor: pointer;
+}
+
+.fileinput label:hover {
+	background-color: #00BBFF;
 }

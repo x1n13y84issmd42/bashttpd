@@ -33,3 +33,20 @@ function requestVisits() {
 		bv.className = "w" + val.length;
 	});
 }
+
+function submitForm(formID, url, cb) {
+	let form = document.getElementById(formID);
+	let fd = new FormData(form);
+	let req = new XMLHttpRequest();
+
+	req.onreadystatechange = function (e) {
+		if (this.readyState === 4) {
+			cb(JSON.parse(this.response));
+		}
+	};
+
+	console.log(`Submitting to ${url}: `, fd)
+
+	req.open('POST', url, true);
+	req.send(fd);
+}

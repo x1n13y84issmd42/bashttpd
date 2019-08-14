@@ -1,7 +1,7 @@
 respStatus 200
 
-local EXT=".bin"
-local fCT=$(reqFileContentType theFileILike)
+local EXT="bin"
+local fCT=$(reqFileContentType aPicture)
 
 case $fCT in
 	"image/jpeg")
@@ -15,18 +15,27 @@ case $fCT in
 	"image/gif")
 		EXT="gif"
 	;;
+
+	"image/x-icon")
+		EXT="ico"
+	;;
+
+	*)
+		log "Impossible file Content-Type: $fCT"
+	;;
 esac
 
-local fTmp=$(reqFile theFileILike)
-local fDest=$(mktemp $PROJECT/storage/XXXXXXXX.$EXT)
-mv $fTmp $fDest >&2
+local fTmp=$(reqFile aPicture)
+local fDest=$(mktemp $PROJECT/$GALLERY_STORAGE/XXXXXXXX.$EXT)
+log "mv $fTmp $fDest"
+$(mv $fTmp $fDest)
 
 declare -A RESP=(
-	[name]=$(reqData name)
-	[age]=$(reqData age)
-	[tpmFilename]=fName
-	[srcFilename]=$(reqFileName theFileILike)
-	[URL]="localhost:8080/$fDest"
+	# [name]=$(reqData name)
+	# [age]=$(reqData age)
+	[tpmFilename]=$fTmp
+	[srcFilename]=$(reqFileName aPicture)
+	[URL]="http://${fDest//$PROJECT/localhost:8080}"
 	[isItReallyHappeningInBash]=true
 )
 

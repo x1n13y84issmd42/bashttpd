@@ -71,14 +71,6 @@ function readUntil {
 		let CL=CL+1
 		LINE="$LINE$CHAR"
 
-		if ! [[ -z $CURRENT_FILENAME ]]; then
-			# The single quote turns $CHAR into a number
-			local hexchar=$(printf "%02x" "'$CHAR")
-			# Fixing zero-bytes
-			[[ -z $hexchar ]] && hexchar="00"
-			HEXLINE="$HEXLINE\x$hexchar"
-		fi
-
 		let CLR=$CL%500
 		if [[ $CLR == 0 ]]; then
 			local safechar=$(echo -n "$CHAR" | tr '\n' '\\')
@@ -171,7 +163,7 @@ function parseContent {
 	T=$(sys.TimeElapsed)
 
 	if [[ -z $CURRENT_FILENAME ]]; then
-		readUntilFast CRLFBoundaryFound
+		readUntil CRLFBoundaryFound
 		T=$(sys.TimeElapsed)
 		loggggg "	Took $T seconds to read the request body."
 

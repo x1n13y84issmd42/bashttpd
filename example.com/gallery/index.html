@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<title>~# Bashttpd</title>
+		<script src="/assets/app.js"></script>
+		<link rel="stylesheet" href="/assets/app.css" />
+		<link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+	</head>
+
+	<body>
+		<div class="container" id="the-gallery">
+			<div class="column col1 typographyColumn">
+				<p class="hGallery">Gallery</p>
+				<p class="wrapped hasmargin">~<em>#</em> An image gallery page in Bash. With <em>ls</em> on backend<blink>_</blink></p>
+				<p class="wrapped hasmargin">~<em>#</em> You can upload images there too. Click the button below or drop a file on the page<blink>_</blink></p>
+				<p class="wrapped hasmargin" style="text-align: center;">
+					<form id="the-form">
+						<div class="fileinput">
+							<label for="aPicture">Select a file</label>
+							<input type="file" id="aPicture" name="aPicture" onchange="submitTheForm()">
+						</div>
+					</form>
+				</p>
+				<p>&nbsp;</p>
+				<p class="wrapped hasmargin">~<em>#</em> <a href="/">Return to the homepage</a></p>
+			</div>
+			<div id="gallery"></div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = () => {
+			blinkTheBlinks();
+
+			request("GET", "/api/images", undefined, (images) => {
+				for (let image of images) {
+					addImage(image.URL);
+				}
+			});
+		}
+		
+		function submitTheForm() {
+			submitForm('the-form', '/api/upload', (imgData) => {
+				console.log("Response image data is ", imgData);
+				addImage(imgData.URL);
+			});
+		}
+
+		function addImage(url) {
+			let img = document.createElement('img');
+			img.src = url;
+			img.style.display = 'none';
+			img.style.opacity = 0;
+			img.onload = function(){
+				let iid = setInterval(() => {
+					this.style.display = 'inline-block';
+					this.style.opacity = parseFloat(this.style.opacity) + 0.03;
+					if (this.style.opacity >= 1) {
+						clearInterval(iid);
+					}
+				}, 20)
+			}
+
+			let eGallery = document.getElementById('gallery');
+			eGallery.appendChild(img);
+		}
+	</script>
+</html>
