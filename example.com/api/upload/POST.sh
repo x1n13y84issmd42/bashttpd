@@ -39,5 +39,4 @@ declare -A RESP=(
 	[isItReallyHappeningInBash]=true
 )
 
-# respJSON RESP untyped
-respJSONP aPictureResponse RESP
+respJSON RESP untyped

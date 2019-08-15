@@ -90,32 +90,9 @@ function reqFileContentType {
 	yield ${!vn}
 }
 
-function respJSONP {
-	type=$(reflection.Type $2)
-
-	case $type in
-		"MAP")
-			JSON=$(JSON.EncodeObject $2 untyped)
-		;;
-
-		"ARRAY")
-			JSON=$(JSON.EncodeArray $2 untyped)
-		;;
-
-		"STRING")
-			JSON=$(JSON.EncodeString $2)
-		;;
-
-		*)
-			JSON=$(JSON.EncodePass $2)
-		;;
-	esac
-
-	# respHeader "Content-Type" "application/json"
-	respBody "bwf.set(\"$1\", $JSON);"
-}
-
 # A shorthand function to responding with JSONs. Encodes passed data, sends Content-Type.
+# In case of enabled upload progress reporting, it responds with a JSONP and stores the response
+# under the "X-Bwf-Upload-ID" value.
 # Arguments
 #	$1: a name of a variable containing response data. Not the var itself.
 #	$2: an optional encoding mode for JSON.EncodeObject & EncodeArray functions.
@@ -140,8 +117,14 @@ function respJSON {
 		;;
 	esac
 
-	# respHeader "Content-Type" "application/json"
-	respBody $JSON
+	if [[ ! -z $X_BWF_UPLOAD_ID ]]; then
+		loggggg "Upload ID is \"$X_BWF_UPLOAD_ID\", responding as JSONP."
+		respBody "bwf.set(\"$X_BWF_UPLOAD_ID\", $JSON);"
+		respBody "console.log(\"set the $X_BWF_UPLOAD_ID\");"
+	else
+		respHeader "Content-Type" "application/json"
+		respBody $JSON
+	fi
 }
 
 # Encodes an associative array as a JSON object.

@@ -34,28 +34,36 @@ function requestVisits() {
 	});
 }
 
+let UPLOAD_ID=1
+
 function submitForm(formID, url, cb) {
-	let form = document.getElementById(formID);
-	let fd = new FormData(form);
-	let req = new XMLHttpRequest();
+	(function(UID) {
+		let form = document.getElementById(formID);
+		let fd = new FormData(form);
+		let req = new XMLHttpRequest();
+		
+		let lastReceived = 0;
+		req.onreadystatechange = function (e) {
+			if (this.readyState === 3) {
+				let newCode = this.responseText.substr(lastReceived);
+				lastReceived = this.responseText.length;
+				eval(newCode);
+			} else if (this.readyState === 4) {
+				let newCode = this.responseText.substr(lastReceived);
+				lastReceived = this.responseText.length;
+				eval(newCode);
+				cb(bwf.get(UID));
+			}
+		};
 
-	let lastReceived = 0;
-	req.onreadystatechange = function (e) {
-		if (this.readyState === 3) {
-			let newCode = this.responseText.substr(lastReceived);
-			lastReceived = this.responseText.length;
-			eval(newCode);
-		} else if (this.readyState === 4) {
-			cb(bwf.get("aPictureResponse"));
-		}
-	};
+		req.upload.addEventListener("progress", (e) => {
+			console.log("Progress is ", e);
+		}, false);
 
-	req.upload.addEventListener("progress", (e) => {
-		console.log("Progress is ", e);
-	}, false);
-
-	req.open('POST', url, true);
-	req.send(fd);
+		req.open('POST', url, true);
+		req.setRequestHeader("X-Bwf-Upload-ID", UID)
+		req.send(fd);
+	})(`upl-${formID}-${UPLOAD_ID++}`)
 }
 
 function progressBar(id, p) {
@@ -70,10 +78,12 @@ let bwf = {
 	valueStash: {},
 
 	set: function(vn, v) {
+		console.log(`Setting ${vn}`);
 		bwf.valueStash[vn] = v;
 	},
 	
 	get: function(vn, v) {
+		console.log(`Getting ${vn}`);
 		return bwf.valueStash[vn];
 	}
 };

@@ -36,10 +36,13 @@ function dumpUntil {
 	LINE=""
 	# loggggg ""
 
-	# Going to report the progress
-	echo "HTTP/1.1 200"
-	echo "Content-Type: application/javascript"
-	echo ""
+	if [[ ! -z $X_BWF_UPLOAD_ID ]]; then
+		# Going to report the progress
+		loggggg "	Upload ID is \"$X_BWF_UPLOAD_ID\", going to report the upload progress to the client."
+		echo "HTTP/1.1 200"
+		echo "Content-Type: application/javascript"
+		echo ""
+	fi
 
 	while [ $CL -lt $CONTENT_LENGTH ]; do
 		read -r -d '' -n1 CHAR
@@ -62,8 +65,10 @@ function dumpUntil {
 			CLT=$((CLT+CHUNK_SIZE))
 			renderProgress;
 
-			# Reporting the progress as JS to the client.
-			echo "bwf.renderUploadProgress($CL, $CONTENT_LENGTH);"
+			if [[ ! -z $X_BWF_UPLOAD_ID ]]; then
+				# Reporting the progress as JS to the client.
+				echo "bwf.renderUploadProgress($CL, $CONTENT_LENGTH);"
+			fi
 		fi
 
 		# Testing & breaking
@@ -95,7 +100,7 @@ function readUntil {
 		let CLR=$CL%500
 		if [[ $CLR == 0 ]]; then
 			local safechar=$(echo -n "$CHAR" | tr '\n' '\\')
-			loggggg "* * * * DONE READIN   $CL/$CONTENT_LENGTH		$hexchar ($safechar)"
+			loggggg "	READ   $CL/$CONTENT_LENGTH		$hexchar ($safechar)"
 		fi
 
 		# Testing & breaking
