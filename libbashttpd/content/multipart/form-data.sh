@@ -10,13 +10,21 @@ CHUNK_SIZE=2000
 CLT=$CHUNK_SIZE
 
 function renderProgress {
-	echo -en "\rDone $CL/$CONTENT_LENGTH bytes " >&2
-	n=$(($CLT/$CHUNK_SIZE))
-	for ((i=0; i<n; i++)); do
-		echo -En "~" >&2
+	echo -en "\r	Read $CL/$CONTENT_LENGTH bytes " >&2
+	local n=$(($CLT/$CHUNK_SIZE))
+	local mark="="
+	local numMarks=40
+	local markCLT=$(($CONTENT_LENGTH/$numMarks))
+	echo -En "[" >&2
+	for ((i=0; i<$CL; i+=$markCLT)); do
+		echo -En "$mark" >&2
+	done
+
+	for ((i=$CL; i<$CONTENT_LENGTH; i+=$markCLT)); do
+		echo -En " " >&2
 	done
 	
-	echo -n " " >&2
+	echo -n "] " >&2
 }
 
 # Reads from input until the supplied predicate function returns 0,
@@ -24,9 +32,9 @@ function renderProgress {
 # Usage:
 #	dumpUntil CRLFFound $tmp - reads until found a \r\n sequence and dumps the data to the $tmp file
 function dumpUntil {
-	loggggg "Dumping fast to $2 until $1"
+	loggggg "	Dumping fast to $2 until $1"
 	LINE=""
-	loggggg ""
+	# loggggg ""
 
 	# Going to report the progress
 	echo "HTTP/1.1 200"
@@ -60,7 +68,11 @@ function dumpUntil {
 
 		# Testing & breaking
 		if $1; then
-			[[ ${#LINE} > 0 ]] && echo -en $LINE >> $2 && log "Dumped the remainder ${#LINE} bytes" && LINE=""
+			if [[ ${#LINE} > 0 ]]; then
+				echo -en $LINE >> $2
+				log "	Dumped the remainder ${#LINE} bytes"
+				LINE=""
+			fi
 
 			return 0
 		fi

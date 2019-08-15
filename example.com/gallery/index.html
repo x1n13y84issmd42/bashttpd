@@ -11,7 +11,7 @@
 			<div class="column col1 typographyColumn">
 				<p class="hGallery">Gallery</p>
 				<p class="wrapped hasmargin">~<em>#</em> An image gallery page in Bash. With <em>ls</em> on backend<blink>_</blink></p>
-				<p class="wrapped hasmargin">~<em>#</em> You can upload images there too. Click the button below or drop a file on the page<blink>_</blink></p>
+				<p class="wrapped hasmargin">~<em>#</em> You can upload images there too. Click the button below to select a file<blink>_</blink></p>
 				<p class="wrapped hasmargin" style="text-align: center;">
 					<form id="the-form">
 						<div class="fileinput">
@@ -22,10 +22,14 @@
 					</form>
 				</p>
 				<p>&nbsp;</p>
-				<p class="wrapped hasmargin" style="visibility:hidden;" id="progress-notice">~<em>#</em> As you may have alreay noticed, this is not the most performant HTTP server on the scene; so here is a progress bar of it reading your bytes from it's stdin<blink>_</blink></p>
+				<div id="progress-notice" style="visibility:hidden;">
+					<p class="wrapped hasmargin">~<em>#</em> As you may have alreay noticed, this is not the most performant HTTP server on the scene; so here is a progress bar of it reading your bytes from it's stdin<blink>_</blink></p>
+					<p class="wrapped hasmargin">~<em>#</em> You can observe the same process in the server terminal output<blink>_</blink></p>
+				</div>	
 				<p>&nbsp;</p>
 				<p>&nbsp;</p>
 				<p class="wrapped hasmargin">~<em>#</em> <a href="/">Return to the homepage</a></p>
+				<p class="wrapped hasmargin">~<em>#</em> <blink>_</blink></p>
 			</div>
 			<div id="gallery"></div>
 		</div>

@@ -167,15 +167,15 @@ p {
     margin-left: -17pt;
 }
 
-.typographyColumn > p.wrapped {
+.typographyColumn p.wrapped {
 	word-break: break-all;
 }
 
-.typographyColumn > p.hasmargin {
+.typographyColumn p.hasmargin {
 	margin-bottom: 25pt;
 }
 
-.typographyColumn > p em {
+.typographyColumn p em {
 	background-color: #00BBFF;
 	font-style: normal;
 	color:white;
@@ -230,6 +230,7 @@ blink {
 	display: inline-block;
 	width: 350px;
 	margin-left: 75px;
+	vertical-align: middle;
 }
 
 #the-gallery input[type=file] {

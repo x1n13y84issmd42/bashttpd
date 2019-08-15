@@ -72,7 +72,8 @@ If you're not a fan (who is?), there are functions for that.
 * [x] Serve binary resources (fonts, images, etc)
 * [x] www-form-urlencoded requests
 * [x] multipart/form-data (no binary files yet)
-* [x] Handle uploaded files (no binary files yet)
+* [x] Handle uploaded files
+* [x] File uploading progress (JS)
 * [x] Access data from application/json requests
 * [ ] Access data from application/xml requests
 * [x] application/json responses
