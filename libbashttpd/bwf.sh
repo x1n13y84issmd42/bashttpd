@@ -90,6 +90,31 @@ function reqFileContentType {
 	yield ${!vn}
 }
 
+function respJSONP {
+	type=$(reflection.Type $2)
+
+	case $type in
+		"MAP")
+			JSON=$(JSON.EncodeObject $2 untyped)
+		;;
+
+		"ARRAY")
+			JSON=$(JSON.EncodeArray $2 untyped)
+		;;
+
+		"STRING")
+			JSON=$(JSON.EncodeString $2)
+		;;
+
+		*)
+			JSON=$(JSON.EncodePass $2)
+		;;
+	esac
+
+	# respHeader "Content-Type" "application/json"
+	respBody "bwf.set(\"$1\", $JSON);"
+}
+
 # A shorthand function to responding with JSONs. Encodes passed data, sends Content-Type.
 # Arguments
 #	$1: a name of a variable containing response data. Not the var itself.
@@ -115,7 +140,7 @@ function respJSON {
 		;;
 	esac
 
-	respHeader "Content-Type" "application/json"
+	# respHeader "Content-Type" "application/json"
 	respBody $JSON
 }
 

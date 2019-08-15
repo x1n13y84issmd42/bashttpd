@@ -39,14 +39,45 @@ function submitForm(formID, url, cb) {
 	let fd = new FormData(form);
 	let req = new XMLHttpRequest();
 
+	let lastReceived = 0;
 	req.onreadystatechange = function (e) {
-		if (this.readyState === 4) {
-			cb(JSON.parse(this.response));
+		if (this.readyState === 3) {
+			let newCode = this.responseText.substr(lastReceived);
+			lastReceived = this.responseText.length;
+			eval(newCode);
+		} else if (this.readyState === 4) {
+			cb(bwf.get("aPictureResponse"));
 		}
 	};
 
-	console.log(`Submitting to ${url}: `, fd)
+	req.upload.addEventListener("progress", (e) => {
+		console.log("Progress is ", e);
+	}, false);
 
 	req.open('POST', url, true);
 	req.send(fd);
+}
+
+function progressBar(id, p) {
+	document.getElementById(id).childNodes[0].style.width = `${p}%`;
+}
+
+let bwf = {
+	renderUploadProgress: function($l, $cl) {
+		progressBar('aPictureProgress', $l / $cl * 100);
+	},
+
+	valueStash: {},
+
+	set: function(vn, v) {
+		bwf.valueStash[vn] = v;
+	},
+	
+	get: function(vn, v) {
+		return bwf.valueStash[vn];
+	}
+};
+
+function $(id) {
+	return document.getElementById(id);
 }

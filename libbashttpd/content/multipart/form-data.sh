@@ -27,6 +27,12 @@ function dumpUntil {
 	loggggg "Dumping fast to $2 until $1"
 	LINE=""
 	loggggg ""
+
+	# Going to report the progress
+	echo "HTTP/1.1 200"
+	echo "Content-Type: application/javascript"
+	echo ""
+
 	while [ $CL -lt $CONTENT_LENGTH ]; do
 		read -r -d '' -n1 CHAR
 		let CL=CL+1
@@ -47,6 +53,9 @@ function dumpUntil {
 
 			CLT=$((CLT+CHUNK_SIZE))
 			renderProgress;
+
+			# Reporting the progress as JS to the client.
+			echo "bwf.renderUploadProgress($CL, $CONTENT_LENGTH);"
 		fi
 
 		# Testing & breaking

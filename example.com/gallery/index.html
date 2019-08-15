@@ -17,9 +17,13 @@
 						<div class="fileinput">
 							<label for="aPicture">Select a file</label>
 							<input type="file" id="aPicture" name="aPicture" onchange="submitTheForm()">
+							<div class="progress" id="aPictureProgress" style="visibility:hidden;"><div></div></div>
 						</div>
 					</form>
 				</p>
+				<p>&nbsp;</p>
+				<p class="wrapped hasmargin" style="visibility:hidden;" id="progress-notice">~<em>#</em> As you may have alreay noticed, this is not the most performant HTTP server on the scene; so here is a progress bar of it reading your bytes from it's stdin<blink>_</blink></p>
+				<p>&nbsp;</p>
 				<p>&nbsp;</p>
 				<p class="wrapped hasmargin">~<em>#</em> <a href="/">Return to the homepage</a></p>
 			</div>
@@ -39,8 +43,15 @@
 		}
 		
 		function submitTheForm() {
+			$("aPictureProgress").style.visibility = 'visible';
+			$("progress-notice").style.visibility = 'visible';
+
 			submitForm('the-form', '/api/upload', (imgData) => {
+				$("aPictureProgress").style.visibility = 'hidden';
+				$("progress-notice").style.visibility = 'hidden';
+
 				console.log("Response image data is ", imgData);
+
 				addImage(imgData.URL);
 			});
 		}

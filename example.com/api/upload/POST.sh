@@ -1,4 +1,4 @@
-respStatus 200
+# respStatus 200
 
 local EXT="bin"
 local fCT=$(reqFileContentType aPicture)
@@ -39,4 +39,5 @@ declare -A RESP=(
 	[isItReallyHappeningInBash]=true
 )
 
-respJSON RESP untyped
+# respJSON RESP untyped
+respJSONP aPictureResponse RESP

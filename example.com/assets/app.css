@@ -242,7 +242,7 @@ blink {
 }
 
 .fileinput {
-	
+
 }
 
 .fileinput label {
@@ -258,4 +258,14 @@ blink {
 
 .fileinput label:hover {
 	background-color: #00BBFF;
+}
+
+.progress {
+	height: 20px;
+}
+
+.progress > div {
+	background: #00BBFF;
+	height: 100%;
+	width: 0;
 }
