@@ -1,9 +1,6 @@
 rxHeader='^([a-zA-Z-]+)\s*:\s*(.*)'
 rxMethod='^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP' #doesn't work
 
-# LANG=C
-# LC_ALL=C
-
 # Reads HTTP request headers.
 function readHeaders {
 	# Debug dump (clear)
@@ -31,8 +28,32 @@ function readHeaders {
 		# Figuring out the request method used
 		elif [[ $INPUT =~ ^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP ]]; then
 			reqMethod=${BASH_REMATCH[1]}
-			reqPath=${BASH_REMATCH[2]}
+			reqURL=${BASH_REMATCH[2]}
+			reqPath=${reqURL%%\?*}
+			reqQuery=${reqURL#*\?}
+
+			[[ $reqQuery == $reqPath ]] && reqQuery=""
+
 			log "Request is $reqMethod @ $reqPath"
+
+			if [[ ! -z $reqQuery ]]; then
+				logg "Query string is $reqQuery"
+
+				# Parsing the query string.
+				readarray -t -d '&' QSA <<< "$reqQuery"
+				for QSP in ${QSA[@]}; do
+					# Somehow this fixes that weird trailing \n
+					QSP=$(echo "${QSP}")
+					readarray -t -d '=' QSKV <<< "$QSP"
+					QSK=$(echo "${QSKV[0]}")
+					QSV=$(echo "${QSKV[1]}")
+					QSK=$(urldecode $QSK)
+					QSV=$(urldecode $QSV)
+					var "QS_$QSK" "$QSV"
+					
+					loggg "	$QSK = '$QSV'"
+				done
+			fi
 
 		# Done with headers
 		else

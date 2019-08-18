@@ -8,28 +8,31 @@ function var {
 
 # Outputs to the host's stderr
 function log {
+	_IFS=$IFS
+	IFS=''
 	[[ $LOG_VERBOSITY -ge 1 ]] && printf "%s " $@ >&2 && echo "" >&2
+	IFS=$_IFS
 	return 0
 }
 
 # Verbose logging
 function logg {
-	[[ $LOG_VERBOSITY -ge 2 ]] && log $@
+	[[ $LOG_VERBOSITY -ge 2 ]] && log "$@"
 }
 
 # Even more verbose logging
 function loggg {
-	[[ $LOG_VERBOSITY -ge 3 ]] && log $@
+	[[ $LOG_VERBOSITY -ge 3 ]] && log "$@"
 }
 
 # Slightly annoying logging
 function logggg {
-	[[ $LOG_VERBOSITY -ge 4 ]] && log $@
+	[[ $LOG_VERBOSITY -ge 4 ]] && log "$@"
 }
 
 # Absolutely annoying chatter
 function loggggg {
-	[[ $LOG_VERBOSITY -ge 5 ]] && log $@
+	[[ $LOG_VERBOSITY -ge 5 ]] && log "$@"
 }
 
 # Like `return` in other languages, capture it with $()
@@ -69,6 +72,15 @@ function array.join {
 
 	echo ${res:${#d}}
 }
+
+# Declares a copy of an associative array by its provided name.
+alias array.getbyref='e="$( declare -p ${1} )"; eval "declare -A E=${e#*=}"'
+
+# Declares a copy of an associative array by its provided name, gets the name from $2.
+alias array.getbyref2='e="$( declare -p ${2} )"; eval "declare -A E=${e#*=}"'
+
+# Iterates over the array created by array.getbyref.
+alias array.foreach='for key in "${!E[@]}"'
 
 # Tries to figure out the type of given variable.
 # Takes a name of a variable, not the variable itself.

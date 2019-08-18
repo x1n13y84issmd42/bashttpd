@@ -4,7 +4,7 @@ shopt -s expand_aliases
 
 # Sends an HTTP response status code.
 function respStatus {
-	echo "HTTP/1.1 $1"
+	[[ -z $__HTTP_STATUS_SENT ]] && echo "HTTP/1.1 $1" && __HTTP_STATUS_SENT=$1
 }
 
 # Sends an HTTP response header.
@@ -92,6 +92,12 @@ function reqFileContentType {
 	yield ${!vn}
 }
 
+# Outputs a values of a query string parameter.
+function reqQuery {
+	vn="QS_$1"
+	yield ${!vn}
+}
+
 # A shorthand function to responding with JSONs. Encodes passed data, sends Content-Type.
 # In case of enabled upload progress reporting, it responds with a JSONP and stores the response
 # under the "X-Bwf-Upload-ID" value.
@@ -100,7 +106,6 @@ function reqFileContentType {
 #	$2: an optional encoding mode for JSON.EncodeObject & EncodeArray functions.
 function respJSON {
 	type=$(reflection.Type $1)
-	loggggg "Response type is $type"
 
 	case $type in
 		"MAP")
@@ -146,7 +151,6 @@ function JSON.EncodeObject {
 
 		if [[ $2 == 'untyped' ]]; then
 			type=$(reflection.Type SRCVAL)
-			loggggg "Value ($SRCVAL) is of type $type"
 
 			case $type in
 				"STRING")
@@ -240,21 +244,13 @@ function sys.TimeElapsed {
 # Executes a SELECT MySQL query. Returns all available rows.
 # Arguments:
 #	$1: a table name to seelct rows from
+#	$2: an optional 'WHERE' clause without the "WHERE" keyword
 function mysql.Select {
 	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
-	# log "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"SELECT * FROM $1\""
-	r=$(mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e "SELECT * FROM $1")
+	[[ ! -z $2 ]] && WHERE="WHERE $2"
+	local r=$(mysql.Query "SELECT * FROM $1 $WHERE")
 	yield "$r"
 }
-
-# Declares a copy of an associative array by its provided name.
-alias array.getbyref='e="$( declare -p ${1} )"; eval "declare -A E=${e#*=}"'
-
-# Declares a copy of an associative array by its provided name, gets the name from $2.
-alias array.getbyref2='e="$( declare -p ${2} )"; eval "declare -A E=${e#*=}"'
-
-# Iterates over the array created by array.getbyref.
-alias array.foreach='for key in "${!E[@]}"'
 
 # Iterates over a set of rows returned from mysql.
 # Context:
@@ -289,7 +285,7 @@ IFS=\$IFS_backup"
 #	$1: a query to execute.
 function mysql.Query {
 	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
-	# echo "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"$1\"" >&2
+	# loggggg "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"$1\""
 	r=$(mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e "$1")
 	yield "$r"
 }

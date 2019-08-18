@@ -1,5 +1,4 @@
 _IFS=$IFS
-# IFS=$'\r'
 IFS=$''
 LANG=C
 LC_ALL=C

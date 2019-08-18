@@ -1,5 +1,3 @@
-# respStatus 200
-
 local EXT="bin"
 local fCT=$(reqFileContentType aPicture)
 
@@ -31,12 +29,11 @@ log "mv $fTmp $fDest"
 $(mv $fTmp $fDest)
 
 declare -A RESP=(
-	# [name]=$(reqData name)
-	# [age]=$(reqData age)
 	[tpmFilename]=$fTmp
 	[srcFilename]=$(reqFileName aPicture)
 	[URL]="http://${fDest//$PROJECT/localhost:8080}"
 	[isItReallyHappeningInBash]=true
 )
 
+respStatus 200
 respJSON RESP untyped

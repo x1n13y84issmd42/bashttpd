@@ -1,26 +1,24 @@
 # Executing ls
 lsOut=$(ls -lA --time-style=long-iso $PROJECT/$GALLERY_STORAGE)
+readarray -t LINES <<< $lsOut
 
-# Reading it's output, separated by \n
-IFS=$'\n'
-read -r -d '' -a FILES <<< $lsOut
-
-for FILE in "${FILES[@]}"; do
-	# Reading a single line of output, separated by whitespace
+# Going through it's output
+for LINE in "${LINES[@]}"; do
+	# Splitting the line by whitespace.
 	IFS=$' '
-	read -r -a LINE <<< $FILE
+	FILE=($LINE)
 	
-	if ! [[ -z ${LINE[7]} || -z ${LINE[4]} ]]; then
+	# If there are size & name columns in place
+	if ! [[ -z ${FILE[7]} || -z ${FILE[4]} ]]; then
 		declare -A fdata=(
-			[name]="${LINE[7]}"
-			[URL]="http://localhost:8080/$GALLERY_STORAGE/${LINE[7]}"
-			[size]="${LINE[4]}"
-			[modifiedAt]="${LINE[5]} ${LINE[6]}"
+			[name]="${FILE[7]}"
+			[URL]="http://localhost:8080/$GALLERY_STORAGE/${FILE[7]}"
+			[size]="${FILE[4]}"
+			[modifiedAt]="${FILE[5]} ${FILE[6]}"
 		)
-		# Encoding an object and saving it as a string to RESP_FILES
+		# Encoding an object and appending it as a string to RESP_FILES
 		IFS=''
 		RESP_FILES+=("$(JSON.EncodeObject fdata untyped)")
-		# RESP_FILES+=("\"${fdata[name]}\"")
 		log "File ${fdata[name]} added"
 	fi
 done
