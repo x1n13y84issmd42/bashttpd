@@ -109,9 +109,6 @@ p {
 	font-size: 16pt;
 }
 
-.col1 {
-}
-
 .col2 {
 	margin-left: 75pt;
 	padding-top: 145pt;
@@ -240,10 +237,6 @@ blink {
     overflow: hidden;
     position: absolute;
     z-index: -1;
-}
-
-.fileinput {
-
 }
 
 .fileinput label {

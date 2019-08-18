@@ -39,6 +39,7 @@ Support for `application/xml` & `application/json` is expected soon.
 |**reqData**|Outputs a single field value from the request body. Content-Type-agnostic.|`userName=$(reqData "userName")`|
 |**reqFile**|Outputs a temporary file name where contents of the uploaded file is stored. Takes the name of the file as in form data.|`filePath=$(reqFile "theFile")`|
 |**reqFileName**|Outputs original name of the uploaded file. Takes the name of the file as in form data.|`sourceFileName=$(reqFileName "theFile")`|
+|**reqQuery**|Outputs a value of a query string parameter.|`page=$(reqQuery "page")`|
 
 ### Responding
 Basically you can just `echo` anything, and it'll get to a client, but you'll need to follow the HTTP protocol yourself.
@@ -80,7 +81,7 @@ If you're not a fan (who is?), there are functions for that.
 * [x] Page templating
 * [ ] Branches in templates
 * [ ] Loops in templates
-* [ ] Query String parsing
+* [x] Query String parsing
 * [x] Cookies
 * [ ] MySQL
 * [x] Content url-en/decoding

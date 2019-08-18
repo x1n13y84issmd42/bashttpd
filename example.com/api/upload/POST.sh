@@ -25,8 +25,7 @@ esac
 
 local fTmp=$(reqFile aPicture)
 local fDest=$(mktemp $PROJECT/$GALLERY_STORAGE/XXXXXXXX.$EXT)
-log "mv $fTmp $fDest"
-$(mv $fTmp $fDest)
+mv $fTmp $fDest
 
 declare -A RESP=(
 	[tpmFilename]=$fTmp
