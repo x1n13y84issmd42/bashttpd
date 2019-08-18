@@ -224,10 +224,12 @@ function JSON.EncodePass {
 
 TIMER_LAST=$(date +%s)
 
+# Outputs current timestamp in seconds.
 function sys.Time {
 	date +%s
 }
 
+# Outputs the time elapsed since previous call to this function. 
 function sys.TimeElapsed {
 	T=$(date +%s)
 	DT=$((T-TIMER_LAST))
@@ -235,6 +237,9 @@ function sys.TimeElapsed {
 	yield "$DT"
 }
 
+# Executes a SELECT MySQL query. Returns all available rows.
+# Arguments:
+#	$1: a table name to seelct rows from
 function mysql.Select {
 	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
 	# log "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"SELECT * FROM $1\""
@@ -242,12 +247,18 @@ function mysql.Select {
 	yield "$r"
 }
 
-# function mysql.Insert {}
-
+# Declares a copy of an associative array by its provided name.
 alias array.getbyref='e="$( declare -p ${1} )"; eval "declare -A E=${e#*=}"'
+
+# Declares a copy of an associative array by its provided name, gets the name from $2.
 alias array.getbyref2='e="$( declare -p ${2} )"; eval "declare -A E=${e#*=}"'
+
+# Iterates over the array created by array.getbyref.
 alias array.foreach='for key in "${!E[@]}"'
 
+# Iterates over a set of rows returned from mysql.
+# Context:
+#	$ROWS - raw text output from mysql
 alias mysql.foreach="
 IFS=\$' \\t\\r\\n'
 declare -a sqlHeader
@@ -258,6 +269,11 @@ for i in \${!AROWS[@]}; do
 	[[ \$i == 0 ]] && sqlHeader=(\${AROWS[0]}) || sqlLines+=(\"\${AROWS[\$i]}\")
 done; for lI in \${!sqlLines[@]};"
 
+
+# Declares a local associative array and puts mysql row data in it.
+# Context:
+#	executed within a mysql.foreach loop
+#	declares a $row variable
 alias mysql.row="
 IFS_backup=\$IFS
 IFS='\t'
@@ -268,6 +284,9 @@ for colI in \${!sqlColumns[@]}; do
 done
 IFS=\$IFS_backup"
 
+# Executes a MySQL query.
+# Arguments:
+#	$1: a query to execute.
 function mysql.Query {
 	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
 	# echo "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"$1\"" >&2
@@ -275,6 +294,10 @@ function mysql.Query {
 	yield "$r"
 }
 
+# Inserts a row into a MySQL table.
+# Arguments:
+#	$1: table name.
+#	$2: name of the associative array which contains column data.
 function mysql.Insert {
 	declare -a keys
 	declare -a vals
@@ -291,7 +314,6 @@ function mysql.Insert {
 	svals="($svals)"
 
 	local ROWS=$(mysql.Query "INSERT INTO $1 $skeys VALUES $svals; SELECT LAST_INSERT_ID() as ID;")
-	# yield "$ROWS"
 	mysql.foreach do
 		mysql.row
 		yield "${row[ID]}"
