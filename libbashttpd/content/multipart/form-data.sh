@@ -15,7 +15,9 @@ function renderProgress {
 	local mark="="
 	local numMarks=40
 	local markCLT=$(($CONTENT_LENGTH/$numMarks))
+
 	echo -En "[" >&2
+
 	for ((i=0; i<$CL; i+=$markCLT)); do
 		echo -En "$mark" >&2
 	done
@@ -75,7 +77,6 @@ function dumpUntil {
 		if $1; then
 			if [[ ${#LINE} > 0 ]]; then
 				echo -en $LINE >> $2
-				log "	Dumped the remainder ${#LINE} bytes"
 				LINE=""
 			fi
 

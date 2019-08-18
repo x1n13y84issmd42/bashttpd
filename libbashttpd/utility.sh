@@ -34,7 +34,7 @@ function loggggg {
 
 # Like `return` in other languages, capture it with $()
 function yield {
-	echo -En $1
+	echo -En "$@"
 }
 
 # Taken from https://gist.github.com/cdown/1163649#file-gistfile1-sh
@@ -75,7 +75,7 @@ function array.join {
 # Usage:
 #	userName="John"
 #	listOfThings=(1 2 33 444)
-#	mapOfThings=([first]=1 [other]=2 [nextAfterOther]=33 [plenty]=444)
+#	declare -A mapOfThings=([first]=1 [other]=2 [nextAfterOther]=33 [plenty]=444)
 #	boolFlagValue=true
 #	userAge=234
 #	reflection.Type userName # outputs "STRING"
@@ -85,29 +85,29 @@ function array.join {
 #	reflection.Type userAge # outputs "NUMBER"
 function reflection.Type {
 	decl=$(declare -p $1)
-	decl=${decl#*=}
-	sdecl=${decl:1:${#decl}-2}
+	mode=${decl:8:2}
 
 	val=$(eval echo \$${1})
 
-	if [[ $val == $sdecl ]]; then
-		if [[ $val == "true" || $val == "false" ]]; then
-			echo "BOOLEAN"
-		elif [[ $val =~ ^[[:digit:]]+$ ]]; then
-			echo "NUMBER"
-		else
-			echo "STRING"
-		fi
-	else
-		eval "declare -A TEST=$decl"
-		keys=${!TEST[@]}
-
-		if [[ $keys =~ ^[0-9\ ]+$ ]]; then
+	case $mode in
+		"-a")
 			echo "ARRAY"
-		else
+		;;
+
+		"-A")
 			echo "MAP"
-		fi
-	fi
+		;;
+
+		*)
+			if [[ $val == "true" || $val == "false" ]]; then
+				echo "BOOLEAN"
+			elif [[ $val =~ ^[[:digit:]]+$ ]]; then
+				echo "NUMBER"
+			else
+				echo "STRING"
+			fi
+		;;
+	esac
 }
 
 declare -a IFS_backup_stack

@@ -1,5 +1,7 @@
 # Bashttpd Web Framework
 
+shopt -s expand_aliases
+
 # Sends an HTTP response status code.
 function respStatus {
 	echo "HTTP/1.1 $1"
@@ -98,6 +100,7 @@ function reqFileContentType {
 #	$2: an optional encoding mode for JSON.EncodeObject & EncodeArray functions.
 function respJSON {
 	type=$(reflection.Type $1)
+	loggggg "Response type is $type"
 
 	case $type in
 		"MAP")
@@ -123,7 +126,7 @@ function respJSON {
 		respBody "console.log(\"set the $X_BWF_UPLOAD_ID\");"
 	else
 		respHeader "Content-Type" "application/json"
-		respBody $JSON
+		respBody "$JSON"
 	fi
 }
 
@@ -143,6 +146,7 @@ function JSON.EncodeObject {
 
 		if [[ $2 == 'untyped' ]]; then
 			type=$(reflection.Type SRCVAL)
+			loggggg "Value ($SRCVAL) is of type $type"
 
 			case $type in
 				"STRING")
@@ -194,6 +198,7 @@ function JSON.EncodeArray {
 		JSONFIELDS+=("$JSONVAL")
 	done
 
+	IFS=''
 	JSON=$(array.join ", " ${JSONFIELDS[@]})
 	JSON="[$JSON]"
 
@@ -213,6 +218,7 @@ function JSON.EncodeString {
 # It's name, not the variable itself.
 function JSON.EncodePass {
 	val=$(eval echo \$${1})
+	[[ -z $val ]] && val='""'
 	yield "$val"
 }
 
@@ -227,4 +233,68 @@ function sys.TimeElapsed {
 	DT=$((T-TIMER_LAST))
 	TIMER_LAST=$T
 	yield "$DT"
+}
+
+function mysql.Select {
+	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
+	# log "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"SELECT * FROM $1\""
+	r=$(mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e "SELECT * FROM $1")
+	yield "$r"
+}
+
+# function mysql.Insert {}
+
+alias array.getbyref='e="$( declare -p ${1} )"; eval "declare -A E=${e#*=}"'
+alias array.getbyref2='e="$( declare -p ${2} )"; eval "declare -A E=${e#*=}"'
+alias array.foreach='for key in "${!E[@]}"'
+
+alias mysql.foreach="
+IFS=\$' \\t\\r\\n'
+declare -a sqlHeader
+declare -a sqlLines
+declare -a sqlColumns
+readarray -t AROWS <<< \$ROWS
+for i in \${!AROWS[@]}; do
+	[[ \$i == 0 ]] && sqlHeader=(\${AROWS[0]}) || sqlLines+=(\"\${AROWS[\$i]}\")
+done; for lI in \${!sqlLines[@]};"
+
+alias mysql.row="
+IFS_backup=\$IFS
+IFS='\t'
+readarray -d $'\\t' -t sqlColumns <<< \${sqlLines[\$lI]}
+declare -A row
+for colI in \${!sqlColumns[@]}; do
+	row[\${sqlHeader[\$colI]}]="\${sqlColumns[\$colI]}"
+done
+IFS=\$IFS_backup"
+
+function mysql.Query {
+	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
+	# echo "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"$1\"" >&2
+	r=$(mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e "$1")
+	yield "$r"
+}
+
+function mysql.Insert {
+	declare -a keys
+	declare -a vals
+	array.getbyref2
+	array.foreach; do
+		keys+=("$key")
+		#TODO: escape quotes and stuff
+		vals+=("\"${E[$key]}\"")
+	done
+
+	skeys=$(array.join ', ' ${keys[@]})
+	skeys="($skeys)"
+	svals=$(array.join ', ' ${vals[@]})
+	svals="($svals)"
+
+	local ROWS=$(mysql.Query "INSERT INTO $1 $skeys VALUES $svals; SELECT LAST_INSERT_ID() as ID;")
+	# yield "$ROWS"
+	mysql.foreach do
+		mysql.row
+		yield "${row[ID]}"
+		return 0
+	done
 }
