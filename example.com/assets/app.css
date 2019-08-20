@@ -190,18 +190,18 @@ img {
 	font-size: 32pt;
 }
 
-a {
+.typographyColumn a {
 	color: #00BBFF;
 	text-decoration: none;
 }
 
-a:hover {
+.typographyColumn a:hover {
 	background-color: #00BBFF;
 	color: white;
 	text-decoration: none;
 }
 
-a::after {
+.typographyColumn a::after {
 	content: " >>"
 }
 
@@ -262,4 +262,37 @@ blink {
 	background: #00BBFF;
 	height: 100%;
 	width: 0;
+}
+
+#ui-stash {
+	/* display: none; */
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: -9999;
+}
+
+#ui-stash > * {
+	display: none;
+	position: relative;
+	z-index: 9999
+}
+
+#theater {
+	height: 100%;
+}
+
+#theater > .stage {
+	background-color: rgba(0, 0, 0, 0.5);
+	align-content: center;
+	text-align: center;
+	height: 100%;
+}
+
+#theater > .stage > .img {
+	display: inline-block;
+	line-height: 100%;
+	position: relative;
 }

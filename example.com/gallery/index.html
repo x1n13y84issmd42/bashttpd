@@ -33,6 +33,12 @@
 			</div>
 			<div id="gallery"></div>
 		</div>
+
+		<div id='ui-stash'>
+			<div id="theater">
+				<div class="stage"><img src="" alt="" class="img"></div>
+			</div>
+		</div>
 	</body>
 
 	<script type="text/javascript">
@@ -41,12 +47,13 @@
 
 			request("GET", "/api/images", undefined, (images) => {
 				for (let image of images) {
-					addImage(image.URL);
+					addImage(image.name, image.URL);
 				}
 			});
 		}
 		
 		function submitTheForm() {
+			progressBar("aPictureProgress", 0);
 			$("aPictureProgress").style.visibility = 'visible';
 			$("progress-notice").style.visibility = 'visible';
 
@@ -60,9 +67,18 @@
 			});
 		}
 
-		function addImage(url) {
+		function addImage(name, url) {
+			let a = document.createElement('a');
+			a.href = `#${name}`;
+			a.onclick = (e) => {
+				console.log('Click!', e);
+				// e.preventDefault();
+				theaterOpen(e.target.id);	
+			};
+
 			let img = document.createElement('img');
 			img.src = url;
+			img.id = name;
 			img.style.display = 'none';
 			img.style.opacity = 0;
 			img.onload = function(){
@@ -76,7 +92,28 @@
 			}
 
 			let eGallery = document.getElementById('gallery');
-			eGallery.appendChild(img);
+			a.appendChild(img);
+			eGallery.appendChild(a);
+		}
+
+		function theaterOpen(imageID) {
+			let eTh = $('theater');
+			let eStage = eTh.querySelectorAll('.stage')[0];
+			let eImg = eTh.querySelectorAll('img.img')[0];
+			let eImgSrc = $(imageID);
+			eTh.style.display = 'block';
+			eImg.src = eImgSrc.src;
+			eImg.style.top = `${((window.innerHeight - eImgSrc.naturalHeight) / 2)}px`;
+			eStage.onclick = theaterClose;
+
+			// window.location.hash = imageID;
+			$('ui-stash').style.zIndex = 9999;
+
+		}
+
+		function theaterClose() {
+			$('theater').style.display = 'none';
+			$('ui-stash').style.zIndex = -9999;
 		}
 	</script>
 </html>
