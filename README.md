@@ -74,6 +74,7 @@ If you're not a fan (who is?), there are functions for that.
 * [x] www-form-urlencoded requests
 * [x] multipart/form-data (no binary files yet)
 * [x] Handle uploaded files
+* [x] Figure out binary request bodies
 * [x] File uploading progress (JS)
 * [x] Access data from application/json requests
 * [ ] Access data from application/xml requests
@@ -81,13 +82,13 @@ If you're not a fan (who is?), there are functions for that.
 * [x] Page templating
 * [ ] Branches in templates
 * [ ] Loops in templates
+* [ ] Path parameters (/user/{ID})
 * [x] Query String parsing
 * [x] Cookies
-* [ ] MySQL
+* [x] MySQL
 * [x] Content url-en/decoding
 * [ ] Socat port for parallelism?
-* [x] Figure out binary request bodies
-* [ ] A neat method of rendering CLI output as HTML is definitely needed
+* [ ] Render colored CLI output as HTML (`ls --color=yes`)
 
 ## Links
 https://superuser.com/questions/1368666/receiving-multiple-files-at-once-in-netcat-without-overwriting-last-file\
