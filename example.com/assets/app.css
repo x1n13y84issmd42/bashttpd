@@ -45,7 +45,15 @@
     margin-left: -4pt;
 }
 
-input {
+.hImageID {
+    color: #222;
+    font-size: 41pt !important;
+    line-height: 41pt;
+    position: relative;
+    margin-left: -4pt;
+}
+
+input, textarea {
 	font-size: 20pt;
     display: block;
     margin-bottom: 20pt;
@@ -295,4 +303,16 @@ blink {
 	display: inline-block;
 	line-height: 100%;
 	position: relative;
+}
+
+#comments textarea {
+	width: 100%;
+}
+
+#comments input[type=button] {
+	display: block;
+}
+
+#comments-list > p {
+	margin-bottom: 20px;
 }

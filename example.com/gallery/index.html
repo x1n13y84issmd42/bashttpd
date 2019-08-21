@@ -69,12 +69,7 @@
 
 		function addImage(name, url) {
 			let a = document.createElement('a');
-			a.href = `#${name}`;
-			a.onclick = (e) => {
-				console.log('Click!', e);
-				// e.preventDefault();
-				theaterOpen(e.target.id);	
-			};
+			a.href = `/gallery/image?ID=${name}`;
 
 			let img = document.createElement('img');
 			img.src = url;

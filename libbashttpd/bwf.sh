@@ -154,11 +154,11 @@ function JSON.EncodeObject {
 
 			case $type in
 				"STRING")
-					JSONVAL=$(JSON.EncodeString SRCVAL)
+					JSONVAL="$(JSON.EncodeString SRCVAL)"
 				;;
 
 				*)
-					JSONVAL=$(JSON.EncodePass SRCVAL)
+					JSONVAL="$(JSON.EncodePass SRCVAL)"
 				;;
 			esac
 		fi
@@ -166,9 +166,9 @@ function JSON.EncodeObject {
 		JSONFIELDS+=("\"$IK\":$JSONVAL")
 	done
 
-	JSON=$(array.join ", " ${JSONFIELDS[@]})
+	IFS=''
+	JSON=$(array.join ", " "${JSONFIELDS[@]}")
 	JSON="{$JSON}"
-
 	yield $JSON
 }
 
@@ -213,7 +213,7 @@ function JSON.EncodeArray {
 # Takes name of the variable as a argument.
 # It's name, not the variable itself.
 function JSON.EncodeString {
-	val=$(eval echo \$${1})
+	val=$(eval echo "\$${1}")
 	yield "\"$val\""
 }
 

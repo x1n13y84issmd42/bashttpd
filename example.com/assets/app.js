@@ -91,3 +91,30 @@ let bwf = {
 function $(id) {
 	return document.getElementById(id);
 }
+
+function id(eid) {
+	return $(eid);
+}
+
+function requestComments() {
+	request('GET', `/api/comments?image=${imageID}`, undefined, (cmnts) => {
+		for (let c of cmnts) {
+			addComment(c);
+		}
+	});
+}
+
+function addComment(cmnt) {
+	let eP = document.createElement('p');
+	eP.innerHTML = `~<em>#</em> ${cmnt.message.replace(/\n/gi, "<br>")}<blink>_</blink>`;
+	id('comments-list').appendChild(eP);
+}
+
+function submitComment(imageID, message) {
+	request('POST', '/api/comments', {
+		imageID: imageID,
+		message: message,
+	});
+
+	addComment({message: message});
+}
