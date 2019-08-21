@@ -37,7 +37,12 @@ function loggggg {
 
 # Like `return` in other languages, capture it with $()
 function yield {
-	echo -En "$@"
+	if [[ -z $2 ]]; then
+		echo -En "$1"
+	else
+		var $2 "$1"
+		eval "${2}=\"$1\""
+	fi
 }
 
 # Taken from https://gist.github.com/cdown/1163649#file-gistfile1-sh

@@ -86,9 +86,11 @@ If you're not a fan (who is?), there are functions for that.
 * [x] Query String parsing
 * [x] Cookies
 * [x] MySQL
+* [ ] MySQL migrations
 * [x] Content url-en/decoding
 * [ ] Socat port for parallelism?
 * [ ] Render colored CLI output as HTML (`ls --color=yes`)
+* [x] Automatic error handling and reporting
 
 ## Links
 https://superuser.com/questions/1368666/receiving-multiple-files-at-once-in-netcat-without-overwriting-last-file\

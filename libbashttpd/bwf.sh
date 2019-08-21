@@ -93,9 +93,12 @@ function reqFileContentType {
 }
 
 # Outputs a values of a query string parameter.
+# Arguments:
+#	$1: name of the request query string parameter.
+#	$2: optional reference name to put the value into.
 function reqQuery {
 	vn="QS_$1"
-	yield ${!vn}
+	yield ${!vn} $2
 }
 
 # A shorthand function to responding with JSONs. Encodes passed data, sends Content-Type.
@@ -151,6 +154,7 @@ function JSON.EncodeObject {
 
 		if [[ $2 == 'untyped' ]]; then
 			type=$(reflection.Type SRCVAL)
+			# log "JSON.EncodeObject Type of SRCVAL is $type"
 
 			case $type in
 				"STRING")
@@ -241,15 +245,33 @@ function sys.TimeElapsed {
 	yield "$DT"
 }
 
+# Executes a MySQL query.
+# Arguments:
+#	$1: a query to execute.
+#	$2: optional reference name to store the result
+function mysql.Query {
+	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
+	# loggggg "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"$1\""
+	local r
+	r=$(mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e "$1" 2>&1)
+	local __xc=$?
+	yield "$r" $2
+	return $__xc
+}
+
 # Executes a SELECT MySQL query. Returns all available rows.
 # Arguments:
-#	$1: a table name to seelct rows from
+#	$1: a table name to select rows from
 #	$2: an optional 'WHERE' clause without the "WHERE" keyword
+#	$3: optional reference name to store the result
 function mysql.Select {
 	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
 	[[ ! -z $2 ]] && WHERE="WHERE $2"
-	local r=$(mysql.Query "SELECT * FROM $1 $WHERE")
-	yield "$r"
+	local r
+	r=$(mysql.Query "SELECT * FROM $1 $WHERE")
+	api.Error "mysql.Query" $? "$r"
+
+	yield "$r" $3
 }
 
 # Iterates over a set of rows returned from mysql.
@@ -268,8 +290,8 @@ done; for lI in \${!sqlLines[@]};"
 
 # Declares a local associative array and puts mysql row data in it.
 # Context:
-#	executed within a mysql.foreach loop
-#	declares a $row variable
+#	must be executed within a mysql.foreach loop
+#	declares a $row associative array with row data inside
 alias mysql.row="
 IFS_backup=\$IFS
 IFS='\t'
@@ -280,20 +302,11 @@ for colI in \${!sqlColumns[@]}; do
 done
 IFS=\$IFS_backup"
 
-# Executes a MySQL query.
-# Arguments:
-#	$1: a query to execute.
-function mysql.Query {
-	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
-	# loggggg "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"$1\""
-	r=$(mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e "$1")
-	yield "$r"
-}
-
 # Inserts a row into a MySQL table.
 # Arguments:
 #	$1: table name.
 #	$2: name of the associative array which contains column data.
+#	$3: optional reference name to store the ID of the inserted record.
 function mysql.Insert {
 	declare -a keys
 	declare -a vals
@@ -309,10 +322,37 @@ function mysql.Insert {
 	svals=$(array.join ', ' ${vals[@]})
 	svals="($svals)"
 
-	local ROWS=$(mysql.Query "INSERT INTO $1 $skeys VALUES $svals; SELECT LAST_INSERT_ID() as ID;")
+	local ROWS
+	ROWS=$(mysql.Query "INSERT INTO $1 $skeys VALUES $svals; SELECT LAST_INSERT_ID() as ID;")
+	api.Error "mysql.Query" $? "$ROWS"
+
 	mysql.foreach do
 		mysql.row
-		yield "${row[ID]}"
+		yield "${row[ID]}" $3
 		return 0
 	done
+}
+
+# Checks the passed exit code and reports 500 to the client in case it's not 0.
+# Arguments:
+#	$1: an operation name, free form.
+#	$2: operation's exit code.
+#	$3: an error message.
+function api.Error {
+	IFS=''
+	if ! [[ $2 = 0 ]]; then
+		log "	Internal Server Error"
+		log "	$1 exit code is $2"
+		log "	$3"
+
+		respStatus 500
+		declare -A ERRRESP=(
+			[error]="$1 exit code is $2"
+			[code]="$2"
+			[message]="$3"
+		)
+		respJSON ERRRESP untyped
+		log "	I can't even."
+		exit 0
+	fi
 }

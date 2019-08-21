@@ -1,10 +1,10 @@
-imageID=$(reqQuery image)
+reqQuery image imageID
 
 # Add an image=XXXX query string parameter to see comments for a specific image.
 if [[ ! -z $imageID ]]; then
-	ROWS=$(mysql.Select image_comments "imageID=\"$imageID\"")
+	mysql.Select image_comments "imageID=\"$imageID\"" ROWS
 else
-	ROWS=$(mysql.Select image_comments)
+	mysql.Select image_comments ROWS
 fi
 
 mysql.foreach do
