@@ -16,4 +16,3 @@ readBody
 router
 
 logg "Fin."
-log ""
