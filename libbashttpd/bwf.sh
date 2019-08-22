@@ -269,7 +269,7 @@ function mysql.Select {
 	[[ ! -z $2 ]] && WHERE="WHERE $2"
 	local r
 	r=$(mysql.Query "SELECT * FROM $1 $WHERE")
-	api.Error "mysql.Query" $? "$r"
+	api.Error "mysql.Select" $? "$r"
 
 	yield "$r" $3
 }
@@ -324,7 +324,7 @@ function mysql.Insert {
 
 	local ROWS
 	ROWS=$(mysql.Query "INSERT INTO $1 $skeys VALUES $svals; SELECT LAST_INSERT_ID() as ID;")
-	api.Error "mysql.Query" $? "$ROWS"
+	api.Error "mysql.Insert" $? "$ROWS"
 
 	mysql.foreach do
 		mysql.row
@@ -341,13 +341,14 @@ function mysql.Insert {
 function api.Error {
 	IFS=''
 	if ! [[ $2 = 0 ]]; then
-		log "	Internal Server Error"
-		log "	$1 exit code is $2"
+		log "	Internal Server Error."
+		log "	$1 exit code is $2."
 		log "	$3"
+		log "	Reporting to client."
 
 		respStatus 500
 		declare -A ERRRESP=(
-			[error]="$1 exit code is $2"
+			[command]="$1"
 			[code]="$2"
 			[message]="$3"
 		)

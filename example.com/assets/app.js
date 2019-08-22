@@ -1,6 +1,7 @@
 let blinkIntervalID;
 
 function blinkTheBlinks() {
+	unblinkTheBlinks();
 	var blinkShown = true;
 	blinkIntervalID = setInterval(() => {
 		blinkShown=!blinkShown;
@@ -9,7 +10,7 @@ function blinkTheBlinks() {
 }
 
 function unblinkTheBlinks() {
-	blinkIntervalID && killInterval(blinkIntervalID)
+	blinkIntervalID && clearInterval(blinkIntervalID)
 }
 
 function request(method, url, data, cb) {
@@ -22,7 +23,7 @@ function request(method, url, data, cb) {
 
 	req.onreadystatechange = function (e) {
 		if (this.readyState === 4) {
-			cb(JSON.parse(this.response));
+			cb && cb(JSON.parse(this.response));
 		}
 	};
 

@@ -3,7 +3,7 @@ declare -A COMMENT=(
 	[message]=$(reqData "message")
 )
 
-ID=$(mysql.Insert image_comments COMMENT)
+mysql.Insert image_comments COMMENT ID
 declare -A RESP=([commentID]=$ID)
 
 respStatus 201
