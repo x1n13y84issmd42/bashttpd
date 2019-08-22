@@ -6,9 +6,10 @@
 
 .container {
 	position: relative;
-	width: 1300px;
+	/* width: 1300px; */
+	width: 1725px;
 	left: 50%;
-	margin-left: -650px;
+	margin-left: -850px;
 	zoom: 0.75;
 	padding-top: 50pt;
 }
@@ -51,6 +52,50 @@
     line-height: 41pt;
     position: relative;
     margin-left: -4pt;
+}
+
+.hAND {
+	font-family: Vidaloka;
+	font-size: 72pt;
+	height: 0;
+	text-align: center;
+	position: relative;
+	top: -60px;
+	color: black;
+	z-index: 99;
+	text-shadow: -1px 0 0 white,
+	1px 0 0 white,
+	 0 -1px 0 white,
+	 0 1px 0 white,
+	 -2px 0 0 white,
+	2px 0 0 white,
+	 0 -2px 0 white,
+	 0 2px 0 white,
+	 -3px 0 0 white,
+	3px 0 0 white,
+	 0 -3px 0 white,
+	 0 3px 0 white,
+	 -4px 0 0 white,
+	4px 0 0 white,
+	 0 -4px 0 white,
+	 0 4px 0 white
+	 ;
+}
+
+.hJSON {
+    color: #222;
+    font-size: 132pt;
+    line-height: 105pt;
+    position: relative;
+    margin-left: -15pt;
+}
+
+.hMySQL {
+	color: #222;
+    font-size: 103pt;
+    line-height: 105pt;
+    position: relative;
+    margin-left: -8pt;
 }
 
 input, textarea {
@@ -124,7 +169,12 @@ p {
 
 .col3 {
 	margin-left: 75pt;
-	padding-top: 85pt;
+	padding-top: 100pt;
+}
+
+.col4 {
+	margin-left: 75pt;
+	/* padding-top: 85pt; */
 }
 
 .hCookies {
@@ -315,4 +365,22 @@ blink {
 
 #comments-list > p {
 	margin-bottom: 20px;
+}
+
+.footer {
+	clear: both;
+	text-align: center;
+	padding-top: 150px;
+	font-size: 12pt;
+	color: #222;
+}
+
+.footer > a {
+	color: #00BBFF;
+	text-decoration: none;
+}
+
+.footer > .pipe {
+	border-right: 1px #222 solid;
+	margin: 0 30px;
 }

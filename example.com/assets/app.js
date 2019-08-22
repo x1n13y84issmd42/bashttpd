@@ -1,9 +1,15 @@
+let blinkIntervalID;
+
 function blinkTheBlinks() {
 	var blinkShown = true;
-	setInterval(() => {
+	blinkIntervalID = setInterval(() => {
 		blinkShown=!blinkShown;
 		document.body.parentElement.className = blinkShown ? "" : "noblink";
 	}, 300)
+}
+
+function unblinkTheBlinks() {
+	blinkIntervalID && killInterval(blinkIntervalID)
 }
 
 function request(method, url, data, cb) {

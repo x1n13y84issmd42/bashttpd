@@ -220,10 +220,10 @@ func main() {
 	err = ioutil.WriteFile("./ico.bin", bytesICO, 0777)
 	err = ioutil.WriteFile("./req_abcd.bin", bytesReqABCD, 0777)
 	err = ioutil.WriteFile("./req_ico.bin", bytesReqICO, 0777)
-	// err = ioutil.WriteFile("./req_png.bin", bytesReqPNG, 0777)
+
 	if err != nil {
 		fmt.Println("Error", err)
 	}
 
-	fmt.Println("Yolo world")
+	fmt.Println("Very data, much bytes. Wow.")
 }
