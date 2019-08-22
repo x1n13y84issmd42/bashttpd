@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Bashttpd 0.5"
+echo "Bashttpd 0.6"
 echo "Project: $1"
 
 while true; do
