@@ -23,7 +23,13 @@ function request(method, url, data, cb) {
 
 	req.onreadystatechange = function (e) {
 		if (this.readyState === 4) {
-			cb && cb(JSON.parse(this.response));
+			if (this.status == 200) {
+				cb && cb(JSON.parse(this.response));
+			} else {
+				console.log(`Response from ${url}:`);
+				console.log(`Status is ${this.status}`);
+				console.log(`Data is`, JSON.parse(this.response));
+			}
 		}
 	};
 
