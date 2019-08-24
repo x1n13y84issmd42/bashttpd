@@ -23,5 +23,5 @@ for LINE in "${LINES[@]}"; do
 	fi
 done
 
-respStatus 200
-respJSON RESP_FILES
+resp.Status 200
+resp.JSON RESP_FILES

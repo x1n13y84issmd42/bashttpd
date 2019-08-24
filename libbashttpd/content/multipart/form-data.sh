@@ -280,8 +280,8 @@ if ! [ -z ${CONTENT_LENGTH+x} ]; then
 	[[ ! -z $DEBUG_DUMP_BODY ]] && echo -n "$BODY" > $DEBUG_DUMP_BODY
 fi
 
-# An implementation of reqData.
-function reqDataImpl {
+# An implementation of req.Data.
+function req.DataImpl {
 	vn="DATA_$1"
 	yield ${!vn}
 }

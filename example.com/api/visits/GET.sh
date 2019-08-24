@@ -1,6 +1,6 @@
-counter=$(($(reqCookie "visit_counter")+1))
+counter=$(($(req.Cookie "visit_counter")+1))
 declare -A RESP=([visits]=$counter)
 
-respStatus 200
-respCookie "visit_counter" $counter
-respJSON RESP
+resp.Status 200
+resp.Cookie "visit_counter" $counter
+resp.JSON RESP

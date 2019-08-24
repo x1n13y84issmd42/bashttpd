@@ -3,30 +3,30 @@
 shopt -s expand_aliases
 
 # Sends an HTTP response status code.
-function respStatus {
+function resp.Status {
 	[[ -z $__HTTP_STATUS_SENT ]] && echo "HTTP/1.1 $1" && __HTTP_STATUS_SENT=$1
 }
 
 # Sends an HTTP response header.
-function respHeader {
+function resp.Header {
 	echo "$1: $2"
 }
 
 # Sends an HTTP response body.
-function respBody {
+function resp.Body {
 	echo ""
 	echo -E $1
 }
 
 # Responds with file contents.
 # Doesn't care about neither content length nor it's type. Expects you to do it.
-function respFile {
+function resp.File {
 	echo ""
 	cat "$1"
 }
 
 # Reads a file, expands variables in it, then responds.
-function respTemplateFile {
+function resp.TemplateFile {
 	echo ""
 
 	tplFilePath="$PROJECT/$1"
@@ -41,12 +41,12 @@ function respTemplateFile {
 }
 
 # Sets a response cookie.
-function respCookie {
-	respHeader "Set-Cookie" "$1=$2; Path=/"
+function resp.Cookie {
+	resp.Header "Set-Cookie" "$1=$2; Path=/"
 }
 
 # Outputs a value of a single cookie from the $COOKIE header.
-function reqCookie {
+function req.Cookie {
 	IFS_backup="$IFS"
 	IFS=';'
 
@@ -64,30 +64,30 @@ function reqCookie {
 
 # Outputs a single value from the request body, regardless of it's Content-Type.
 # See actual parsers in libbashttpd/content
-function reqData {
+function req.Data {
 	if [ -z $CONTENT_TYPE ]; then
 		echo ""
 		return 0
 	fi
 
 	# This must be declared by a content parser in it's own file.
-	reqDataImpl $1
+	req.DataImpl $1
 }
 
 # Outputs a temporary file name where contents of the uploaded file is stored.
-function reqFile {
+function req.File {
 	vn="FILE_$1"
 	yield ${!vn}
 }
 
 # Outputs original name of the uploaded file.
-function reqFileName {
+function req.FileName {
 	vn="FILENAME_$1"
 	yield ${!vn}
 }
 
 # Outputs Content-Type of the uploaded file.
-function reqFileContentType {
+function req.FileContentType {
 	vn="FILECT_$1"
 	yield ${!vn}
 }
@@ -96,7 +96,7 @@ function reqFileContentType {
 # Arguments:
 #	$1: name of the request query string parameter.
 #	$2: optional reference name to put the value into.
-function reqQuery {
+function req.Query {
 	vn="QS_$1"
 	yield ${!vn} $2
 }
@@ -107,7 +107,7 @@ function reqQuery {
 # Arguments
 #	$1: a name of a variable containing response data. Not the var itself.
 #	$2: an optional encoding mode for JSON.EncodeObject & EncodeArray functions.
-function respJSON {
+function resp.JSON {
 	type=$(reflection.Type $1)
 
 	case $type in
@@ -130,11 +130,11 @@ function respJSON {
 
 	if [[ ! -z $X_BWF_UPLOAD_ID ]]; then
 		loggggg "Upload ID is \"$X_BWF_UPLOAD_ID\", responding as JSONP."
-		respBody "bwf.set(\"$X_BWF_UPLOAD_ID\", $JSON);"
-		respBody "console.log(\"set the $X_BWF_UPLOAD_ID\");"
+		resp.Body "bwf.set(\"$X_BWF_UPLOAD_ID\", $JSON);"
+		resp.Body "console.log(\"set the $X_BWF_UPLOAD_ID\");"
 	else
-		respHeader "Content-Type" "application/json"
-		respBody "$JSON"
+		resp.Header "Content-Type" "application/json"
+		resp.Body "$JSON"
 	fi
 }
 
@@ -346,13 +346,13 @@ function api.Error {
 		log "	$3"
 		log "	Reporting to client."
 
-		respStatus 500
+		resp.Status 500
 		declare -A ERRRESP=(
 			[command]="$1"
 			[code]="$2"
 			[message]="$3"
 		)
-		respJSON ERRRESP untyped
+		resp.JSON ERRRESP untyped
 		log "	I can't even."
 		exit 0
 	fi

@@ -1,10 +1,10 @@
 declare -A COMMENT=(
-	[imageID]=$(reqData "imageID")
-	[message]=$(reqData "message")
+	[imageID]=$(req.Data "imageID")
+	[message]=$(req.Data "message")
 )
 
 mysql.Insert image_comments COMMENT ID
 declare -A RESP=([commentID]=$ID)
 
-respStatus 201
-respJSON RESP
+resp.Status 201
+resp.JSON RESP

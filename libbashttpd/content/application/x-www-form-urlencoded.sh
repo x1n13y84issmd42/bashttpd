@@ -29,8 +29,8 @@ done
 
 IFS="$IFS_backup"
 
-# An implementation of reqData.
-function reqDataImpl {
+# An implementation of req.Data.
+function req.DataImpl {
 	vn="DATA_$1"
 	yield ${!vn}
 }

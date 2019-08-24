@@ -1,15 +1,15 @@
-ID=$(reqQuery ID)
+ID=$(req.Query ID)
 ID=${ID//\//}
 path=$(realpath "$PROJECT/storage/images/$ID")
 log "The image path is $path"
 
 if [[ -f $path ]]; then
 	imageURL="http://localhost:8080/$GALLERY_STORAGE/${ID}"
-	respStatus 200
-	respHeader "Content-Type" "text/html"
-	respTemplateFile "/assets/tpl/image.html"
+	resp.Status 200
+	resp.Header "Content-Type" "text/html"
+	resp.TemplateFile "/assets/tpl/image.html"
 else
-	respStatus 404
-	respHeader "Content-Type" "text/html"
-	respTemplateFile "/assets/tpl/404.html"
+	resp.Status 404
+	resp.Header "Content-Type" "text/html"
+	resp.TemplateFile "/assets/tpl/404.html"
 fi

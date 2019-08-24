@@ -30,7 +30,7 @@ If none of the criterias above have matched, it'll try to interpret the requeste
 There is one! Bash Web Framework, or BWF, implements some standard operations expected from any modern web framework, making development of simple web apps in Bash script a breeze.
 
 ### Request Data
-Structured request data (i.e. forms or JSONs) is available via the `reqData "fieldName"` function. It is mostly Content-Type agnostic, but for JSON requests it allows looking deeply through JSON structure with the [jq filter syntax](https://stedolan.github.io/jq/manual/#Basicfilters).
+Structured request data (i.e. forms or JSONs) is available via the `req.Data "fieldName"` function. It is mostly Content-Type agnostic, but for JSON requests it allows looking deeply through JSON structure with the [jq filter syntax](https://stedolan.github.io/jq/manual/#Basicfilters).
 
 #### Headers
 Request headers are available to controller scripts under their names capitalized and dashes replaced by underscores. So a `Content-Type` header is accessible as a `$CONTENT_TYPE` variable.
@@ -40,12 +40,12 @@ At the moment BWF understands `application/x-www-form-urlencoded` and `multipart
 
 | Function | Description | Example |
 | --- | --- | --- |
-| **reqCookie** | Outputs a value of a cookie from the request. |`SID=$(reqCookie "session_id")`|
-|**reqData**|Outputs a single field value from the request body. Content-Type-agnostic.|`userName=$(reqData "userName")`|
-|**reqFile**|Outputs a temporary file name where contents of the uploaded file is stored. Takes the name of the file as in form data.|`filePath=$(reqFile "theFile")`|
-|**reqFileName**|Outputs original name of the uploaded file. Takes the name of the file as in form data.|`sourceFileName=$(reqFileName "theFile")`|
-|**reqFileCT**|Outputs the Content-Type of the uploaded file. Takes the name of the file as in form data.|`fileCT=$(reqFileCT "theFile")`|
-|**reqQuery**|Outputs a value of a query string parameter.|`page=$(reqQuery "page")`|
+| **req.Cookie** | Outputs a value of a cookie from the request. |`SID=$(req.Cookie "session_id")`|
+|**req.Data**|Outputs a single field value from the request body. Content-Type-agnostic.|`userName=$(req.Data "userName")`|
+|**req.File**|Outputs a temporary file name where contents of the uploaded file is stored. Takes the name of the file as in form data.|`filePath=$(req.File "theFile")`|
+|**req.FileName**|Outputs original name of the uploaded file. Takes the name of the file as in form data.|`sourceFileName=$(req.FileName "theFile")`|
+|**req.FileCT**|Outputs the Content-Type of the uploaded file. Takes the name of the file as in form data.|`fileCT=$(req.FileCT "theFile")`|
+|**req.Query**|Outputs a value of a query string parameter.|`page=$(req.Query "page")`|
 
 ### Responding
 Basically you can just `echo` anything, and it'll get to a client, but you'll need to follow the HTTP protocol yourself.
@@ -54,20 +54,20 @@ If you're not a fan (who is?), there are functions for that.
 
 | Function | Description | Example |
 | --- | --- | --- |
-|**respStatus**|Initiates a response by sending an `HTTP/1.1` header with the status you provide.|`respStatus 200`|
-|**respHeader**|Writes an HTTP header.|`respHeader "Content-Type" "text/html"`|
-|**respCookie**|Sends a cookie to a client.|`respCookie "visit_counter" $counter`|
-|**respBody**|Writes the response body.|`respBody "<h1>YOLO</h1>"`|
-|**respFile**|Responds with a file contents. Note that you have to specify Content-Type yourself.|`respFile "/etc/passwd"`|
-|**respTemplateFile**|Reads a file, expands variables into it, responds with the result.|`respTemplateFile "/assets/tpl/age.html"`|
-|**respJSON**|A shorthand function to respond with JSONs. Encodes the passed data, sends Content-Type. |`declare -a FILE_LIST`<br>`# Fill the $FILE_LIST...`<br>`respJSON FILE_LIST`|
+|**resp.Status**|Initiates a response by sending an `HTTP/1.1` header with the status you provide.|`resp.Status 200`|
+|**resp.Header**|Writes an HTTP header.|`resp.Header "Content-Type" "text/html"`|
+|**resp.Cookie**|Sends a cookie to a client.|`resp.Cookie "visit_counter" $counter`|
+|**resp.Body**|Writes the response body.|`resp.Body "<h1>YOLO</h1>"`|
+|**resp.File**|Responds with a file contents. Note that you have to specify Content-Type yourself.|`resp.File "/etc/passwd"`|
+|**resp.TemplateFile**|Reads a file, expands variables into it, responds with the result.|`resp.TemplateFile "/assets/tpl/age.html"`|
+|**resp.JSON**|A shorthand function to respond with JSONs. Encodes the passed data, sends Content-Type. |`declare -a FILE_LIST`<br>`# Fill the $FILE_LIST...`<br>`resp.JSON FILE_LIST`|
 |**resp.CLI**|Formats the colored output (`\e[34;91m...\e[0m`) as HTML.|`HTML=$(resp.CLI $(ls -la --color=always ~))`|
 
 ### MySQL
 | Function | Description | Example |
 | --- | --- | --- |
 |**mysql.Select**|Performs a simple SELECT MySQL query.<br>*$1* Table name to select from.<br>*$2* Optional WHERE clause.<br>*$3* Optional result reference name.|`mysql.Select image_comments "imageID='$imageID'" ROWS`|
-|**mysql.Insert**|Performs an INSERT MySQL query. Result is an ID of the inserted row.<br>*$1* Table name to insert to.<br>*$2* An associative array with column data.<br>*$3* Optional result reference name.|`declare -A COMMENT=(`<br>`[imageID]=$(reqData imageID)`<br>`[message]=$(reqData message)`<br>`)`<br>`mysql.Insert image_comments COMMENT ID`|
+|**mysql.Insert**|Performs an INSERT MySQL query. Result is an ID of the inserted row.<br>*$1* Table name to insert to.<br>*$2* An associative array with column data.<br>*$3* Optional result reference name.|`declare -A COMMENT=(`<br>`[imageID]=$(req.Data imageID)`<br>`[message]=$(req.Data message)`<br>`)`<br>`mysql.Insert image_comments COMMENT ID`|
 |**mysql.foreach**|Alias. Iterates over MySQL query result rows. Expects the `ROWS` variable.|See below.|
 |**mysql.row**|Alias. Must be called within the `mysql.foreach` loop, creates a lcoal `row` variable which is an associative array containing the row's column data.|`mysql.Select image_comments "imageID='$imageID'" ROWS`<br>`mysql.foreach; do`<br>`mysql.row`<br>`echo "Message is ${row[message]}"`<br>`done`|
 

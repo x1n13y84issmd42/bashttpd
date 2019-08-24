@@ -25,9 +25,9 @@ function router() {
 
 	else
 		log "	404 Not Found"
-		respStatus 404
-		respHeader "Content-Type" "text/html"
-		respBody "<i>$reqPath</i> Was Not Found"
+		resp.Status 404
+		resp.Header "Content-Type" "text/html"
+		resp.Body "<i>$reqPath</i> Was Not Found"
 
 	fi
 }
@@ -40,36 +40,36 @@ function serveStatic() {
 	fileExt="${fileName##*.}"
 	fileSize=$(stat --printf="%s" "$filePath")
 
-	respStatus "200"
+	resp.Status "200"
 
 	# TODO: resolve ERR_CONTENT_LENGTH_MISMATCH before enabling this back
-	# respHeader "Content-Length" $fileSize
+	# resp.Header "Content-Length" $fileSize
 
 	case $fileExt in
 		"js")
-			respHeader "Content-Type" "application/javascript"
+			resp.Header "Content-Type" "application/javascript"
 		;;
 
 		"css")
-			respHeader "Content-Type" "text/css"
+			resp.Header "Content-Type" "text/css"
 		;;
 
 		"html")
-			respHeader "Content-Type" "text/html"
+			resp.Header "Content-Type" "text/html"
 		;;
 
 		"jpg"|"jpeg")
-			respHeader "Content-Type" "image/jpeg"
+			resp.Header "Content-Type" "image/jpeg"
 		;;
 
 		"png")
-			respHeader "Content-Type" "image/png"
+			resp.Header "Content-Type" "image/png"
 		;;
 
 		*)
-			respHeader "Content-Type" "text/plain"
+			resp.Header "Content-Type" "text/plain"
 		;;
 	esac
 
-	respFile $filePath
+	resp.File $filePath
 }
