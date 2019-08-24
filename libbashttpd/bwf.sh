@@ -361,7 +361,7 @@ function api.Error {
 # Formats Bash colored output as HTML.
 # Arguments:
 #	$@: an array of colored CLI output lines.
-function bwf.respCLI {
+function resp.CLI {
 	IFS=$'\n'
 	LINES=($@)
 	for line in ${LINES[@]}; do

@@ -79,12 +79,18 @@ function array.join {
 }
 
 # Declares a copy of an associative array by its provided name.
+# Context:
+#	$1 must be a name of an associative array variable.
+#	Creates a local variable $E which is a copy of $the array referenced by $1.
 alias array.getbyref='e="$( declare -p ${1} )"; eval "declare -A E=${e#*=}"'
 
 # Declares a copy of an associative array by its provided name, gets the name from $2.
 alias array.getbyref2='e="$( declare -p ${2} )"; eval "declare -A E=${e#*=}"'
 
 # Iterates over the array created by array.getbyref.
+# Context:
+#	array.getbyref must be called prior to this.
+#	the do...done block must be supplied by the caller.
 alias array.foreach='for key in "${!E[@]}"'
 
 # Tries to figure out the type of given variable.
@@ -142,8 +148,13 @@ function sys.IFS {
 		fi
 	else
 		# Setting a new value
-		echo "IFS set to $1"
 		IFS_backup_stack+=("$IFS")
 		IFS=$1
 	fi
 }
+
+# Initilizes function arguments in reversed order, so $#-th argument becomes $_0, $#-1 becomes $_1 and so on.
+# Context:
+#	Used within a function.
+#	Creates local variables $_0, $_1 ...
+alias fn.arguments='local _0; local _1; local _2; eval "_0=\$$(($#-0)); _1=\$$(($#-1)); _2=\$$(($#-2))"'
