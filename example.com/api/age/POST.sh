@@ -1,9 +1,9 @@
-age=$(reqData "age")
-name=$(reqData "name")
-let visits=$(reqCookie "visit_counter")+1
+age=$(req.Data "age")
+name=$(req.Data "name")
+let visits=$(req.Cookie "visit_counter")+1
 
-respStatus 200
-respHeader "Content-Type" "text/html"
-respCookie "visit_counter" $visits
+resp.Status 200
+resp.Header "Content-Type" "text/html"
+resp.Cookie "visit_counter" $visits
 
-respTemplateFile "/assets/tpl/age.html"
+resp.TemplateFile "/assets/tpl/age.html"

@@ -1,11 +1,38 @@
-name=$(reqData name)
-age=$(reqData age)
-tpmFilename=$(reqFile theFileILike)
-srcFilename=$(reqFileName theFileILike)
+local EXT="bin"
+local fCT=$(req.FileContentType aPicture)
 
-# name=$(urlencode $name)
+case $fCT in
+	"image/jpeg")
+		EXT="jpg"
+	;;
 
-respStatus 200
-respHeader "Content-Type" "application/json"
+	"image/png")
+		EXT="png"
+	;;
 
-respBody "{\"name\":\"$name\", \"age\":\"$age\", \"srcFN\":\"$srcFilename\", \"tmpFN\": \"$tpmFilename\"}"
+	"image/gif")
+		EXT="gif"
+	;;
+
+	"image/x-icon")
+		EXT="ico"
+	;;
+
+	*)
+		log "Impossible file Content-Type: $fCT"
+	;;
+esac
+
+local fTmp=$(req.File aPicture)
+local fDest=$(mktemp $PROJECT/$GALLERY_STORAGE/XXXXXXXX.$EXT)
+mv $fTmp $fDest
+
+declare -A RESP=(
+	[tpmFilename]=$fTmp
+	[srcFilename]=$(req.FileName aPicture)
+	[URL]="http://${fDest//$PROJECT/localhost:8080}"
+	[isItReallyHappeningInBash]=true
+)
+
+resp.Status 200
+resp.JSON RESP untyped

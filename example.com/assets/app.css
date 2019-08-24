@@ -6,9 +6,10 @@
 
 .container {
 	position: relative;
-	width: 1300px;
+	/* width: 1300px; */
+	width: 1725px;
 	left: 50%;
-	margin-left: -650px;
+	margin-left: -850px;
 	zoom: 0.75;
 	padding-top: 50pt;
 }
@@ -37,7 +38,67 @@
 	line-height: 108px;
 }
 
-input {
+.hGallery {
+    color: #222;
+    font-size: 71pt !important;
+    line-height: 70pt;
+    position: relative;
+    margin-left: -4pt;
+}
+
+.hImageID {
+    color: #222;
+    font-size: 41pt !important;
+    line-height: 41pt;
+    position: relative;
+    margin-left: -4pt;
+}
+
+.hAND {
+	font-family: Vidaloka;
+	font-size: 72pt;
+	height: 0;
+	text-align: center;
+	position: relative;
+	top: -60px;
+	color: black;
+	z-index: 99;
+	text-shadow: -1px 0 0 white,
+	1px 0 0 white,
+	 0 -1px 0 white,
+	 0 1px 0 white,
+	 -2px 0 0 white,
+	2px 0 0 white,
+	 0 -2px 0 white,
+	 0 2px 0 white,
+	 -3px 0 0 white,
+	3px 0 0 white,
+	 0 -3px 0 white,
+	 0 3px 0 white,
+	 -4px 0 0 white,
+	4px 0 0 white,
+	 0 -4px 0 white,
+	 0 4px 0 white
+	 ;
+}
+
+.hJSON {
+    color: #222;
+    font-size: 132pt;
+    line-height: 105pt;
+    position: relative;
+    margin-left: -15pt;
+}
+
+.hMySQL {
+	color: #222;
+    font-size: 103pt;
+    line-height: 105pt;
+    position: relative;
+    margin-left: -8pt;
+}
+
+input, textarea {
 	font-size: 20pt;
     display: block;
     margin-bottom: 20pt;
@@ -67,6 +128,7 @@ input[type=text] {
 	color: #222;
 }
 
+input[type=button],
 input[type=submit] {
 	float: right;
 	padding: 10px 20px;
@@ -76,6 +138,9 @@ input[type=submit] {
 	cursor: pointer;
 }
 
+input[type=button]:focus,
+input[type=button]:active,
+input[type=button]:hover,
 input[type=submit]:focus,
 input[type=submit]:active,
 input[type=submit]:hover {
@@ -97,9 +162,6 @@ p {
 	font-size: 16pt;
 }
 
-.col1 {
-}
-
 .col2 {
 	margin-left: 75pt;
 	padding-top: 145pt;
@@ -107,7 +169,12 @@ p {
 
 .col3 {
 	margin-left: 75pt;
-	padding-top: 85pt;
+	padding-top: 100pt;
+}
+
+.col4 {
+	margin-left: 75pt;
+	/* padding-top: 85pt; */
 }
 
 .hCookies {
@@ -136,7 +203,7 @@ p {
 
 #visits-big.w3 {
     font-size: 198pt;
-    line-height: 178pt;
+    line-height: 190pt;
     margin-top: 35pt;
     margin-left: -30pt;
 }
@@ -155,15 +222,15 @@ p {
     margin-left: -17pt;
 }
 
-.typographyColumn > p.wrapped {
+.typographyColumn p.wrapped {
 	word-break: break-all;
 }
 
-.typographyColumn > p.hasmargin {
+.typographyColumn p.hasmargin {
 	margin-bottom: 25pt;
 }
 
-.typographyColumn > p em {
+.typographyColumn p em {
 	background-color: #00BBFF;
 	font-style: normal;
 	color:white;
@@ -181,8 +248,19 @@ img {
 	font-size: 32pt;
 }
 
-a {
+.typographyColumn a {
 	color: #00BBFF;
+	text-decoration: none;
+}
+
+.typographyColumn a:hover {
+	background-color: #00BBFF;
+	color: white;
+	text-decoration: none;
+}
+
+.typographyColumn a::after {
+	content: " >>"
 }
 
 blink {
@@ -191,4 +269,247 @@ blink {
 
 .noblink blink {
 	color: white;
+}
+
+#the-gallery {
+	width: 1625px;
+	margin-left: -812px;
+}
+
+#gallery {
+	float: left;
+	width: 1275px;
+}
+
+#gallery img {
+	display: inline-block;
+	width: 350px;
+	margin-left: 75px;
+	vertical-align: middle;
+}
+
+#the-gallery input[type=file] {
+	width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.fileinput label {
+	font-size: 20pt;
+	display: block;
+	margin-bottom: 20pt;
+	padding: 10px 20px;
+	background-color: #222;
+	color: white;
+	border: none;
+	cursor: pointer;
+}
+
+.fileinput label:hover {
+	background-color: #00BBFF;
+}
+
+.progress {
+	height: 20px;
+}
+
+.progress > div {
+	background: #00BBFF;
+	height: 100%;
+	width: 0;
+}
+
+#ui-stash {
+	/* display: none; */
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: -9999;
+}
+
+#ui-stash > * {
+	display: none;
+	position: relative;
+	z-index: 9999
+}
+
+#theater {
+	height: 100%;
+}
+
+#theater > .stage {
+	background-color: rgba(0, 0, 0, 0.5);
+	align-content: center;
+	text-align: center;
+	height: 100%;
+}
+
+#theater > .stage > .img {
+	display: inline-block;
+	line-height: 100%;
+	position: relative;
+}
+
+#comments textarea {
+	width: 100%;
+}
+
+#comments input[type=button] {
+	display: block;
+}
+
+#comments-list > p {
+	margin-bottom: 20px;
+}
+
+.footer {
+	clear: both;
+	text-align: center;
+	padding-top: 150px;
+	font-size: 12pt;
+	color: #222;
+}
+
+.footer > a {
+	color: #00BBFF;
+	text-decoration: none;
+}
+
+.footer > .pipe {
+	border-right: 1px #222 solid;
+	margin: 0 30px;
+}
+
+/*****************************************************************************/
+
+.cli-line .fmt-30 {
+	color: #000000;
+}
+
+.cli-line .fmt-31 {
+	color: #990044;
+}
+
+.cli-line .fmt-32 {
+	color: #009944;
+}
+
+.cli-line .fmt-34 {
+	color: #00BBFF;
+}
+
+.cli-line .fmt-35 {
+	color: #990099;
+}
+
+.cli-line .fmt-36 {
+	color: #009999;
+}
+
+.cli-line .fmt-37 {
+	color: #777;
+}
+
+.cli-line .fmt-90 {
+	color: #333;
+}
+
+.cli-line .fmt-91 {
+	color: #FF0000;
+}
+
+.cli-line .fmt-92 {
+	color: #00FF00;
+}
+
+.cli-line .fmt-94 {
+	color: #0000FF;
+}
+
+.cli-line .fmt-95 {
+	color: #FF00FF;
+}
+
+.cli-line .fmt-96 {
+	color: #00FFFF;
+}
+
+.cli-line .fmt-97 {
+	color: #FFF;
+}
+
+.cli-line .fmt-40 {
+	background-color: #000000;
+}
+
+.cli-line .fmt-41 {
+	background-color: #990044;
+}
+
+.cli-line .fmt-42 {
+	background-color: #009944;
+}
+
+.cli-line .fmt-44 {
+	background-color: #00BBFF;
+}
+
+.cli-line .fmt-45 {
+	background-color: #990099;
+}
+
+.cli-line .fmt-46 {
+	background-color: #009999;
+}
+
+.cli-line .fmt-47 {
+	background-color: #777;
+}
+
+.cli-line .fmt-100 {
+	background-color: #333;
+}
+
+.cli-line .fmt-101 {
+	background-color: #FF0000;
+}
+
+.cli-line .fmt-102 {
+	background-color: #00FF00;
+}
+
+.cli-line .fmt-104 {
+	background-color: #0000FF;
+}
+
+.cli-line .fmt-105 {
+	background-color: #FF00FF;
+}
+
+.cli-line .fmt-106 {
+	background-color: #00FFFF;
+}
+
+.cli-line .fmt-107 {
+	background-color: #FFF;
+}
+
+.cli-line .fmt-01,
+.cli-line .fmt-1 {
+	font-weight: bold;
+}
+
+.cli-line .fmt-02,
+.cli-line .fmt-2 {
+	opacity: 0.5;
+}
+
+.cli-line .fmt-04,
+.cli-line .fmt-4 {
+	text-decoration: underline;
 }

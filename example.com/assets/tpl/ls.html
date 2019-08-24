@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<title>~# Bashttpd</title>
+		<script src="/assets/app.js"></script>
+		<link rel="stylesheet" href="/assets/app.css" />
+		<link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+	</head>
+
+	<body>
+		<div class="container">
+			<div class="typographyColumn">
+				<p>~<em>#</em> $COMMAND<blink>_</blink></p>
+				<p>&nbsp;</p>
+				<div>
+					$CLIOUTPUT
+				</div>
+				<p>&nbsp;</p>
+				<p>~<em>#</em> <a href='/'>Return to the homepage</a></p>
+				<p>&nbsp;</p>
+				<p>~<em>#</em> <blink>_</blink></p>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = () => {
+			blinkTheBlinks();
+		}
+	</script>
+</html>

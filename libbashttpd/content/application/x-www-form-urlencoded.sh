@@ -25,12 +25,12 @@ for FIELD in "${FIELDS[@]}"; do
 
 	fieldValue=$(urldecode $fieldValue)
 	var "DATA_$fieldName" "$fieldValue"
-done	
+done
 
 IFS="$IFS_backup"
 
-# An implementation of reqData.
-function reqDataImpl {
+# An implementation of req.Data.
+function req.DataImpl {
 	vn="DATA_$1"
 	yield ${!vn}
 }

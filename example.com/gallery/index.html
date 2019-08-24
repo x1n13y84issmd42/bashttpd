@@ -1,0 +1,122 @@
+<html>
+	<head>
+		<title>~# Bashttpd</title>
+		<script src="/assets/app.js"></script>
+		<link rel="stylesheet" href="/assets/app.css" />
+		<link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+	</head>
+
+	<body>
+		<div class="container" id="the-gallery">
+			<div class="column col1 typographyColumn">
+				<p class="hGallery">Gallery</p>
+				<p class="wrapped hasmargin">~<em>#</em> An image gallery page in Bash. With <em>ls</em> on backend<blink>_</blink></p>
+				<p class="wrapped hasmargin">~<em>#</em> You can upload images there too. Click the button below to select a file<blink>_</blink></p>
+				<p class="wrapped hasmargin" style="text-align: center;">
+					<form id="the-form">
+						<div class="fileinput">
+							<label for="aPicture">Select a file</label>
+							<input type="file" id="aPicture" name="aPicture" onchange="submitTheForm()">
+							<div class="progress" id="aPictureProgress" style="visibility:hidden;"><div></div></div>
+						</div>
+					</form>
+				</p>
+				<p>&nbsp;</p>
+				<div id="progress-notice" style="visibility:hidden;">
+					<p class="wrapped hasmargin">~<em>#</em> As you may have alreay noticed, this is not the most performant HTTP server on the scene; so here is a progress bar of it reading your bytes from it's stdin<blink>_</blink></p>
+					<p class="wrapped hasmargin">~<em>#</em> You can observe the same process in the server terminal output<blink>_</blink></p>
+				</div>	
+				<p>&nbsp;</p>
+				<p>&nbsp;</p>
+				<p class="wrapped hasmargin">~<em>#</em> <a href="/">Return to the homepage</a></p>
+				<p class="wrapped hasmargin">~<em>#</em> <blink>_</blink></p>
+			</div>
+			<div id="gallery"></div>
+
+			<div class="footer">
+				<span class="c">&copy; 2019 x1n13y84issmd42</span>
+				<span class="pipe"></span>
+				<a href="https://github.com/x1n13y84issmd42/bashttpd">GitHub</a>
+				<span class="pipe"></span>
+				<span class="c">With elitism in &#9829;</span>
+			</div>
+		</div>
+
+		<div id='ui-stash'>
+			<div id="theater">
+				<div class="stage"><img src="" alt="" class="img"></div>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = () => {
+			blinkTheBlinks();
+
+			request("GET", "/api/images", undefined, (images) => {
+				for (let image of images) {
+					addImage(image.name, image.URL);
+				}
+			});
+		}
+		
+		function submitTheForm() {
+			progressBar("aPictureProgress", 0);
+			$("aPictureProgress").style.visibility = 'visible';
+			$("progress-notice").style.visibility = 'visible';
+
+			submitForm('the-form', '/api/upload', (imgData) => {
+				$("aPictureProgress").style.visibility = 'hidden';
+				$("progress-notice").style.visibility = 'hidden';
+
+				console.log("Response image data is ", imgData);
+
+				addImage(imgData.URL);
+			});
+		}
+
+		function addImage(name, url) {
+			let a = document.createElement('a');
+			a.href = `/gallery/image?ID=${name}`;
+
+			let img = document.createElement('img');
+			img.src = url;
+			img.id = name;
+			img.style.display = 'none';
+			img.style.opacity = 0;
+			img.onload = function(){
+				let iid = setInterval(() => {
+					this.style.display = 'inline-block';
+					this.style.opacity = parseFloat(this.style.opacity) + 0.03;
+					if (this.style.opacity >= 1) {
+						clearInterval(iid);
+					}
+				}, 20)
+			}
+
+			let eGallery = document.getElementById('gallery');
+			a.appendChild(img);
+			eGallery.appendChild(a);
+		}
+
+		function theaterOpen(imageID) {
+			let eTh = $('theater');
+			let eStage = eTh.querySelectorAll('.stage')[0];
+			let eImg = eTh.querySelectorAll('img.img')[0];
+			let eImgSrc = $(imageID);
+			eTh.style.display = 'block';
+			eImg.src = eImgSrc.src;
+			eImg.style.top = `${((window.innerHeight - eImgSrc.naturalHeight) / 2)}px`;
+			eStage.onclick = theaterClose;
+
+			// window.location.hash = imageID;
+			$('ui-stash').style.zIndex = 9999;
+
+		}
+
+		function theaterClose() {
+			$('theater').style.display = 'none';
+			$('ui-stash').style.zIndex = -9999;
+		}
+	</script>
+</html>

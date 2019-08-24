@@ -11,11 +11,8 @@ PROJECT=$1
 
 readHeaders
 normalizeHeaders
-
-logg "-- Content Type is $CONTENT_TYPE"
-logg "-- Content Boundary is $CONTENT_BOUNDARY"
-logg "-- Content Length is $CONTENT_LENGTH"
-
 readBody
 
 router
+
+logg "Fin."

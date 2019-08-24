@@ -1,7 +1,6 @@
-let counter=$(reqCookie "visit_counter")+1
+counter=$(($(req.Cookie "visit_counter")+1))
+declare -A RESP=([visits]=$counter)
 
-respStatus 200
-respHeader "Content-Type" "application/json"
-respCookie "visit_counter" $counter
-
-respBody "{\"visits\":$counter}"
+resp.Status 200
+resp.Cookie "visit_counter" $counter
+resp.JSON RESP

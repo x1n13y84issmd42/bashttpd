@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<title>~# Bashttpd</title>
+		<script src="/assets/app.js"></script>
+		<link rel="stylesheet" href="/assets/app.css" />
+		<link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+	</head>
+
+	<body>
+		<div class="container" id="the-gallery">
+			<div class="column col1 typographyColumn">
+				<p class="hImageID" id="hImageID">$ID</p>
+				<p class="wrapped hasmargin">~<em>#</em> <a href="/gallery">Return to the gallery</a></p>
+				<div id="comments">
+					<div id="comments-list"></div>
+					<div class="form">
+						<textarea name="comment-text" id="comment-text" cols="30" rows="3"></textarea>
+						<input type="button" value="Submit" onclick="postComment()">
+					</div>
+				</div>
+			</div>
+			<img src="$imageURL" alt="" style="max-width:1000px; margin-left: 75px; float:left;">
+			
+			<div class="footer">
+				<span class="c">&copy; 2019 x1n13y84issmd42</span>
+				<span class="pipe"></span>
+				<a href="https://github.com/x1n13y84issmd42/bashttpd">GitHub</a>
+				<span class="pipe"></span>
+				<span class="c">With elitism in &#9829;</span>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		let imageID = "$ID";
+		document.body.onload = () => {
+			id('hImageID').innerHTML = imageID;
+			blinkTheBlinks();
+			requestComments(imageID);
+		}
+
+		function postComment() {
+			submitComment(imageID, id('comment-text').value);
+			id('comment-text').value = '';
+		}
+	</script>
+</html>
