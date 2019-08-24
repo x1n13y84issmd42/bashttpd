@@ -1,5 +1,5 @@
 rxHeader='^([a-zA-Z-]+)\s*:\s*(.*)'
-rxMethod='^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP' #doesn't work
+rxMethod='^(GET|POST|PUT|DELETE|OPTIONS) +(.*) +HTTP'
 
 # Reads HTTP request headers.
 function readHeaders {
@@ -26,7 +26,7 @@ function readHeaders {
 			var $headerName "$headerValue"
 
 		# Figuring out the request method used
-		elif [[ $INPUT =~ ^(GET|POST|PUT|DELETE|OPTIONS)" "+(.*)" "+HTTP ]]; then
+		elif [[ $INPUT =~ $rxMethod ]]; then
 			reqMethod=${BASH_REMATCH[1]}
 			reqURL=${BASH_REMATCH[2]}
 			reqPath=${reqURL%%\?*}
