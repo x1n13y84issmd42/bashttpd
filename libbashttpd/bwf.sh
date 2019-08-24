@@ -357,3 +357,40 @@ function api.Error {
 		exit 0
 	fi
 }
+
+# Formats Bash colored output as HTML.
+# Arguments:
+#	$@: an array of colored CLI output lines.
+function bwf.respCLI {
+	IFS=$'\n'
+	LINES=($@)
+	for line in ${LINES[@]}; do
+		line=${line//$'\e'\[m/"</span>"}
+		line=${line//$'\r'}
+		line=${line// /"&nbsp;"}
+
+		# Matches the \e[X;XX;XXm sequences
+		RX=$'\e\[([0-9]{1,2}\;){0,1}([0-9]{1,2}\;){0,1}[0-9]+m'
+		while [[ $line =~ $RX ]]; do
+
+			local class=""
+			fmtOptsLine=${BASH_REMATCH[0]:2}
+			fmtOptsLine=${fmtOptsLine::-1}
+			readarray -t -d ';' fmtOpts <<< $fmtOptsLine
+			for fmt in ${fmtOpts[@]}; do
+				class="$class fmt-$fmt"
+			done
+
+			HTMLtag="<span class=\"$class\">"
+
+			# \e[0m
+			[[ $fmtOptsLine == "0" ]] && HTMLtag="</span>"
+
+			line=${line//${BASH_REMATCH[0]}/$HTMLtag}
+		done
+		
+		HTML="$HTML<p class=\"cli-line\">$line</p>\n"
+	done
+	
+	echo -e "$HTML"
+}

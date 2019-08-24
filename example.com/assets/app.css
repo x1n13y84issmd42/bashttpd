@@ -384,3 +384,22 @@ blink {
 	border-right: 1px #222 solid;
 	margin: 0 30px;
 }
+
+/*****************************************************************************/
+
+.cli-line .fmt-34 {
+	color: #00BBFF;
+}
+
+.cli-line .fmt-42 {
+	background-color: #009944;
+}
+
+.cli-line .fmt-32 {
+	color: #009944;
+}
+
+.cli-line .fmt-01,
+.cli-line .fmt-1 {
+	font-weight: bold;
+}
