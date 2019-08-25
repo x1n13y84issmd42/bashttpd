@@ -35,6 +35,10 @@ function loggggg {
 	[[ $LOG_VERBOSITY -ge 5 ]] && log "$@"
 }
 
+function error {
+	echo -En "$1"
+}
+
 # Like `return` in other languages, capture it with $()
 function yield {
 	if [[ -z $2 ]]; then

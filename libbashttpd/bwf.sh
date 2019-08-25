@@ -15,7 +15,7 @@ function resp.Header {
 # Sends an HTTP response body.
 function resp.Body {
 	echo ""
-	echo -E $1
+	echo -E "$1"
 }
 
 # Responds with file contents.
@@ -98,7 +98,7 @@ function req.FileContentType {
 #	$2: optional reference name to put the value into.
 function req.Query {
 	vn="QS_$1"
-	yield ${!vn} $2
+	yield "${!vn}" "$2"
 }
 
 # A shorthand function to responding with JSONs. Encodes passed data, sends Content-Type.
@@ -210,7 +210,7 @@ function JSON.EncodeArray {
 	JSON=$(array.join ", " ${JSONFIELDS[@]})
 	JSON="[$JSON]"
 
-	yield $JSON
+	yield "$JSON"
 }
 
 # Encodes a value as a JSON string.
@@ -245,11 +245,27 @@ function sys.TimeElapsed {
 	yield "$DT"
 }
 
+# Checks if a progrma is installed in the system.
+# For use in if conditions.
+function sys.Installed {
+	local prog=$(command -v $1)
+	if [[ -z $prog ]]; then
+		return 255
+	else
+		return 0
+	fi
+}
+
 # Executes a MySQL binary and provides auth credentials.
 function mysql.Run {
+	if ! sys.Installed mysql; then
+		error "MySQL is not installed."
+		return 255
+	fi
+
 	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
-	# loggggg "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"$1\""
-	mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $@
+	loggggg "mysql.Run: mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $@"
+	mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $@ 2>&1
 }
 
 # Executes a MySQL query.
@@ -258,25 +274,36 @@ function mysql.Run {
 #	$2: optional reference name to store the result
 function mysql.Query {
 	local r
-	r=$(mysql.Run $MYSQL_DB -e "$1" 2>&1)
+	r=$(mysql.Run $MYSQL_DB -e "$1")
 	local __xc=$?
 	yield "$r" $2
 	return $__xc
 }
 
-# Executes a SELECT MySQL query. Returns all available rows.
+# Executes a SELECT MySQL query with a WHERE sattement.
+# Arguments:
+#	$1: a table name to select rows from
+#	$2: a 'WHERE' clause without the "WHERE" keyword
+#	$3: optional reference name to store the result
+function mysql.Select {
+	local r
+	r=$(mysql.Query "SELECT * FROM $1 WHERE $2")
+	api.Error "mysql.Select" $? "$r"
+
+	yield "$r" $3
+}
+
+# Executes a "SELECT *" MySQL query, returns all available rows.
 # Arguments:
 #	$1: a table name to select rows from
 #	$2: an optional 'WHERE' clause without the "WHERE" keyword
 #	$3: optional reference name to store the result
-function mysql.Select {
-	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
-	[[ ! -z $2 ]] && WHERE="WHERE $2"
+function mysql.All {
 	local r
-	r=$(mysql.Query "SELECT * FROM $1 $WHERE")
+	r=$(mysql.Query "SELECT * FROM $1")
 	api.Error "mysql.Select" $? "$r"
 
-	yield "$r" $3
+	yield "$r" $2
 }
 
 # Iterates over a set of rows returned from mysql.
@@ -368,7 +395,7 @@ function mysql.Install {
 #	$3: an error message.
 function api.Error {
 	IFS=''
-	if ! [[ $2 = 0 ]]; then
+	if [[ $2 != 0 ]]; then
 		log "	Internal Server Error."
 		log "	$1 exit code is $2."
 		log "	$3"

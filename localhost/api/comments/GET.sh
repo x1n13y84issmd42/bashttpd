@@ -4,7 +4,7 @@ req.Query image imageID
 if [[ ! -z $imageID ]]; then
 	mysql.Select image_comments "imageID=\"$imageID\"" ROWS
 else
-	mysql.Select image_comments ROWS
+	mysql.All image_comments ROWS
 fi
 
 mysql.foreach do
