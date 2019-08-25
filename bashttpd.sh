@@ -1,13 +1,13 @@
 #!/bin/bash
 
-source .env
+echo "Bashttpd 0.8"
+
 source libbashttpd/utility.sh
 source libbashttpd/bwf.sh
 
-PROJECT=$1
+[[ -f .env ]] && source .env
 
-echo "Bashttpd 0.6"
-echo "Project: $PROJECT"
+project.Load $1
 
 mysql.Install
 

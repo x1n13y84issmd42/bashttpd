@@ -6,21 +6,25 @@ Bashttpd aims to implement the HTTP protocol and provide modern web development 
 ## Requirements
 `netcat` with enabled suport for scripting (the `-c` option).
 
+`mysql`
+
 [jq](https://stedolan.github.io/jq/) is you want JSON.
 
 ## Usage
-`./bashttpd example.com`
+`./bashttpd localhost`
 
-Here `example.com` is a path to a folder that contains a project.
+Here `localhost` is a path to a folder that contains a project.
 
-Then visit `localhost:8080` in browser.
+Then visit [localhost:8080](http://localhost:8080) in browser.
+
+You may want to fix MySQL connection credentials in the `.env` file to see DB in action.
 
 ## Design
 When **bashttpd** receives a request, three things can hapen.
 
 First, it tries to match the path from that to the folder structure of the supplied project, and looks for a script file named after the HTTP request method used.
 
-For example, a `GET` request to the `/foo/bar` path is served by the `example.com/foo/bar/GET.sh` script.
+For example, a `GET` request to the `/foo/bar` path is served by the `localhost/foo/bar/GET.sh` script.
 
 If the request path matches a file path in the project directory, it will respond with it's contents. At the moment it supports `js`, `css` & `html`, as well as `jpeg` & `png` images with proper content types.
 
@@ -62,6 +66,7 @@ If you're not a fan (who is?), there are functions for that.
 |**resp.TemplateFile**|Reads a file from `$PROJECT/.etc/tpl/` directory, expands variables into it, responds with the result.|`resp.TemplateFile "age.html"`|
 |**resp.JSON**|A shorthand function to respond with JSONs. Encodes the passed data, sends Content-Type. |`declare -a FILE_LIST`<br>`# Fill the $FILE_LIST...`<br>`resp.JSON FILE_LIST`|
 |**resp.CLI**|Formats the colored output (`\e[34;91m...\e[0m`) as HTML.|`HTML=$(resp.CLI $(ls -la --color=always ~))`|
+|**resp.Redirect**|A regular HTTP redirect response. Writes a `Location` header with a `30*` status code.|`resp.Redirect "http://example.com" 303`|
 
 ### MySQL
 | Function | Description | Example |
@@ -70,6 +75,7 @@ If you're not a fan (who is?), there are functions for that.
 |**mysql.Insert**|Performs an INSERT MySQL query. Result is an ID of the inserted row.<br>*$1* Table name to insert to.<br>*$2* An associative array with column data.<br>*$3* Optional result reference name.|`declare -A COMMENT=(`<br>`[imageID]=$(req.Data imageID)`<br>`[message]=$(req.Data message)`<br>`)`<br>`mysql.Insert image_comments COMMENT ID`|
 |**mysql.foreach**|Alias. Iterates over MySQL query result rows. Expects the `ROWS` variable.|See below.|
 |**mysql.row**|Alias. Must be called within the `mysql.foreach` loop, creates a lcoal `row` variable which is an associative array containing the row's column data.|`mysql.Select image_comments "imageID='$imageID'" ROWS`<br>`mysql.foreach; do`<br>`mysql.row`<br>`echo "Message is ${row[message]}"`<br>`done`|
+|**mysql.Install**|Performs a first-time installation of a MySQL database for a running project. It will read the `MYSQL_DB` value from environment, create a MySQL database named after it, the execute an SQL file from `$PROJECT/.etc/DB.sql`, if such is found. It is performed automatically on server startup.|See below.|
 
 ### Utility
 | Function | Description | Example |
@@ -79,7 +85,6 @@ If you're not a fan (who is?), there are functions for that.
 |**yield**|A syntactic sugar to output dynamic variables. A relative to the conventional `return` keyword.|`yield "DATA_$dataName"`|
 |**urldecode**|A standard URL decoding function.|`decodedInput=$(urldecode $encodedInput)`|
 |**urlencode**|A standard URL encoding function.|`encodedInput=$(urlencode $decodedInput)`|
-|**sys.IFS**|Changes the IFS variable while backing it up and automatically restoring the previous value.|`sys.IFS ';'`|
 |**sys.TimeElapsed**|A profiling function, outputs delta time between two consecutive calls, in seconds.|`$(sys.TimeElapsed)`<br>`T=$(sys.TimeElapsed)`|
 |**sys.Time**|Outputs current unixtime.|`T=$(sys.Time)`|
 |**sys.IFS**|A function to help preserve correct values for the IFS variable. Supports stacking.|`sys.IFS $'\r'`<br>`sys.IFS ';'`<br>`sys.IFS # IFS is $'\r' now`<br>`sys.IFS # IFS is default now`|
@@ -96,6 +101,7 @@ If you're not a fan (who is?), there are functions for that.
 * [x] Access data from application/json requests
 * [ ] Access data from application/xml requests
 * [x] application/json responses
+* [x] Redirect responses
 * [x] Page templating
 * [ ] Branches in templates
 * [ ] Loops in templates
@@ -103,7 +109,7 @@ If you're not a fan (who is?), there are functions for that.
 * [x] Query String parsing
 * [x] Cookies
 * [x] MySQL
-* [ ] MySQL migrations
+* [x] MySQL migrations
 * [x] Content url-en/decoding
 * [ ] Socat port for parallelism?
 * [x] Render colored CLI output as HTML (`ls --color=yes`)

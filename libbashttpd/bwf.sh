@@ -457,8 +457,10 @@ function project.Load {
 	PROJECT=$(realpath $1)
 	[[ -f $1/.env ]] && source $1/.env
 
+	local URL=$(project.URL)
+
 	loggg "Project directory is $PROJECT"
-	loggg "Project domain is $DOMAIN"
+	logg "Project URL is $URL"
 }
 
 # Yields a fully qualified project URL, with domain name and port number.
@@ -468,4 +470,14 @@ function project.URL {
 
 	local path=$(array.join '/' $@)
 	echo "http://$DOMAIN$uPORT/$path"
+}
+
+# A regular HTTP redirect response.
+# Arguments:
+#	$1: A URL to relocate useragent to.
+#	$2: An optional 30* HTTP status code.
+function resp.Redirect {
+	resp.Status ${2:-302}
+	resp.Header "Location" "$1"
+	resp.Body ""
 }
