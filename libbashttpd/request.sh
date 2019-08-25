@@ -2,7 +2,7 @@ rxHeader='^([a-zA-Z-]+)\s*:\s*(.*)'
 rxMethod='^(GET|POST|PUT|DELETE|OPTIONS) +(.*) +HTTP'
 
 # Reads HTTP request headers.
-function readHeaders {
+function HTTP.readHeaders {
 	# Debug dump (clear)
 	[[ ! -z $DEBUG_DUMP_HEADERS ]] && echo -nE "" > $DEBUG_DUMP_HEADERS
 
@@ -64,7 +64,7 @@ function readHeaders {
 }
 
 # Pulls extra info from some headers' values, like content boundaries, strips unused stuff.
-function normalizeHeaders {
+function HTTP.normalizeHeaders {
 	# Figuring out the content boundary in case we have a multipart/form-data Content-Type
 	if [[ $CONTENT_TYPE =~ ^multipart\/form\-data ]]; then
 		CONTENT_BOUNDARY="$(echo $CONTENT_TYPE | sed -n 's/.*data\;boundary=\(.*\)/\1/p')"
@@ -78,7 +78,7 @@ function normalizeHeaders {
 
 # Reads an HTTP request body contents. Different Content-Types must be read & parsed differently,
 # so it relies on specific implementations of body parsers.
-function readBody {
+function HTTP.readBody {
 	if ! [[ -z $CONTENT_TYPE ]] && [[ $CONTENT_LENGTH -gt 0 ]]; then
 		# Choosing a parser for the rest of request data based on Content-Type
 		parserFile="libbashttpd/content/$CONTENT_TYPE.sh"

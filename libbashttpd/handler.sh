@@ -9,9 +9,9 @@ source libbashttpd/bwf.sh
 
 project.Load $1
 
-readHeaders
-normalizeHeaders
-readBody
+HTTP.readHeaders
+HTTP.normalizeHeaders
+HTTP.readBody
 
 router
 
