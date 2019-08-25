@@ -28,6 +28,7 @@ local fDest=$(mktemp $PROJECT/$GALLERY_STORAGE/XXXXXXXX.$EXT)
 mv $fTmp $fDest
 
 declare -A RESP=(
+	[name]=${fDest##*/}
 	[tpmFilename]=$fTmp
 	[srcFilename]=$(req.FileName aPicture)
 	[URL]="http://${fDest//$PROJECT/localhost:8080}"

@@ -91,12 +91,10 @@ let bwf = {
 	valueStash: {},
 
 	set: function(vn, v) {
-		console.log(`Setting ${vn}`);
 		bwf.valueStash[vn] = v;
 	},
 	
-	get: function(vn, v) {
-		console.log(`Getting ${vn}`);
+	get: function(vn) {
 		return bwf.valueStash[vn];
 	}
 };
