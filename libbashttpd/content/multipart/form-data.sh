@@ -78,6 +78,8 @@ function dumpUntil {
 				echo -en $LINE >> $2
 				LINE=""
 			fi
+			
+			renderProgress;
 
 			return 0
 		fi
@@ -250,6 +252,8 @@ function parseFin {
 	loggggg "parseFin"
 	if [[ $LINE = "--" ]]; then
 		loggggg "	Found the request end."
+		renderProgress;
+		log ""
 		NEXT_PARSER=parseNothing
 		return 0
 	fi

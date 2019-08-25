@@ -17,22 +17,26 @@ function log {
 
 # Verbose logging
 function logg {
-	[[ $LOG_VERBOSITY -ge 2 ]] && log "$@"
+	[[ $LOG_VERBOSITY -ge 2 ]] && log $@
+	return 0
 }
 
 # Even more verbose logging
 function loggg {
-	[[ $LOG_VERBOSITY -ge 3 ]] && log "$@"
+	[[ $LOG_VERBOSITY -ge 3 ]] && log $@
+	return 0
 }
 
 # Slightly annoying logging
 function logggg {
-	[[ $LOG_VERBOSITY -ge 4 ]] && log "$@"
+	[[ $LOG_VERBOSITY -ge 4 ]] && log $@
+	return 0
 }
 
 # Absolutely annoying chatter
 function loggggg {
-	[[ $LOG_VERBOSITY -ge 5 ]] && log "$@"
+	[[ $LOG_VERBOSITY -ge 5 ]] && log $@
+	return 0
 }
 
 function error {

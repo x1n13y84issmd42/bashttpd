@@ -114,6 +114,7 @@ If you're not a fan (who is?), there are functions for that.
 * [ ] Socat port for parallelism?
 * [x] Render colored CLI output as HTML (`ls --color=yes`)
 * [x] Automatic error handling and reporting
+* [ ] Colorful logs
 
 ## Links
 https://superuser.com/questions/1368666/receiving-multiple-files-at-once-in-netcat-without-overwriting-last-file\
