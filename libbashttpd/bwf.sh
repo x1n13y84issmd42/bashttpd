@@ -423,6 +423,7 @@ function resp.CLI {
 	echo -e "$HTML"
 }
 
+# Initializes various project-wide things.
 function project.Load {
 	DOMAIN=${1##*/}
 	PROJECT=$(realpath $1)
@@ -430,4 +431,13 @@ function project.Load {
 
 	loggg "Project directory is $PROJECT"
 	loggg "Project domain is $DOMAIN"
+}
+
+# Yields a fully qualified project URL, with domain name and port number.
+# All arguments are joined with / and used as path.
+function project.URL {
+	[[ $PORT != 80 ]] && uPORT=":$PORT"
+
+	local path=$(array.join '/' $@)
+	echo "http://$DOMAIN$uPORT/$path"
 }

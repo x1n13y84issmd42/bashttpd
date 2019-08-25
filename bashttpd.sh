@@ -12,7 +12,7 @@ echo "Project: $PROJECT"
 mysql.Install
 
 while true; do
-	netcat -l -k -p 8080 -v -c "./libbashttpd/handler.sh $1"
+	netcat -l -k -p $PORT -v -c "./libbashttpd/handler.sh $1"
 	ncxc=$?
 	echo ""
 	if [ $ncxc -gt 0 ]; then

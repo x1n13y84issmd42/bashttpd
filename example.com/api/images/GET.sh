@@ -13,6 +13,7 @@ for LINE in "${LINES[@]}"; do
 		declare -A fdata=(
 			[name]="${FILE[7]}"
 			[URL]="http://localhost:8080/$GALLERY_STORAGE/${FILE[7]}"
+			[URL_]=$(project.URL $GALLERY_STORAGE ${FILE[7]})
 			[size]="${FILE[4]}"
 			[modifiedAt]="${FILE[5]} ${FILE[6]}"
 		)
