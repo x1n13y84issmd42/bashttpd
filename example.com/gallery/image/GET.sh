@@ -11,5 +11,5 @@ if [[ -f $path ]]; then
 else
 	resp.Status 404
 	resp.Header "Content-Type" "text/html"
-	resp.TemplateFile "/assets/tpl/404.html"
+	resp.TemplateFile "/assets/tpl/error.html"
 fi
