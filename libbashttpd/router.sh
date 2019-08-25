@@ -9,22 +9,22 @@ function router() {
 	staticFile="$PROJECT$reqPath"
 
 	if [ -f "$ctrler" ]; then
-		log "	Executing the controller $ctrler"
+		log "Executing the controller $ctrler"
 		# This must be here in order for POST variables with spaces
 		# to expand in templates correctly 
 		IFS=$''
 		source $ctrler
 
 	elif [ -f "$staticFile" ]; then
-		log "	Serving the static file $staticFile"
+		log "Serving the static file $staticFile"
 		serveStatic $staticFile
 
 	elif [ -d "$staticFile" ] && [ -f "$staticFile/index.html" ]; then
-		log "	Serving the index.html of $staticFile"
+		log "Serving the index.html of $staticFile"
 		serveStatic "$staticFile/index.html"
 
 	else
-		log "	404 Not Found"
+	log "404 Not Found"
 		resp.Status 404
 		resp.Header "Content-Type" "text/html"
 		resp.Body "<i>$reqPath</i> Was Not Found"

@@ -143,7 +143,6 @@ function CRLFBoundaryFound {
 	let LEN=${#CB}+2
 	SEP=$'\r\n'"$CB"
 	if [[ ${LINE:${#LINE}-$LEN:$LEN} == $SEP ]]; then
-		loggggg "	Found a content boundary"
 		LINE=${LINE::-$LEN}
 		return 0
 	fi
@@ -154,15 +153,15 @@ function CRLFBoundaryFound {
 # Looks for a Content-Disposition line and extract param	eter and file names from it.
 function parseContentDisposition {
 	if [[ $LINE =~ Content-Disposition: ]]; then
-		loggggg "	Found a Content-Disposition"
+		logggg "	Found a Content-Disposition"
 		# Found a content disposition, extracting a parameter name from it
 		CURRENT_PARAMETER=$(echo -e $LINE | sed -rn 's/.* name\=\"([^"]*)\";{0,1}.*/\1/p')
-		loggggg "	Found a parameter \"$CURRENT_PARAMETER\""
+		logggg "	Found a parameter \"$CURRENT_PARAMETER\""
 
 		if [[ $LINE =~ ' 'filename= ]]; then
 			# Found a 'filename=' substring, extracting a file name from it
 			CURRENT_FILENAME=$(echo -e $LINE | sed -rn 's/.* filename\=\"([^"]*)\";{0,1}.*/\1/p')
-			loggggg "	Found a filename \"$CURRENT_FILENAME\""
+			logggg "	Found a filename \"$CURRENT_FILENAME\""
 		fi
 
 		NEXT_PARSER=parseCRLF_or_ContentType
@@ -175,7 +174,7 @@ function parseContentDisposition {
 
 function parseCRLF {
 	if [[ -z $LINE ]]; then
-		loggggg "	Found a CRLF, proceeding to the content body"
+		logggg "	Found a CRLF, proceeding to the content body"
 		# Not setting NEXT_PARSER because parseContent will read the input itself.
 		parseContent
 		return 0
@@ -186,8 +185,7 @@ function parseCRLF {
 
 # Reads a part of the request body until encounters a content boundary value.
 function parseContent {
-
-	loggggg "	Reading the request body"
+	logggg "	Reading the request body"
 	T=$(sys.TimeElapsed)
 
 	if [[ -z $CURRENT_FILENAME ]]; then
@@ -197,20 +195,20 @@ function parseContent {
 
 		# Regular values are stored as variables.
 		var "DATA_$CURRENT_PARAMETER" "$LINE"
-		loggggg "	Set DATA_$CURRENT_PARAMETER to \"$LINE\""
+		loggg "	Set DATA_$CURRENT_PARAMETER to \"$LINE\""
 	else
 		# Uploaded files are stored in /tmp...
 		tmp=$(mktemp)
-		T=$(sys.TimeElapsed)
 		dumpUntil CRLFBoundaryFound $tmp
 		T=$(sys.TimeElapsed)
-		loggggg "	Took $T seconds to read the request body."
+		loggg " "
+		loggggg "	Took $T seconds to dump the request body."
 
 		# ...and their filenames are stored as variables.
 		var "FILE_$CURRENT_PARAMETER" $tmp
 		var "FILENAME_$CURRENT_PARAMETER" $CURRENT_FILENAME
 		var "FILECT_$CURRENT_PARAMETER" $CURRENT_CONTENT_TYPE
-		loggggg "	Saved \"$CURRENT_FILENAME\" as $tmp"
+		loggg "	Saved \"$CURRENT_PARAMETER\" as $tmp"
 	fi
 
 	NEXT_PARSER=parseContentDisposition_or_Fin
@@ -224,7 +222,7 @@ function parseContent {
 function parseContentType {
 	if [[ $LINE =~ Content-Type: ]]; then
 		CURRENT_CONTENT_TYPE=$(echo -nE "$LINE" | sed -r 's/\s+//g' | sed -\n 's/.*:\s*\(.*\)/\1/p')
-		loggggg "	Found a Content-Type of '$CURRENT_CONTENT_TYPE', proceeding to a CRLF"
+		logggg "	Found a Content-Type of '$CURRENT_CONTENT_TYPE', proceeding to a CRLF"
 		NEXT_PARSER=parseCRLF
 		return 0
 	fi
@@ -249,9 +247,8 @@ function parseContentDisposition_or_Fin {
 }
 
 function parseFin {
-	loggggg "parseFin"
 	if [[ $LINE = "--" ]]; then
-		loggggg "	Found the request end."
+		logggg "	Found the request end."x
 		renderProgress;
 		log ""
 		NEXT_PARSER=parseNothing
@@ -268,17 +265,16 @@ if ! [ -z ${CONTENT_LENGTH+x} ]; then
 	T1=$(sys.Time)
 	while readUntil CRLFFound; do
 		let LI=$LI+1
+		logggg ""
 		loggggg "Line #$LI is ($LINE) (${#LINE} chars)"
-		loggggg "The parser is $NEXT_PARSER"
+		logggg "The parser is $NEXT_PARSER"
 
 		[[ ! -z $NEXT_PARSER ]] && $NEXT_PARSER
 
-		loggggg ""
 	done 
 	
 	T2=$(sys.Time)
-	T=$(($T2-$T1))
-	loggggg "Done in $T seconds."
+	loggggg "Done in $(($T2-$T1)) seconds."
 	
 	# Debug dump
 	[[ ! -z $DEBUG_DUMP_BODY ]] && echo -n "$BODY" > $DEBUG_DUMP_BODY

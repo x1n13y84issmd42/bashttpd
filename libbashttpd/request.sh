@@ -1,11 +1,14 @@
+IFS=''
+
 rxHeader='^([a-zA-Z-]+)\s*:\s*(.*)'
 rxMethod='^(GET|POST|PUT|DELETE|OPTIONS) +(.*) +HTTP'
 
 # Reads HTTP request headers.
 function HTTP.readHeaders {
+	loggg "Reading request headers"
+
 	# Debug dump (clear)
 	[[ ! -z $DEBUG_DUMP_HEADERS ]] && echo -nE "" > $DEBUG_DUMP_HEADERS
-
 	while read INPUT; do
 		# Debug dump
 		[[ ! -z $DEBUG_DUMP_HEADERS ]] && echo -nE $INPUT >> $DEBUG_DUMP_HEADERS
@@ -17,7 +20,7 @@ function HTTP.readHeaders {
 			# Trimming off whitespace
 			headerValue="$(echo -e "${headerValue}" | sed -r 's/\s+//g')"
 
-			loggg "Header $headerName is '$headerValue'"
+			loggg "	$headerName: '$headerValue'"
 
 			# Replacing - with _ in header names and uppercasing them
 			headerName="$(echo -e "${headerName}" | sed -r 's/-/_/g' | sed -e 's/\(.*\)/\U\1/g')"
@@ -57,7 +60,7 @@ function HTTP.readHeaders {
 
 		# Done with headers
 		else
-			loggg "Done with headers"
+			loggg ""
 			break
 		fi
 	done
@@ -80,6 +83,8 @@ function HTTP.normalizeHeaders {
 # so it relies on specific implementations of body parsers.
 function HTTP.readBody {
 	if ! [[ -z $CONTENT_TYPE ]] && [[ $CONTENT_LENGTH -gt 0 ]]; then
+		loggg "Reading request body"
+
 		# Choosing a parser for the rest of request data based on Content-Type
 		parserFile="libbashttpd/content/$CONTENT_TYPE.sh"
 		
@@ -88,5 +93,7 @@ function HTTP.readBody {
 		else
 			log "The Content-Type \"$CONTENT_TYPE\" is not supported yet. Please implement and submit a pull request @ github.com/x1n13y84issmd42/bashttpd"
 		fi
+
+		loggg ""
 	fi
 }

@@ -4,18 +4,20 @@ shopt -s expand_aliases
 
 # Sends an HTTP response status code.
 function resp.Status {
-	[[ -z $__HTTP_STATUS_SENT ]] && echo "HTTP/1.1 $1" && __HTTP_STATUS_SENT=$1
+	[[ -z $__HTTP_STATUS_SENT ]] && echo "HTTP/1.1 $1" && __HTTP_STATUS_SENT=$1 && loggg "	resp.Status HTTP/1.1 $1"
 }
 
 # Sends an HTTP response header.
 function resp.Header {
 	echo "$1: $2"
+	loggg "	resp.Header $1: '$2'"
 }
 
 # Sends an HTTP response body.
 function resp.Body {
 	echo ""
 	echo -E "$1"
+	loggg "	resp.Body [...]"
 }
 
 # Responds with file contents.
@@ -23,6 +25,7 @@ function resp.Body {
 function resp.File {
 	echo ""
 	cat "$1"
+	loggg "	resp.File \"$1\""
 }
 
 # Reads a file, expands variables in it, then responds.
@@ -38,6 +41,7 @@ function resp.TemplateFile {
 	echo 'END_OF_TEXT'       >> $tmp
 
 	source $tmp
+	loggg "	resp.TemplateFile \"$1\""
 }
 
 # Sets a response cookie.
