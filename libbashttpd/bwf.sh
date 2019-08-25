@@ -338,7 +338,9 @@ function mysql.Insert {
 	done
 }
 
+# Installs a project MySQL database.
 function mysql.Install {
+	IFS=''
 	hasDB=$(mysql.Run -e "SHOW DATABASES;" | grep -sw $MYSQL_DB)
 
 	if [[ -z $hasDB ]]; then
@@ -355,7 +357,7 @@ function mysql.Install {
 
 		log "Done."
 	else
-		log "The database seems to be in place."
+		log "The DB is in place."
 	fi
 }
 

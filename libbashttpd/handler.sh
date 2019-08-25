@@ -9,6 +9,8 @@ source libbashttpd/bwf.sh
 
 PROJECT=$1
 
+[[ -f $PROJECT/.env ]] && source $PROJECT/.env
+
 readHeaders
 normalizeHeaders
 readBody
