@@ -422,3 +422,12 @@ function resp.CLI {
 	
 	echo -e "$HTML"
 }
+
+function project.Load {
+	DOMAIN=${1##*/}
+	PROJECT=$(realpath $1)
+	[[ -f $1/.env ]] && source $1/.env
+
+	loggg "Project directory is $PROJECT"
+	loggg "Project domain is $DOMAIN"
+}
