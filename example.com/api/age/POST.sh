@@ -6,4 +6,4 @@ resp.Status 200
 resp.Header "Content-Type" "text/html"
 resp.Cookie "visit_counter" $visits
 
-resp.TemplateFile "/assets/tpl/age.html"
+resp.TemplateFile "age.html"

@@ -59,7 +59,7 @@ If you're not a fan (who is?), there are functions for that.
 |**resp.Cookie**|Sends a cookie to a client.|`resp.Cookie "visit_counter" $counter`|
 |**resp.Body**|Writes the response body.|`resp.Body "<h1>YOLO</h1>"`|
 |**resp.File**|Responds with a file contents. Note that you have to specify Content-Type yourself.|`resp.File "/etc/passwd"`|
-|**resp.TemplateFile**|Reads a file, expands variables into it, responds with the result.|`resp.TemplateFile "/assets/tpl/age.html"`|
+|**resp.TemplateFile**|Reads a file from `$PROJECT/.etc/tpl/` directory, expands variables into it, responds with the result.|`resp.TemplateFile "age.html"`|
 |**resp.JSON**|A shorthand function to respond with JSONs. Encodes the passed data, sends Content-Type. |`declare -a FILE_LIST`<br>`# Fill the $FILE_LIST...`<br>`resp.JSON FILE_LIST`|
 |**resp.CLI**|Formats the colored output (`\e[34;91m...\e[0m`) as HTML.|`HTML=$(resp.CLI $(ls -la --color=always ~))`|
 

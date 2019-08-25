@@ -29,7 +29,7 @@ function resp.File {
 function resp.TemplateFile {
 	echo ""
 
-	tplFilePath="$PROJECT/$1"
+	tplFilePath="$PROJECT/.etc/tpl/$1"
 	tmp=$(mktemp --suffix=.sh)
 
 	echo 'cat <<END_OF_TEXT' >  $tmp
@@ -245,15 +245,20 @@ function sys.TimeElapsed {
 	yield "$DT"
 }
 
+# Executes a MySQL binary and provides auth credentials.
+function mysql.Run {
+	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
+	# loggggg "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"$1\""
+	mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $@
+}
+
 # Executes a MySQL query.
 # Arguments:
 #	$1: a query to execute.
 #	$2: optional reference name to store the result
 function mysql.Query {
-	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
-	# loggggg "mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e \"$1\""
 	local r
-	r=$(mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $MYSQL_DB -e "$1" 2>&1)
+	r=$(mysql.Run $MYSQL_DB -e "$1" 2>&1)
 	local __xc=$?
 	yield "$r" $2
 	return $__xc
@@ -331,6 +336,27 @@ function mysql.Insert {
 		yield "${row[ID]}" $3
 		return 0
 	done
+}
+
+function mysql.Install {
+	hasDB=$(mysql.Run -e "SHOW DATABASES;" | grep -sw $MYSQL_DB)
+
+	if [[ -z $hasDB ]]; then
+		log "Installing the database."
+
+		log "Creating the '$MYSQL_DB' database..."
+		mysql.Run -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DB"
+
+		local projDBSQL="$PROJECT/.etc/db.sql"
+		if [[ -f $projDBSQL ]]; then
+			log "Executing the $projDBSQL..."
+			mysql.Run $MYSQL_DB < $projDBSQL
+		fi
+
+		log "Done."
+	else
+		log "The database seems to be in place."
+	fi
 }
 
 # Checks the passed exit code and reports 500 to the client in case it's not 0.
