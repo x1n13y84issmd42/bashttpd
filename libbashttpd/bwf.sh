@@ -394,6 +394,7 @@ function resp.CLI {
 	LINES=($@)
 	for line in ${LINES[@]}; do
 		line=${line//$'\e'\[m/"</span>"}
+		line=${line//$'\e'\[K} # No idea what's that
 		line=${line//$'\r'}
 		line=${line// /"&nbsp;"}
 
