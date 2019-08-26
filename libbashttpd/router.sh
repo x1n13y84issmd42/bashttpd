@@ -9,18 +9,18 @@ function router() {
 	staticFile="$PROJECT$reqPath"
 
 	if [ -f "$ctrler" ]; then
-		log "${lcLGray}Executing the controller ${lcMagenta}$PROJECT${lcLCyan}$reqPath/${lcX}${lcLYellow}$reqMethod${lcMagenta}.sh"
+		log "${lcLGray}Executing the controller ${lcBlue}$PROJECT${lcLCyan}$reqPath/${lcX}${lcLYellow}$reqMethod${lcBlue}.sh"
 		# This must be here in order for POST variables with spaces
 		# to expand in templates correctly 
 		IFS=$''
 		source $ctrler
 
 	elif [ -f "$staticFile" ]; then
-		log "${lcLGray}Serving the static file ${lcMagenta}$PROJECT${lcLCyan}$reqPath"
+		log "${lcLGray}Serving the static file ${lcBlue}$PROJECT${lcLCyan}$reqPath"
 		serveStatic $staticFile
 
 	elif [ -d "$staticFile" ] && [ -f "$staticFile/index.html" ]; then
-		log "${lcLGray}Serving the static file ${lcMagenta}$PROJECT${lcLCyan}$reqPath${lcMagenta}/index.html"
+		log "${lcLGray}Serving the static file ${lcBlue}$PROJECT${lcLCyan}$reqPath${lcBlue}/index.html"
 		serveStatic "$staticFile/index.html"
 
 	else
