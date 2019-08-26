@@ -474,7 +474,7 @@ function project.Load {
 	local URL=$(project.URL)
 
 	loggg "Project directory is ${lcWhite}$PROJECT"
-	logg "Project URL is ${lcU}${lcLCyan}$URL${lcX}"
+	logg "Project URL is ${lcU}${lcCyan}$URL${lcX}"
 }
 
 # Yields a fully qualified project URL, with domain name and port number.
