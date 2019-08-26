@@ -5,7 +5,7 @@ rxMethod='^(GET|POST|PUT|DELETE|OPTIONS) +(.*) +HTTP'
 
 # Reads HTTP request headers.
 function HTTP.readHeaders {
-	loggg "Reading request headers"
+	loggg "${lcLGray}Reading request headers"
 
 	# Debug dump (clear)
 	[[ ! -z $DEBUG_DUMP_HEADERS ]] && echo -nE "" > $DEBUG_DUMP_HEADERS
@@ -20,7 +20,7 @@ function HTTP.readHeaders {
 			# Trimming off whitespace
 			headerValue="$(echo -e "${headerValue}" | sed -r 's/\s+//g')"
 
-			loggg "	$headerName: '$headerValue'"
+			loggg "	${lcYellow}$headerName${lcX}: ${lcLGray}$headerValue${lcX}"
 
 			# Replacing - with _ in header names and uppercasing them
 			headerName="$(echo -e "${headerName}" | sed -r 's/-/_/g' | sed -e 's/\(.*\)/\U\1/g')"
@@ -37,10 +37,10 @@ function HTTP.readHeaders {
 
 			[[ $reqQuery == $reqPath ]] && reqQuery=""
 
-			log "Request is $reqMethod @ $reqPath"
+			log "Request is ${lcLYellow}$reqMethod${lcX} @ ${lcU}${lcLCyan}$reqPath${lcX}"
 
 			if [[ ! -z $reqQuery ]]; then
-				logg "Query string is $reqQuery"
+				logg "Query string is ${lcCyan}$reqQuery"
 
 				# Parsing the query string.
 				readarray -t -d '&' QSA <<< "$reqQuery"
@@ -54,7 +54,7 @@ function HTTP.readHeaders {
 					QSV=$(urldecode $QSV)
 					var "QS_$QSK" "$QSV"
 					
-					loggg "	$QSK = '$QSV'"
+					loggg "	${lcCyan}$QSK${lcX} = ${lcLGray}$QSV${lxC}"
 				done
 			fi
 
@@ -83,7 +83,7 @@ function HTTP.normalizeHeaders {
 # so it relies on specific implementations of body parsers.
 function HTTP.readBody {
 	if ! [[ -z $CONTENT_TYPE ]] && [[ $CONTENT_LENGTH -gt 0 ]]; then
-		loggg "Reading request body"
+		loggg "${lcLGray}Reading request body"
 
 		# Choosing a parser for the rest of request data based on Content-Type
 		parserFile="libbashttpd/content/$CONTENT_TYPE.sh"
@@ -91,7 +91,7 @@ function HTTP.readBody {
 		if [[ -f $parserFile ]]; then
 			source $parserFile
 		else
-			log "The Content-Type \"$CONTENT_TYPE\" is not supported yet. Please implement and submit a pull request @ github.com/x1n13y84issmd42/bashttpd"
+			log "${lcbgLRed}${lcWhite}The Content-Type \"$CONTENT_TYPE\" is not supported yet. Please implement and submit a pull request @ github.com/x1n13y84issmd42/bashttpd${lcX}"
 		fi
 
 		loggg ""

@@ -9,13 +9,13 @@ CHUNK_SIZE=2000
 CLT=$CHUNK_SIZE
 
 function renderProgress {
-	echo -en "\r	Read $CL/$CONTENT_LENGTH bytes " >&2
+	echo -en "\r	Read ${lcCyan}$CL/$CONTENT_LENGTH${lcX} bytes " >&2
 	local n=$(($CLT/$CHUNK_SIZE))
 	local mark="="
 	local numMarks=40
 	local markCLT=$(($CONTENT_LENGTH/$numMarks))
 
-	echo -En "[" >&2
+	echo -en "${lcLCyan}[${lcLMagenta}" >&2
 
 	for ((i=0; i<$CL; i+=$markCLT)); do
 		echo -En "$mark" >&2
@@ -25,7 +25,7 @@ function renderProgress {
 		echo -En " " >&2
 	done
 	
-	echo -n "] " >&2
+	echo -en "${lcLCyan}] " >&2
 }
 
 # Reads from input until the supplied predicate function returns 0,
@@ -33,7 +33,7 @@ function renderProgress {
 # Usage:
 #	dumpUntil CRLFFound $tmp - reads until found a \r\n sequence and dumps the data to the $tmp file
 function dumpUntil {
-	loggggg "	Dumping fast to $2 until $1"
+	loggggg "	Dumping fast to ${lcWhite}$2${lcX} until ${lcBlue}$1"
 	LINE=""
 	# loggggg ""
 
@@ -156,12 +156,12 @@ function parseContentDisposition {
 		logggg "	Found a Content-Disposition"
 		# Found a content disposition, extracting a parameter name from it
 		CURRENT_PARAMETER=$(echo -e $LINE | sed -rn 's/.* name\=\"([^"]*)\";{0,1}.*/\1/p')
-		logggg "	Found a parameter \"$CURRENT_PARAMETER\""
+		logggg "	Found a parameter ${lcGreen}\"$CURRENT_PARAMETER\""
 
 		if [[ $LINE =~ ' 'filename= ]]; then
 			# Found a 'filename=' substring, extracting a file name from it
 			CURRENT_FILENAME=$(echo -e $LINE | sed -rn 's/.* filename\=\"([^"]*)\";{0,1}.*/\1/p')
-			logggg "	Found a filename \"$CURRENT_FILENAME\""
+			logggg "	Found a filename ${lcBlue}\"$CURRENT_FILENAME\""
 		fi
 
 		NEXT_PARSER=parseCRLF_or_ContentType
@@ -195,7 +195,7 @@ function parseContent {
 
 		# Regular values are stored as variables.
 		var "DATA_$CURRENT_PARAMETER" "$LINE"
-		loggg "	Set DATA_$CURRENT_PARAMETER to \"$LINE\""
+		loggg "	Set ${lcR}${lcGreen}$CURRENT_PARAMETER${lcX} to ${lcWhite}\"$LINE\"${lcX}"
 	else
 		# Uploaded files are stored in /tmp...
 		tmp=$(mktemp)
@@ -208,7 +208,7 @@ function parseContent {
 		var "FILE_$CURRENT_PARAMETER" $tmp
 		var "FILENAME_$CURRENT_PARAMETER" $CURRENT_FILENAME
 		var "FILECT_$CURRENT_PARAMETER" $CURRENT_CONTENT_TYPE
-		loggg "	Saved \"$CURRENT_PARAMETER\" as $tmp"
+		loggg "	Saved ${lcR}${lcGreen}\"$CURRENT_PARAMETER\"${lcX} as ${lcWhite}$tmp${lcX}"
 	fi
 
 	NEXT_PARSER=parseContentDisposition_or_Fin
@@ -266,8 +266,8 @@ if ! [ -z ${CONTENT_LENGTH+x} ]; then
 	while readUntil CRLFFound; do
 		let LI=$LI+1
 		logggg ""
-		loggggg "Line #$LI is ($LINE) (${#LINE} chars)"
-		logggg "The parser is $NEXT_PARSER"
+		loggggg "${lcLGray}Line #$LI is ($LINE) (${#LINE} chars)"
+		logggg "The parser is ${lcBlue}$NEXT_PARSER"
 
 		[[ ! -z $NEXT_PARSER ]] && $NEXT_PARSER
 

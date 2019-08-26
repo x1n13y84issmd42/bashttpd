@@ -4,20 +4,20 @@ shopt -s expand_aliases
 
 # Sends an HTTP response status code.
 function resp.Status {
-	[[ -z $__HTTP_STATUS_SENT ]] && echo "HTTP/1.1 $1" && __HTTP_STATUS_SENT=$1 && loggg "	resp.Status HTTP/1.1 $1"
+	[[ -z $__HTTP_STATUS_SENT ]] && echo "HTTP/1.1 $1" && __HTTP_STATUS_SENT=$1 && loggg "	${lcLGray}resp.Status${lcX} HTTP/1.1 ${lcWhite}$1"
 }
 
 # Sends an HTTP response header.
 function resp.Header {
 	echo "$1: $2"
-	loggg "	resp.Header $1: '$2'"
+	loggg "	${lcLGray}resp.Header${lcX} ${lcYellow}$1${lcX}: ${lcWhite}$2"
 }
 
 # Sends an HTTP response body.
 function resp.Body {
 	echo ""
 	echo -E "$1"
-	loggg "	resp.Body [...]"
+	loggg "	${lcLGray}resp.Body${lcX} ${lcWhite}[...]"
 }
 
 # Responds with file contents.
@@ -25,7 +25,7 @@ function resp.Body {
 function resp.File {
 	echo ""
 	cat "$1"
-	loggg "	resp.File \"$1\""
+	loggg "	${lcLGray}resp.File${lcX} ${lcWhite}$1"
 }
 
 # Reads a file, expands variables in it, then responds.
@@ -41,7 +41,7 @@ function resp.TemplateFile {
 	echo 'END_OF_TEXT'       >> $tmp
 
 	source $tmp
-	loggg "	resp.TemplateFile \"$1\""
+	loggg "	${lcLGray}resp.TemplateFile${lcX} ${lcWhite}\"$1\""
 }
 
 # Sets a response cookie.
@@ -410,10 +410,10 @@ function mysql.Install {
 function api.Error {
 	IFS=''
 	if [[ $2 != 0 ]]; then
-		log "	Internal Server Error."
-		log "	$1 exit code is $2."
-		log "	$3"
-		log "	Reporting to client."
+		log "	${lcbgLRed}${lcWhite}Internal Server Error.${lcX}"
+		log "	${lcLRed}$1 exit code is $2."
+		log "	${lcLRed}$3"
+		log "	${lcLRed}Reporting to client."
 
 		resp.Status 500
 		declare -A ERRRESP=(
@@ -473,8 +473,8 @@ function project.Load {
 
 	local URL=$(project.URL)
 
-	loggg "Project directory is $PROJECT"
-	logg "Project URL is $URL"
+	loggg "Project directory is ${lcWhite}$PROJECT"
+	logg "Project URL is ${lcU}${lcLCyan}$URL${lcX}"
 }
 
 # Yields a fully qualified project URL, with domain name and port number.
