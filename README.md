@@ -34,6 +34,14 @@ If the request path matches a file path in the project directory, it will respon
 
 If none of the criterias above have matched, it'll try to interpret the requested path as a directory path and will try to find and serve `index.html` file from there.
 
+### Function, values and yielding
+Since in Bash you only return interger values from function, the rest of data is echoed to stdin and captured `$()` by a caller. In terms of Bashttpd & BWF this is called "yielding" for clarity.
+
+Some function can yield their results in two ways: regular yield to stdin which should be captured by `$()`, and yield by reference, where function takes a name of a variable where it writes it's result. Function `req.Data` & the `mysql.*` family are examples of such `referential functions`.
+
+### Error handling & reporing
+Since `$()` actually `captures` any output, it is not possible to automatically report errors from such invocations, so only `referential functions` can do that, and this is the primary reason they exist.
+
 ## Framework
 There is one! Bash Web Framework, or BWF, implements some standard operations expected from any modern web framework, making development of simple web apps in Bash script a breeze.
 
@@ -49,16 +57,16 @@ At the moment BWF understands `application/x-www-form-urlencoded` and `multipart
 | Function | Description | Example |
 | --- | --- | --- |
 | **req.Cookie** | Outputs a value of a cookie from the request. |`SID=$(req.Cookie "session_id")`|
-|**req.Data**|Outputs a single field value from the request body. Content-Type-agnostic.|`userName=$(req.Data "userName")`|
-|**req.File**|Outputs a temporary file name where contents of the uploaded file is stored. Takes the name of the file as in form data.|`filePath=$(req.File "theFile")`|
+|**req.Data**|Outputs a single field value from the request body. Content-Type-agnostic.<br>*$1* Request parameter name.<br>*$2* Optional result reference name.|`userName=$(req.Data "userName")`|
+|**req.File**|Outputs a temporary file name where contents of the uploaded file is stored.<br>*$1* The name of the file as in form data.|`filePath=$(req.File "theFile")`|
 |**req.FileName**|Outputs original name of the uploaded file. Takes the name of the file as in form data.|`sourceFileName=$(req.FileName "theFile")`|
 |**req.FileCT**|Outputs the Content-Type of the uploaded file. Takes the name of the file as in form data.|`fileCT=$(req.FileCT "theFile")`|
 |**req.Query**|Outputs a value of a query string parameter.|`page=$(req.Query "page")`|
 
 ### Responding
-Basically you can just `echo` anything, and it'll get to a client, but you'll need to follow the HTTP protocol yourself.
+Basically you can just `echo` anything, and it'll get to a client, but you'll have to follow the HTTP protocol yourself.
 
-If you're not a fan (who is?), there are functions for that.
+If you're not a fan, there are functions for that.
 
 | Function | Description | Example |
 | --- | --- | --- |
@@ -68,15 +76,15 @@ If you're not a fan (who is?), there are functions for that.
 |**resp.Body**|Writes the response body.|`resp.Body "<h1>YOLO</h1>"`|
 |**resp.File**|Responds with a file contents. Note that you have to specify Content-Type yourself.|`resp.File "/etc/passwd"`|
 |**resp.TemplateFile**|Reads a file from `$PROJECT/.etc/tpl/` directory, expands variables into it, responds with the result.|`resp.TemplateFile "age.html"`|
-|**resp.JSON**|A shorthand function to respond with JSONs. Encodes the passed data, sends Content-Type. |`declare -a FILE_LIST`<br>`# Fill the $FILE_LIST...`<br>`resp.JSON FILE_LIST`|
+|**resp.JSON**|A shorthand function to respond with JSONs. Encodes the passed data, sends Content-Type.<br>*$1* A *reference* to a regular or associative array.|`declare -a FILE_LIST`<br>`# Fill the $FILE_LIST...`<br>`resp.JSON FILE_LIST`|
 |**resp.CLI**|Formats the colored output (`\e[34;91m...\e[0m`) as HTML.|`HTML=$(resp.CLI $(ls -la --color=always ~))`|
 |**resp.Redirect**|A regular HTTP redirect response. Writes a `Location` header with a `30*` status code.|`resp.Redirect "http://example.com" 303`|
 
 ### MySQL
 | Function | Description | Example |
 | --- | --- | --- |
-|**mysql.Select**|Performs a simple SELECT MySQL query.<br>*$1* Table name to select from.<br>*$2* Optional WHERE clause.<br>*$3* Optional result reference name.|`mysql.Select image_comments "imageID='$imageID'" ROWS`|
-|**mysql.Insert**|Performs an INSERT MySQL query. Result is an ID of the inserted row.<br>*$1* Table name to insert to.<br>*$2* An associative array with column data.<br>*$3* Optional result reference name.|`declare -A COMMENT=(`<br>`[imageID]=$(req.Data imageID)`<br>`[message]=$(req.Data message)`<br>`)`<br>`mysql.Insert image_comments COMMENT ID`|
+|**mysql.Select**|Performs a simple SELECT MySQL query.<br>*$1* Table name to select from.<br>*$2* Optional WHERE clause.<br>*$3* Optional result *reference* name.|`mysql.Select image_comments "imageID='$imageID'" ROWS`|
+|**mysql.Insert**|Performs an INSERT MySQL query. Result is an ID of the inserted row.<br>*$1* Table name to insert to.<br>*$2* An associative array with column data.<br>*$3* Optional result *reference* name.|`declare -A COMMENT=(`<br>`[imageID]=$(req.Data imageID)`<br>`[message]=$(req.Data message)`<br>`)`<br>`mysql.Insert image_comments COMMENT ID`|
 |**mysql.foreach**|Alias. Iterates over MySQL query result rows. Expects the `ROWS` variable.|See below.|
 |**mysql.row**|Alias. Must be called within the `mysql.foreach` loop, creates a lcoal `row` variable which is an associative array containing the row's column data.|`mysql.Select image_comments "imageID='$imageID'" ROWS`<br>`mysql.foreach; do`<br>`mysql.row`<br>`echo "Message is ${row[message]}"`<br>`done`|
 |**mysql.Install**|Performs a first-time installation of a MySQL database for a running project. It will read the `MYSQL_DB` value from environment, create a MySQL database named after it, the execute an SQL file from `$PROJECT/.etc/DB.sql`, if such is found. It is performed automatically on server startup.|See below.|

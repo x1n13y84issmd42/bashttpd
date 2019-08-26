@@ -3,7 +3,7 @@
 source libbashttpd/utility.sh
 source libbashttpd/bwf.sh
 
-log "Bashttpd 0.8"
+log "Bashttpd 0.9"
 
 [[ -f .env ]] && source .env
 
