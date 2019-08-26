@@ -31,7 +31,7 @@ declare -A RESP=(
 	[name]=${fDest##*/}
 	[tpmFilename]=$fTmp
 	[srcFilename]=$(req.FileName aPicture)
-	[URL]="http://${fDest//$PROJECT/localhost:8080}"
+	[URL]=$(project.URL ${fDest//$PROJECT\/})
 	[isItReallyHappeningInBash]=true
 )
 
