@@ -66,7 +66,7 @@ function log {
 	_IFS=$IFS
 	IFS=''
 	# [[ $LOG_VERBOSITY -ge 1 ]] && printf "%s " $@ >&2 && echo "" >&2
-	[[ $LOG_VERBOSITY -ge 1 ]] && echo -e "${lcX}" $@ >&2
+	[[ $LOG_VERBOSITY -ge 1 ]] && echo -e "${lcX}" $@ "\e[0m" >&2
 	IFS=$_IFS
 	return 0
 }
