@@ -3,12 +3,16 @@ An HTTP server and a web framework, both written in pure Bash script. It really 
 
 Bashttpd aims to implement the HTTP protocol and provide modern web development platform, while sticking to Bash Script and standard POSIX tools as much as possible.
 
+At the moment it has basic support for HTTP and all kinds of requests, fully supports binary files & file upload, form data, JSON requests & responses, has MySQL utilities, does routing, renders simple HTML templates and more.
+
 ## Requirements
-`netcat` with enabled suport for scripting (the `-c` option).
+To carry the socket work, `socat` or `netcat` are needed. Bashttpd will use whichever is installed in the system, but if you want, you can specify which one to use: `bashttpd /path/to/project [socat|netcat]`
 
-`mysql`
+Unlike `netcat`, `socat` can fork on request and reuse the bound address for multiple incoming connections, which makes the server parallel and much more responsive, so `socat` is recommended for use and is default.
 
-[jq](https://stedolan.github.io/jq/) is you want JSON.
+`mysql` to keep data.
+
+[jq](https://stedolan.github.io/jq/) is you want JSON requests. Responses don't need it.
 
 ## Usage
 `./bashttpd localhost`
@@ -17,7 +21,7 @@ Here `localhost` is a path to a folder that contains a project.
 
 Then visit [localhost:8080](http://localhost:8080) in browser.
 
-You may want to fix MySQL connection credentials in the `.env` file to see DB in action.
+You may want to fix MySQL connection credentials in the `.env` file to see the DB in action.
 
 ## Design
 When **bashttpd** receives a request, three things can hapen.
@@ -111,19 +115,8 @@ If you're not a fan (who is?), there are functions for that.
 * [x] MySQL
 * [x] MySQL migrations
 * [x] Content url-en/decoding
-* [ ] Socat port for parallelism?
+* [x] Socat port for parallelism?
 * [x] Render colored CLI output as HTML (`ls --color=yes`)
 * [x] Automatic error handling and reporting
-* [ ] Colorful logs
+* [x] Colorful logs
 
-## Links
-https://superuser.com/questions/1368666/receiving-multiple-files-at-once-in-netcat-without-overwriting-last-file\
-https://habr.com/ru/company/otus/blog/437114/\
-https://linux.die.net/man/1/socat\
-https://stuff.mit.edu/afs/sipb/machine/penguin-lust/src/socat-1.7.1.2/EXAMPLES\
-https://gist.github.com/ramn/cfe0021b48c3e5d1f3f3\
-https://gist.github.com/CMCDragonkai/87bf53c3f93ef5dcb7e4\
-
-## XML
-sudo apt-get install libxml-xpath-perl
-cat testdata/uploadme.xml | xpath -e "//connection/host"
