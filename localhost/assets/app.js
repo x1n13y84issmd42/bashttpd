@@ -26,9 +26,13 @@ function request(method, url, data, cb) {
 			if (this.status == 200) {
 				cb && cb(JSON.parse(this.response));
 			} else {
-				console.log(`Response from ${url}:`);
-				console.log(`Status is ${this.status}`);
-				console.log(`Data is`, JSON.parse(this.response));
+				d = JSON.parse(this.response)
+				if (d.message) {
+					d.command && console.error(`Error at ${d.command}`);
+					console.error(d.message);
+				} else {
+					console.error(d);
+				}
 			}
 		}
 	};

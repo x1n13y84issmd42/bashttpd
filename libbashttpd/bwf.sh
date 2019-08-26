@@ -66,16 +66,23 @@ function req.Cookie {
 	# $(echo -e $COOKIE | sed -n 's/'"$1"'=\(.*\)/\2/p')
 }
 
-# Outputs a single value from the request body, regardless of it's Content-Type.
+# Outputs a single value from the request body of structured
+# requests (JSON, form data),regardless of it's Content-Type.
 # See actual parsers in libbashttpd/content
+# Arguments:
+#	$1: parameter name.
+#	$2: optional output reference name.
 function req.Data {
 	if [ -z $CONTENT_TYPE ]; then
 		echo ""
 		return 0
 	fi
 
-	# This must be declared by a content parser in it's own file.
-	req.DataImpl $1
+	local r
+	# req.DataImpl must be declared by a content parser in it's own file.
+	r=$(req.DataImpl $1)
+	api.Error "req.DataImpl" $? "$r"
+	yield "$r" $2
 }
 
 # Outputs a temporary file name where contents of the uploaded file is stored.
@@ -177,7 +184,7 @@ function JSON.EncodeObject {
 	IFS=''
 	JSON=$(array.join ", " "${JSONFIELDS[@]}")
 	JSON="{$JSON}"
-	yield $JSON
+	yield "$JSON"
 }
 
 # Encodes an associative array as a JSON array.
@@ -221,7 +228,10 @@ function JSON.EncodeArray {
 # Takes name of the variable as a argument.
 # It's name, not the variable itself.
 function JSON.EncodeString {
-	val=$(eval echo "\$${1}")
+	s=$1
+	val=$(eval echo "\$${s}")
+	val=${val//$'\n'/\\n}
+	val=${val//'"'/\\\"}
 	yield "\"$val\""
 }
 

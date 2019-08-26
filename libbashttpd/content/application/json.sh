@@ -19,9 +19,18 @@ fi
 
 # An implementation of req.Data.
 function req.DataImpl {
+	if ! sys.Installed jq; then
+		error "jq is not installed."
+		return 255
+	fi
+
 	Q=$1
-	[[ ! ${Q:0:1} == '.' ]] && Q=".$Q"
-	yield $(echo -nE "$BODY" | jq -r $Q)
+	[[ ${Q:0:1} != '.' ]] && Q=".$Q"
+	local r
+	r=$(echo -nE "$BODY" | jq -r $Q 2>&1)
+	local __xc=$?
+	yield "$r"
+	return $__xc
 }
 
 IFS=$_IFS

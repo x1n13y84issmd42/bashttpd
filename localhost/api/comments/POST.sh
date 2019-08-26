@@ -1,6 +1,9 @@
+req.Data imageID imageID
+req.Data message message
+
 declare -A COMMENT=(
-	[imageID]=$(req.Data "imageID")
-	[message]=$(req.Data "message")
+	[imageID]=$imageID
+	[message]=$message
 )
 
 mysql.Insert image_comments COMMENT ID
