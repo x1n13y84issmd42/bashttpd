@@ -467,8 +467,8 @@ function resp.CLI {
 
 # Initializes various project-wide things.
 function project.Load {
-	DOMAIN=${1##*/}
 	PROJECT=$(realpath $1)
+	DOMAIN=${PROJECT##*/}
 	[[ -f $1/.env ]] && source $1/.env
 
 	local URL=$(project.URL)
