@@ -110,13 +110,13 @@ function yield {
 }
 
 # Taken from https://gist.github.com/cdown/1163649#file-gistfile1-sh
-function urldecode {
+function HTTP.urldecode {
     local plussless="${1//+/ }"
     printf '%b' "${plussless//%/\\x}"
 }
 
 # Taken from https://gist.github.com/cdown/1163649#gistcomment-1256298
-function urlencode() {
+function HTTP.urlencode() {
   local length="${#1}"
   for (( i = 0; i < length; i++ )); do
     local c="${1:i:1}"

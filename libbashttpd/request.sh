@@ -50,8 +50,8 @@ function HTTP.readHeaders {
 					readarray -t -d '=' QSKV <<< "$QSP"
 					QSK=$(echo "${QSKV[0]}")
 					QSV=$(echo "${QSKV[1]}")
-					QSK=$(urldecode $QSK)
-					QSV=$(urldecode $QSV)
+					QSK=$(HTTP.urldecode $QSK)
+					QSV=$(HTTP.urldecode $QSV)
 					var "QS_$QSK" "$QSV"
 					
 					loggg "	${lcCyan}$QSK${lcX} = ${lcLGray}$QSV${lxC}"

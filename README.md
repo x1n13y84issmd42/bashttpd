@@ -95,8 +95,8 @@ If you're not a fan, there are functions for that.
 |**log**<br>**logg**<br>**loggg**<br>**logggg**<br>**loggggg**|A logging function. Outputs to the host's `stderr`.<br>The more **g**'s in the name, the higher **LOG_VERBOSITY** config value is required for the message to be displayed.|`log "User name is $name"`<br>`loggg "Not your everyday message"`|
 |**var**|A syntactic sugar function which defines and initializes a dynamically named variable.|`var "DATA_$dataName" $dataValue`|
 |**yield**|A syntactic sugar to output dynamic variables. A relative to the conventional `return` keyword.|`yield "DATA_$dataName"`|
-|**urldecode**|A standard URL decoding function.|`decodedInput=$(urldecode $encodedInput)`|
-|**urlencode**|A standard URL encoding function.|`encodedInput=$(urlencode $decodedInput)`|
+|**HTTP.urldecode**|A standard URL decoding function.|`decodedInput=$(HTTP.urldecode $encodedInput)`|
+|**HTTP.urlencode**|A standard URL encoding function.|`encodedInput=$(HTTP.urlencode $decodedInput)`|
 |**sys.TimeElapsed**|A profiling function, outputs delta time between two consecutive calls, in seconds.|`$(sys.TimeElapsed)`<br>`T=$(sys.TimeElapsed)`|
 |**sys.Time**|Outputs current unixtime.|`T=$(sys.Time)`|
 |**sys.IFS**|A function to help preserve correct values for the IFS variable. Supports stacking.|`sys.IFS $'\r'`<br>`sys.IFS ';'`<br>`sys.IFS # IFS is $'\r' now`<br>`sys.IFS # IFS is default now`|

@@ -23,7 +23,7 @@ for FIELD in "${FIELDS[@]}"; do
 	fieldName=$(echo -En "$FIELD" | cut -d "=" -f 1)
 	fieldValue=$(echo -En "$FIELD" | cut -d "=" -f 2)
 
-	fieldValue=$(urldecode $fieldValue)
+	fieldValue=$(HTTP.urldecode $fieldValue)
 	var "DATA_$fieldName" "$fieldValue"
 done
 
