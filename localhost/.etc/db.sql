@@ -12,4 +12,4 @@ AUTO_INCREMENT=38
 
 
 INSERT INTO `image_comments` (`id`, `imageID`, `message`, `date`) VALUES (38, 'UXRf0oub.jpg', 'REST APIs are totally possible with BWF and it\'s support for MySQL and JSON data.', '2019-08-25 11:19:44');
-INSERT INTO `image_comments` (`id`, `imageID`, `message`, `date`) VALUES (39, 'UXRf0oub.jpg', 'You can leave comments in the field below and they will be saved in the DB.', '2019-08-25 10:24:57');
+INSERT INTO `image_comments` (`id`, `imageID`, `message`, `date`) VALUES (39, 'UXRf0oub.jpg', 'You can leave comments in the field below and they will be saved to the DB.', '2019-08-25 10:24:57');
