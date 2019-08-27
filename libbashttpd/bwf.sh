@@ -310,8 +310,7 @@ function mysql.Select {
 # Executes a "SELECT *" MySQL query, returns all available rows.
 # Arguments:
 #	$1: a table name to select rows from
-#	$2: an optional 'WHERE' clause without the "WHERE" keyword
-#	$3: optional reference name to store the result
+#	$2: optional reference name to store the result
 function mysql.All {
 	local r
 	r=$(mysql.Query "SELECT * FROM $1")
