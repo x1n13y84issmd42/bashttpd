@@ -77,13 +77,14 @@ If you're not a fan, there are functions for that.
 |**resp.Body**|Writes the response body.|`resp.Body "<h1>YOLO</h1>"`|
 |**resp.File**|Responds with a file contents. Note that you have to specify Content-Type yourself.|`resp.File "/etc/passwd"`|
 |**resp.TemplateFile**|Reads a file from `$PROJECT/.etc/tpl/` directory, expands variables into it, responds with the result.|`resp.TemplateFile "age.html"`|
-|**resp.JSON**|A shorthand function to respond with JSONs. Encodes the passed data, sends Content-Type.<br>*$1* A *reference* to a regular or associative array.|`declare -a FILE_LIST`<br>`# Fill the $FILE_LIST...`<br>`resp.JSON FILE_LIST`|
+|**resp.JSON**|A shorthand function to respond with JSONs. Encodes the passed data, sends Content-Type. Regular arrays are encoded as JSON arrays, associative ones become objects.<br>*$1* A *reference* to a regular or associative array.|`declare -a FILE_LIST`<br>`# Fill the $FILE_LIST...`<br>`resp.JSON FILE_LIST`|
 |**resp.CLI**|Formats the colored output (`\e[34;91m...\e[0m`) as HTML.|`HTML=$(resp.CLI $(ls -la --color=always ~))`|
 |**resp.Redirect**|A regular HTTP redirect response. Writes a `Location` header with a `30*` status code.|`resp.Redirect "http://example.com" 303`|
 
 ### MySQL
 | Function | Description | Example |
 | --- | --- | --- |
+|**mysql.All**|Returns all available rows from a table.<br>*$1* Table name to select from.<br>*$2* Optional result *reference* name.|`mysql.All image_comments ROWS`|
 |**mysql.Select**|Performs a simple SELECT MySQL query.<br>*$1* Table name to select from.<br>*$2* Optional WHERE clause.<br>*$3* Optional result *reference* name.|`mysql.Select image_comments "imageID='$imageID'" ROWS`|
 |**mysql.Insert**|Performs an INSERT MySQL query. Result is an ID of the inserted row.<br>*$1* Table name to insert to.<br>*$2* An associative array with column data.<br>*$3* Optional result *reference* name.|`declare -A COMMENT=(`<br>`[imageID]=$(req.Data imageID)`<br>`[message]=$(req.Data message)`<br>`)`<br>`mysql.Insert image_comments COMMENT ID`|
 |**mysql.foreach**|Alias. Iterates over MySQL query result rows. Expects the `ROWS` variable.|See below.|
