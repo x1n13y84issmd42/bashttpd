@@ -38,36 +38,22 @@ function serveStatic() {
 	filePath=$1
 	fileName=$(basename "$filePath")
 	fileExt="${fileName##*.}"
+	fileMIMEType=$(file -b --mime-type "$filePath")
 	fileSize=$(stat --printf="%s" "$filePath")
 
 	resp.Status "200"
 
-	# TODO: resolve ERR_CONTENT_LENGTH_MISMATCH before enabling this back
-	# resp.Header "Content-Length" $fileSize
+	TODO: resolve ERR_CONTENT_LENGTH_MISMATCH before enabling this back
+	resp.Header "Content-Length" $fileSize
 
 	case $fileExt in
-		"js")
-			resp.Header "Content-Type" "application/javascript"
-		;;
-
+		# Somehow `file --mime-type` recognizes css files as text/x-asm
 		"css")
 			resp.Header "Content-Type" "text/css"
 		;;
 
-		"html")
-			resp.Header "Content-Type" "text/html"
-		;;
-
-		"jpg"|"jpeg")
-			resp.Header "Content-Type" "image/jpeg"
-		;;
-
-		"png")
-			resp.Header "Content-Type" "image/png"
-		;;
-
 		*)
-			resp.Header "Content-Type" "text/plain"
+			resp.Header "Content-Type" "$fileMIMEType"
 		;;
 	esac
 
