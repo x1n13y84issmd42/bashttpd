@@ -43,7 +43,6 @@ function serveStatic() {
 
 	resp.Status "200"
 
-	TODO: resolve ERR_CONTENT_LENGTH_MISMATCH before enabling this back
 	resp.Header "Content-Length" $fileSize
 
 	case $fileExt in
