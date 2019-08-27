@@ -1,7 +1,7 @@
 # Bashttpd
 An HTTP server and a web framework, both written in pure Bash script. It really do be like that sometimes.
 
-Bashttpd aims to implement the HTTP protocol and provide modern web development platform, while sticking to Bash Script and standard POSIX tools as much as possible.
+Bashttpd aims to implement the HTTP protocol and provide a modern web development platform, while sticking to Bash Script and standard POSIX tools as much as possible.
 
 At the moment it has basic support for HTTP and all kinds of requests, fully supports binary files & file upload, form data, JSON requests & responses, has MySQL utilities, does routing, renders simple HTML templates and more.
 
@@ -24,13 +24,14 @@ Then visit [localhost:8080](http://localhost:8080) in browser.
 You may want to fix MySQL connection credentials in the `.env` file to see the DB in action.
 
 ## Design
+### Request routing
 When **bashttpd** receives a request, three things can hapen.
 
-First, it tries to match the path from that to the folder structure of the supplied project, and looks for a script file named after the HTTP request method used.
+First, it tries to match the path from request to the folder structure of the supplied project, and looks for a script file named after the HTTP request method used.
 
 For example, a `GET` request to the `/foo/bar` path is served by the `localhost/foo/bar/GET.sh` script.
 
-If the request path matches a file path in the project directory, it will respond with it's contents. At the moment it supports `js`, `css` & `html`, as well as `jpeg` & `png` images with proper content types.
+If the request path exactly matches a file path in the project directory, it will respond with it's contents. At the moment it supports `js`, `css` & `html`, as well as `jpeg` & `png` images with proper content types.
 
 If none of the criterias above have matched, it'll try to interpret the requested path as a directory path and will try to find and serve `index.html` file from there.
 
@@ -40,7 +41,7 @@ Since in Bash you only return interger values from function, the rest of data is
 Some function can yield their results in two ways: regular yield to stdin which should be captured by `$()`, and yield by reference, where function takes a name of a variable where it writes it's result. Function `req.Data` & the `mysql.*` family are examples of such `referential functions`.
 
 ### Error handling & reporing
-Since `$()` actually `captures` any output, it is not possible to automatically report errors from such invocations, so only `referential functions` can do that, and this is the primary reason they exist.
+Since `$()` actually `captures` *any* output, it is not possible to automatically report errors from such invocations, so only `referential functions` can do that, and this is the primary reason they exist.
 
 ## Framework
 There is one! Bash Web Framework, or BWF, implements some standard operations expected from any modern web framework, making development of simple web apps in Bash script a breeze.
@@ -56,12 +57,12 @@ At the moment BWF understands `application/x-www-form-urlencoded` and `multipart
 
 | Function | Description | Example |
 | --- | --- | --- |
-| **req.Cookie** | Outputs a value of a cookie from the request. |`SID=$(req.Cookie "session_id")`|
-|**req.Data**|Outputs a single field value from the request body. Content-Type-agnostic.<br>*$1* Request parameter name.<br>*$2* Optional result reference name.|`userName=$(req.Data "userName")`|
-|**req.File**|Outputs a temporary file name where contents of the uploaded file is stored.<br>*$1* The name of the file as in form data.|`filePath=$(req.File "theFile")`|
-|**req.FileName**|Outputs original name of the uploaded file. Takes the name of the file as in form data.|`sourceFileName=$(req.FileName "theFile")`|
-|**req.FileCT**|Outputs the Content-Type of the uploaded file. Takes the name of the file as in form data.|`fileCT=$(req.FileCT "theFile")`|
-|**req.Query**|Outputs a value of a query string parameter.|`page=$(req.Query "page")`|
+|**req.Cookie**| Yields a value of a cookie from the request. |`SID=$(req.Cookie "session_id")`|
+|**req.Data**|Yields a single field value from the request body. Content-Type-agnostic.<br>*$1* Request parameter name.<br>*$2* Optional result reference name.|`userName=$(req.Data "userName")`|
+|**req.File**|Yields a temporary file name where contents of the uploaded file is stored.<br>*$1* The name of the file as in form data.|`filePath=$(req.File "theFile")`|
+|**req.FileName**|Yields original name of the uploaded file. Takes the name of the file as in form data.|`sourceFileName=$(req.FileName "theFile")`|
+|**req.FileCT**|Yields the Content-Type of the uploaded file. Takes the name of the file as in form data.|`fileCT=$(req.FileCT "theFile")`|
+|**req.Query**|Yields a value of a query string parameter.|`page=$(req.Query "page")`|
 
 ### Responding
 Basically you can just `echo` anything, and it'll get to a client, but you'll have to follow the HTTP protocol yourself.
@@ -92,13 +93,13 @@ If you're not a fan, there are functions for that.
 ### Utility
 | Function | Description | Example |
 | --- | --- | --- |
-|**log**<br>**logg**<br>**loggg**<br>**logggg**<br>**loggggg**|A logging function. Outputs to the host's `stderr`.<br>The more **g**'s in the name, the higher **LOG_VERBOSITY** config value is required for the message to be displayed.|`log "User name is $name"`<br>`loggg "Not your everyday message"`|
+|**log**<br>**logg**<br>**loggg**<br>**logggg**<br>**loggggg**|A logging function. Yields to the host's `stderr`.<br>The more **g**'s in the name, the higher **LOG_VERBOSITY** config value is required for the message to be displayed.|`log "User name is $name"`<br>`loggg "Not your everyday message"`|
 |**var**|A syntactic sugar function which defines and initializes a dynamically named variable.|`var "DATA_$dataName" $dataValue`|
 |**yield**|A syntactic sugar to output dynamic variables. A relative to the conventional `return` keyword.|`yield "DATA_$dataName"`|
 |**HTTP.urldecode**|A standard URL decoding function.|`decodedInput=$(HTTP.urldecode $encodedInput)`|
 |**HTTP.urlencode**|A standard URL encoding function.|`encodedInput=$(HTTP.urlencode $decodedInput)`|
-|**sys.TimeElapsed**|A profiling function, outputs delta time between two consecutive calls, in seconds.|`$(sys.TimeElapsed)`<br>`T=$(sys.TimeElapsed)`|
-|**sys.Time**|Outputs current unixtime.|`T=$(sys.Time)`|
+|**sys.TimeElapsed**|A profiling function, yields delta time between two consecutive calls, in seconds.|`$(sys.TimeElapsed)`<br>`T=$(sys.TimeElapsed)`|
+|**sys.Time**|Yields current unixtime.|`T=$(sys.Time)`|
 |**sys.IFS**|A function to help preserve correct values for the IFS variable. Supports stacking.|`sys.IFS $'\r'`<br>`sys.IFS ';'`<br>`sys.IFS # IFS is $'\r' now`<br>`sys.IFS # IFS is default now`|
 
 
@@ -119,12 +120,17 @@ If you're not a fan, there are functions for that.
 * [ ] Loops in templates
 * [ ] Path parameters (/user/{ID})
 * [x] Query String parsing
+* [ ] Array values in QS
 * [x] Cookies
 * [x] MySQL
 * [x] MySQL migrations
 * [x] Content url-en/decoding
 * [x] Socat port for parallelism?
-* [x] Render colored CLI output as HTML (`ls --color=yes`)
+* [x] Render colored CLI output as HTML (`ls --color=always`)
 * [x] Automatic error handling and reporting
 * [x] Colorful logs
 
+## TODO V1.+
+* [ ] Basic/Digest HTTP Authentication
+* [ ] Proper caching-related headers (`cache-control`, `expires`, `last-modified`, `etag`)
+* [ ] Respond to OPTIONS automatically?
