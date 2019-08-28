@@ -25,7 +25,7 @@ You may want to fix MySQL connection credentials in the `.env` file to see the D
 
 ## Design
 ### Request routing
-When **bashttpd** receives a request, three things can hapen.
+When Bashttpd receives a request, three things can hapen.
 
 First, it tries to match the path from request to the folder structure of the supplied project, and looks for a script file named after the HTTP request method used.
 
@@ -35,10 +35,10 @@ If the request path exactly matches a file path in the project directory, it wil
 
 If none of the criterias above have matched, it'll try to interpret the requested path as a directory path and will try to find and serve `index.html` file from there.
 
-### Function, values and yielding
-Since in Bash you only return interger values from function, the rest of data is echoed to stdin and captured `$()` by a caller. In terms of Bashttpd & BWF this is called "yielding" for clarity.
+### Functions, values and yielding
+Since in Bash you only return interger values from functions, the rest of data is echoed to stdin and captured `$()` by a caller. In terms of Bashttpd & BWF this is called "yielding" for clarity.
 
-Some function can yield their results in two ways: regular yield to stdin which should be captured by `$()`, and yield by reference, where function takes a name of a variable where it writes it's result. Function `req.Data` & the `mysql.*` family are examples of such `referential functions`.
+Some functions can yield their results in two ways: regular yield to stdin which should be captured by `$()`, and yield by reference, where function takes a name of a variable where it writes it's result. The `req.Data` function & the `mysql.*` family are examples of such `referential functions`. They also can automatically report errors, see below.
 
 ### Error handling & reporing
 Since `$()` actually `captures` *any* output, it is not possible to automatically report errors from such invocations, so only `referential functions` can do that, and this is the primary reason they exist.
@@ -130,8 +130,10 @@ If you're not a fan, there are functions for that.
 * [x] Render colored CLI output as HTML (`ls --color=always`)
 * [x] Automatic error handling and reporting
 * [x] Colorful logs
+* [ ] Forbid requests to dot-files (configurable)
+* [ ] Forbid requests to source code (configurable; limit serving of static files by the `PROJECT/assets` folder?)
 
-## TODO V1.+
+## TODO V1+
 * [ ] Basic/Digest HTTP Authentication
 * [ ] Proper caching-related headers (`cache-control`, `expires`, `last-modified`, `etag`)
-* [ ] Respond to OPTIONS automatically?
+* [ ] Respond to HEAD/OPTIONS automatically?
