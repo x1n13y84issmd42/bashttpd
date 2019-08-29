@@ -15,7 +15,7 @@ function router() {
 		IFS=$''
 		source $ctrler
 
-	elif [ -f "$staticFile" ]; then
+	elif [ -f "$staticFile" ] && safeToServeStatically "$staticFile"; then
 		log "${lcLGray}Serving the static file ${lcBlue}$PROJECT${lcLCyan}$reqPath"
 		serveStatic $staticFile
 
@@ -30,6 +30,27 @@ function router() {
 		resp.Body "<i>$reqPath</i> Was Not Found"
 
 	fi
+}
+
+# Checks the request path and a path BWF has chosen to serve
+# statically for various criterias that may make serving impossible.
+# Examples are dotfiles & handler scripts.
+#	Arguments:
+#		$1: the path BWF decided to serve.
+function safeToServeStatically {
+	# Checking the path for dotfiles
+	if [[ $1 =~ \/\. && $SERVE_DOTFILES == 0 ]]; then
+		logg "${lcLRed}Requests to dotfiles are forbidden for security reasons."
+		return 255
+	fi
+
+	# Checking if the path ends up with a handler script
+	if [[ $1 =~ (GET|POST|PUT|DELETE|OPTIONS).sh$ && $SERVE_HANDLER_SCRIPTS == 0 ]]; then
+		logg "${lcLRed}Requests to handler scripts are forbidden for security reasons."
+		return 255
+	fi
+
+	return 0
 }
 
 # Serves static files from file system.

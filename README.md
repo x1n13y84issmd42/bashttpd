@@ -130,8 +130,8 @@ If you're not a fan, there are functions for that.
 * [x] Render colored CLI output as HTML (`ls --color=always`)
 * [x] Automatic error handling and reporting
 * [x] Colorful logs
-* [ ] Forbid requests to dot-files (configurable)
-* [ ] Forbid requests to source code (configurable; limit serving of static files by the `PROJECT/assets` folder?)
+* [x] Forbid requests to dot-files (configurable)
+* [x] Forbid requests to source code (configurable)
 
 ## TODO V1+
 * [ ] Basic/Digest HTTP Authentication
