@@ -5,7 +5,7 @@ source libbashttpd/request.sh
 source libbashttpd/router.sh
 source libbashttpd/bwf.sh
 
-[[ -f .env ]] && source .env
+[[ -f .env ]] && log "Loading .env" && source .env
 
 project.Load $1
 

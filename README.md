@@ -132,6 +132,7 @@ If you're not a fan, there are functions for that.
 * [x] Colorful logs
 * [x] Forbid requests to dot-files (configurable)
 * [x] Forbid requests to source code (configurable)
+* [x] Project-specific .env files
 
 ## TODO V1+
 * [ ] Basic/Digest HTTP Authentication

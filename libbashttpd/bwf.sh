@@ -468,7 +468,7 @@ function resp.CLI {
 function project.Load {
 	PROJECT=$(realpath $1)
 	DOMAIN=${PROJECT##*/}
-	[[ -f $1/.env ]] && source $1/.env
+	[[ -f $1/.etc/.env ]] && logg "Loading $(realpath $1/.etc/.env)" && source $1/.etc/.env
 
 	local URL=$(project.URL)
 
