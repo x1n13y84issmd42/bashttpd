@@ -44,13 +44,13 @@ Some functions can yield their results in two ways: regular yield to stdin which
 Since `$()` actually `captures` *any* output, it is not possible to automatically report errors from such invocations, so only `referential functions` can do that, and this is the primary reason they exist.
 
 ## Framework
-There is one! Bash Web Framework, or BWF, implements some standard operations expected from any modern web framework, making development of simple web apps in Bash script a breeze.
+There is one! Bash Web Framework, or BWF, implements some standard operations expected from a modern web framework, making development of simple web apps in Bash script a breeze.
 
 ### Request Data
 Structured request data (i.e. forms or JSONs) is available via the `req.Data "fieldName"` function. It is mostly Content-Type agnostic, but for JSON requests it allows looking deeply through JSON structure with the [jq filter syntax](https://stedolan.github.io/jq/manual/#Basicfilters).
 
 #### Headers
-Request headers are available to controller scripts under their names capitalized and dashes replaced by underscores. So a `Content-Type` header is accessible as a `$CONTENT_TYPE` variable.
+Request headers are available to handler scripts under their names capitalized and dashes replaced by underscores. So a `Content-Type` header is accessible as a `$CONTENT_TYPE` variable.
 
 #### Supported Request Content Types
 At the moment BWF understands `application/x-www-form-urlencoded` and `multipart/form-data` for forms, `application/json` for generic data.
@@ -76,7 +76,7 @@ If you're not a fan, there are functions for that.
 |**resp.Cookie**|Sends a cookie to a client.|`resp.Cookie "visit_counter" $counter`|
 |**resp.Body**|Writes the response body.|`resp.Body "<h1>YOLO</h1>"`|
 |**resp.File**|Responds with a file contents. Note that you have to specify Content-Type yourself.|`resp.File "/etc/passwd"`|
-|**resp.TemplateFile**|Reads a file from `$PROJECT/.etc/tpl/` directory, expands variables into it, responds with the result.|`resp.TemplateFile "age.html"`|
+|**resp.TemplateFile**|Reads a file from `$PROJECT/.etc/tpl/` directory, expands variables into it, responds with the result.|`resp.TemplateFile "welcome.html"`|
 |**resp.JSON**|A shorthand function to respond with JSONs. Encodes the passed data, sends Content-Type. Regular arrays are encoded as JSON arrays, associative ones become objects.<br>*$1* A *reference* to a regular or associative array.|`declare -a FILE_LIST`<br>`# Fill the $FILE_LIST...`<br>`resp.JSON FILE_LIST`|
 |**resp.CLI**|Formats the colored output (`\e[34;91m...\e[0m`) as HTML.|`HTML=$(resp.CLI $(ls -la --color=always ~))`|
 |**resp.Redirect**|A regular HTTP redirect response. Writes a `Location` header with a `30*` status code.|`resp.Redirect "http://example.com" 303`|
@@ -85,21 +85,20 @@ If you're not a fan, there are functions for that.
 | Function | Description | Example |
 | --- | --- | --- |
 |**mysql.All**|Returns all available rows from a table.<br>*$1* Table name to select from.<br>*$2* Optional result *reference* name.|`mysql.All image_comments ROWS`|
-|**mysql.Select**|Performs a simple SELECT MySQL query.<br>*$1* Table name to select from.<br>*$2* Optional WHERE clause.<br>*$3* Optional result *reference* name.|`mysql.Select image_comments "imageID='$imageID'" ROWS`|
+|**mysql.Select**|Performs a simple SELECT MySQL query.<br>*$1* Table name to select from.<br>*$2* A WHERE clause.<br>*$3* Optional result *reference* name.|`mysql.Select image_comments "imageID='$imageID'" ROWS`|
 |**mysql.Insert**|Performs an INSERT MySQL query. Result is an ID of the inserted row.<br>*$1* Table name to insert to.<br>*$2* An associative array with column data.<br>*$3* Optional result *reference* name.|`declare -A COMMENT=(`<br>`[imageID]=$(req.Data imageID)`<br>`[message]=$(req.Data message)`<br>`)`<br>`mysql.Insert image_comments COMMENT ID`|
 |**mysql.foreach**|Alias. Iterates over MySQL query result rows. Expects the `ROWS` variable.|See below.|
-|**mysql.row**|Alias. Must be called within the `mysql.foreach` loop, creates a lcoal `row` variable which is an associative array containing the row's column data.|`mysql.Select image_comments "imageID='$imageID'" ROWS`<br>`mysql.foreach; do`<br>`mysql.row`<br>`echo "Message is ${row[message]}"`<br>`done`|
-|**mysql.Install**|Performs a first-time installation of a MySQL database for a running project. It will read the `MYSQL_DB` value from environment, create a MySQL database named after it, the execute an SQL file from `$PROJECT/.etc/DB.sql`, if such is found. It is performed automatically on server startup.|See below.|
+|**mysql.row**|Alias. Must be called within the `mysql.foreach` loop, creates a local `row` variable which is an associative array containing the row's column data.|`mysql.Select image_comments "imageID='$imageID'" ROWS`<br>`mysql.foreach; do`<br>`mysql.row`<br>`echo "Message is ${row[message]}"`<br>`done`|
+|**mysql.Install**|Performs a first-time installation of a MySQL database for a running project. It will read the `MYSQL_DB` value from environment, create a MySQL database named after it, the execute an SQL file from `$PROJECT/.etc/DB.sql`, if such is found. It is performed automatically on server startup.||
 
 ### Utility
 | Function | Description | Example |
 | --- | --- | --- |
-|**log**<br>**logg**<br>**loggg**<br>**logggg**<br>**loggggg**|A logging function. Yields to the host's `stderr`.<br>The more **g**'s in the name, the higher **LOG_VERBOSITY** config value is required for the message to be displayed.|`log "User name is $name"`<br>`loggg "Not your everyday message"`|
+|**log**<br>**logg**<br>**loggg**<br>**logggg**<br>**loggggg**|A logging function. Outputs to the host's `stderr`.<br>The more **g**'s in the name, the higher **LOG_VERBOSITY** config value is required for the message to be displayed.|`log "User name is $name"`<br>`loggg "Not your everyday message"`|
 |**var**|A syntactic sugar function which defines and initializes a dynamically named variable.|`var "DATA_$dataName" $dataValue`|
-|**yield**|A syntactic sugar to output dynamic variables. A relative to the conventional `return` keyword.|`yield "DATA_$dataName"`|
+|**yield**|A syntactic sugar to output dynamic variables. A relative to the conventional `return` keyword.|`yield "$theResult"`|
 |**HTTP.urldecode**|A standard URL decoding function.|`decodedInput=$(HTTP.urldecode $encodedInput)`|
 |**HTTP.urlencode**|A standard URL encoding function.|`encodedInput=$(HTTP.urlencode $decodedInput)`|
-|**sys.TimeElapsed**|A profiling function, yields delta time between two consecutive calls, in seconds.|`$(sys.TimeElapsed)`<br>`T=$(sys.TimeElapsed)`|
 |**sys.Time**|Yields current unixtime.|`T=$(sys.Time)`|
 |**sys.IFS**|A function to help preserve correct values for the IFS variable. Supports stacking.|`sys.IFS $'\r'`<br>`sys.IFS ';'`<br>`sys.IFS # IFS is $'\r' now`<br>`sys.IFS # IFS is default now`|
 
@@ -119,14 +118,14 @@ If you're not a fan, there are functions for that.
 * [x] Page templating
 * [ ] Branches in templates
 * [ ] Loops in templates
-* [ ] Path parameters (/user/{ID})
+* [ ] Path templates (/user/{ID})
 * [x] Query String parsing
 * [ ] Array values in QS
 * [x] Cookies
 * [x] MySQL
 * [x] MySQL migrations
 * [x] Content url-en/decoding
-* [x] Socat port for parallelism?
+* [x] Socat port for concurrency?
 * [x] Render colored CLI output as HTML (`ls --color=always`)
 * [x] Automatic error handling and reporting
 * [x] Colorful logs
