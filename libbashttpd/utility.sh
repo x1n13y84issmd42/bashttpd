@@ -56,6 +56,8 @@ lcbgWhite="\e[107m"
 
 lcX="$lc0$lcDGray"
 
+lcEm="$lcWhite"
+
 # A pinch of syntatic sugar for declaring and initializing variables
 function var {
 	printf -v $1 "%s" "$2"

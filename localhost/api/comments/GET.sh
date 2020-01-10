@@ -7,6 +7,8 @@ else
 	mysql.All image_comments ROWS
 fi
 
+RESP=()
+
 mysql.foreach do
 	mysql.row
 	RESP+=("$(JSON.EncodeObject row untyped)")

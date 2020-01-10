@@ -5,7 +5,7 @@ source libbashttpd/bwf.sh
 
 log "Bashttpd 0.9.1"
 
-[[ -f .env ]] && log "Loading .env" && source .env
+[[ -f .env ]] && loggg "Loading .env" && source .env
 
 project.Load $1
 

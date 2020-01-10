@@ -11,3 +11,5 @@ declare -A RESP=([commentID]=$ID)
 
 resp.Status 201
 resp.JSON RESP
+
+log "The comment ${lcEm}\"${message}\"${lcX} saved as ${ID}."

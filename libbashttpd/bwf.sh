@@ -277,7 +277,7 @@ function mysql.Run {
 		return 255
 	fi
 
-	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p $MYSQL_PASSWORD"
+	[[ ! -z $MYSQL_PASSWORD ]] && PSWD="-p$MYSQL_PASSWORD"
 	loggggg "mysql.Run: mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $@"
 	mysql --host $MYSQL_HOST -u $MYSQL_USER $PSWD $@ 2>&1
 }
@@ -397,7 +397,7 @@ function mysql.Install {
 
 		log "Done."
 	else
-		log "The DB is in place."
+		loggg "The DB is in place."
 	fi
 }
 
@@ -468,12 +468,12 @@ function resp.CLI {
 function project.Load {
 	PROJECT=$(realpath $1)
 	DOMAIN=${PROJECT##*/}
-	[[ -f $1/.etc/.env ]] && logg "Loading $(realpath $1/.etc/.env)" && source $1/.etc/.env
+	[[ -f $1/.etc/.env ]] && loggg "Loading $(realpath $1/.etc/.env)" && source $1/.etc/.env
 
 	local URL=$(project.URL)
 
 	loggg "Project directory is ${lcWhite}$PROJECT"
-	logg "Project URL is ${lcU}${lcCyan}$URL${lcX}"
+	loggg "Project URL is ${lcU}${lcCyan}$URL${lcX}"
 }
 
 # Yields a fully qualified project URL, with domain name and port number.

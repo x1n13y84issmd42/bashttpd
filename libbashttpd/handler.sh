@@ -5,7 +5,7 @@ source libbashttpd/request.sh
 source libbashttpd/router.sh
 source libbashttpd/bwf.sh
 
-[[ -f .env ]] && log "Loading .env" && source .env
+[[ -f .env ]] && loggg "Loading .env" && source .env
 
 project.Load $1
 
@@ -16,4 +16,4 @@ HTTP.readBody
 router
 
 loggg ""
-logg "Fin."
+loggg "Fin."
