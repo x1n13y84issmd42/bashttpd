@@ -2,7 +2,7 @@ req.Query image imageID
 
 # Add an image=XXXX query string parameter to see comments for a specific image.
 if [[ ! -z $imageID ]]; then
-	mysql.Select image_comments "imageID=\"$imageID\"" ROWS
+	mysql.Select image_comments "imageID=\"$imageID\" ORDER BY date DESC" ROWS
 else
 	mysql.All image_comments ROWS
 fi

@@ -195,6 +195,7 @@ function JSON.EncodeObject {
 function JSON.EncodeArray {
 	declare -a JSONFIELDS
 	decl=$(declare -p $1)
+	# This reverses the key order.
 	eval "declare -A INPUT=${decl#*=}"
 
 	for IK in "${!INPUT[@]}"; do
